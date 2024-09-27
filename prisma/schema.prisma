@@ -40,6 +40,15 @@ model UserProfile {
   @@map("user_profiles")
 }
 
+model DictionaryEntry {
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  word          String @unique
+  description   String
+  pronunciation String
+
+  @@map("dictionary_entries")
+}
+
 enum Status {
   PENDING
   BOOKED
