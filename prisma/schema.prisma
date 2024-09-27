@@ -40,13 +40,20 @@ model UserProfile {
   @@map("user_profiles")
 }
 
-model DictionaryEntry {
+model Dictionary {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
   word          String @unique
   description   String
   pronunciation String
 
-  @@map("dictionary_entries")
+  @@map("dictionary")
+}
+
+model Category {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+
+  @@map("categories")
 }
 
 enum Status {
