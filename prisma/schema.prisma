@@ -45,6 +45,7 @@ model Dictionary {
   word          String   @unique
   description   String
   pronunciation String
+  isDeleted     Boolean  @default(false)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -67,6 +68,8 @@ model Book {
   content     String
   categoryId  String   @unique @db.ObjectId
   category    Category @relation(fields: [categoryId], references: [id])
+  featured    Boolean
+  isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
