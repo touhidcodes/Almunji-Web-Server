@@ -41,10 +41,12 @@ model UserProfile {
 }
 
 model Dictionary {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  word          String @unique
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  word          String   @unique
   description   String
   pronunciation String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@map("dictionary")
 }
@@ -52,17 +54,23 @@ model Dictionary {
 model Category {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
+  Book Book?
 
   @@map("categories")
 }
 
-model File {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  fileType   String // MIME type of the document (e.g., 'application/msword')
-  filePath   String // Path where the file is stored (local or cloud)
-  uploadedAt DateTime @default(now())
-  size       Int // File size in bytes
+model Book {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  cover       String
+  content     String
+  categoryId  String   @unique @db.ObjectId
+  category    Category @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("books")
 }
 
 enum Status {
