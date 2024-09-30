@@ -3,6 +3,7 @@ import express from "express";
 import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
+import { categoryControllers } from "./caregory.controller";
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.put(
   categoryControllers.updateCategory
 );
 
-router.delete(
+router.put(
   "/category/:categoryId",
   //  auth(UserRole.ADMIN),
   categoryControllers.deleteCategory
