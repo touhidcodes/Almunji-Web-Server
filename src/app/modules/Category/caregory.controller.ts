@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
+import { categoryServices } from "./category.service";
 
 const createCategory = catchAsync(async (req, res) => {
   const result = await categoryServices.createCategory(req.body);
@@ -13,7 +14,7 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 const getAllCategories = catchAsync(async (req, res) => {
-  const result = await ctegoryServices.getAllCategories;
+  const result = await categoryServices.getAllCategories;
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -37,7 +38,7 @@ const updateCategory = catchAsync(async (req, res) => {
 const deleteCategory = catchAsync(async (req, res) => {
   const { categoryId } = req.params;
 
-  const result = await categoryServices.deleteCategory(categoryId, req.body);
+  const result = await categoryServices.deleteCategory(categoryId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
