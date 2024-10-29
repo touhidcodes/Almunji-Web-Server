@@ -2,16 +2,17 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(uuid())
   username    String       @unique
   email       String       @unique
   role        UserRole
@@ -25,8 +26,8 @@ model User {
 }
 
 model UserProfile {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String   @unique @db.ObjectId
+  id         String   @id @default(uuid())
+  userId     String   @unique
   name       String?
   image      String?
   bio        String?
@@ -41,7 +42,7 @@ model UserProfile {
 }
 
 model Dictionary {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  id            String   @id @default(uuid())
   word          String   @unique
   description   String
   pronunciation String
@@ -53,7 +54,7 @@ model Dictionary {
 }
 
 model Category {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   name      String   @unique
   Book      Book?
   createdAt DateTime @default(now())
@@ -63,12 +64,12 @@ model Category {
 }
 
 model Book {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(uuid())
   name        String   @unique
   description String
   cover       String
   content     String
-  categoryId  String   @unique @db.ObjectId
+  categoryId  String   @unique
   category    Category @relation(fields: [categoryId], references: [id])
   featured    Boolean
   isDeleted   Boolean  @default(false)
