@@ -1,13 +1,12 @@
 {
-  "name": "Almunji Web App",
+  "name": "almunji_web_app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "postinstall": "prisma generate"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

@@ -12,7 +12,7 @@ export const seedSuperAdmin = async () => {
     });
 
     if (isExistSuperAdmin) {
-      console.log("Super admin already exists!");
+      console.log("Super admin is online!");
       return;
     }
 
@@ -29,8 +29,6 @@ export const seedSuperAdmin = async () => {
         username: config.superAdmin.super_admin_username as string,
       },
     });
-
-    console.log("Super Admin Created Successfully!", superAdminData);
   } catch (err) {
     console.error(err);
   } finally {

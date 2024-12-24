@@ -3,13 +3,14 @@ import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import { bookControllers } from "./book.controller";
+import { bookValidationSchema } from "./book.validation";
 
 const router = express.Router();
 
 router.post(
   "/book",
   // auth(UserRole.ADMIN),
-  //   validateRequest(bookValidationSchema.createBookSchema),
+  validateRequest(bookValidationSchema.createBookSchema),
   bookControllers.createBook
 );
 
