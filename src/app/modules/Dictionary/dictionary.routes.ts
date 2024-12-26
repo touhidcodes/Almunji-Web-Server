@@ -7,28 +7,28 @@ const router = express.Router();
 
 // Route to create a new dictionary word
 router.post(
-  "/dictionary/word",
+  "/word",
   validateRequest(dictionaryValidationSchema.createWordSchema),
   dictionaryControllers.createWord
 );
 
 // Route to get dictionary words
-router.get("/dictionary/word", dictionaryControllers.getWords);
+router.get("/word", dictionaryControllers.getWords);
 
 // Route to get all dictionary words
-router.get("/dictionary", dictionaryControllers.getAllWords);
+router.get("/", dictionaryControllers.getAllWords);
 
 // Route to get a specific dictionary word by id
-router.get("/dictionary/:wordId", dictionaryControllers.getWordById);
+router.get("/:wordId", dictionaryControllers.getWordById);
 
 // Route to update an existing dictionary word by id
 router.put(
-  "/dictionary/:wordId",
+  "/:wordId",
   validateRequest(dictionaryValidationSchema.updateWordSchema),
   dictionaryControllers.updateWord
 );
 
 // Route to delete a dictionary word by id
-router.delete("/dictionary/:wordId", dictionaryControllers.deleteWord);
+router.delete("/:wordId", dictionaryControllers.deleteWord);
 
 export const dictionaryRoutes = router;
