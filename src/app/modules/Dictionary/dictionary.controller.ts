@@ -2,6 +2,11 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { dictionaryServices } from "./dictionary.service";
+import queryPickers from "../../utils/queryPickers";
+import {
+  wordFilterableFields,
+  wordSearchableFields,
+} from "./dictionay.constants";
 
 // Controller to create a new dictionary word
 const createWord = catchAsync(async (req, res) => {
@@ -11,6 +16,22 @@ const createWord = catchAsync(async (req, res) => {
     success: true,
     message: "Word created successfully!",
     data: result,
+  });
+});
+
+// Controller to get dictionary words
+const getWords = catchAsync(async (req, res) => {
+  const options = queryPickers(req.query, wordSearchableFields);
+  const filters = queryPickers(req.query, wordFilterableFields);
+
+  const result = await dictionaryServices.getWords(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Words retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
   });
 });
 
@@ -63,6 +84,7 @@ const deleteWord = catchAsync(async (req, res) => {
 
 export const dictionaryControllers = {
   createWord,
+  getWords,
   getAllWords,
   getWordById,
   updateWord,
