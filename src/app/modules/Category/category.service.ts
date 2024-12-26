@@ -1,8 +1,8 @@
-import { Prisma } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 
+// Service to create a category
 const createCategory = async (data: { name: string; description?: string }) => {
   const existingCategory = await prisma.category.findUnique({
     where: {
@@ -31,6 +31,7 @@ const createCategory = async (data: { name: string; description?: string }) => {
   return result;
 };
 
+// Service to get all categories
 const getAllCategories = async () => {
   const result = await prisma.category.findMany({
     select: {
@@ -44,6 +45,7 @@ const getAllCategories = async () => {
   return result;
 };
 
+// Service to update a specific category
 const updateCategory = async (id: string, data: { name: string }) => {
   const { name } = data;
 
@@ -76,6 +78,7 @@ const updateCategory = async (id: string, data: { name: string }) => {
   return result;
 };
 
+// Service to delete a  specific category
 const deleteCategory = async (id: string) => {
   const result = await prisma.category.delete({
     where: { id: id },

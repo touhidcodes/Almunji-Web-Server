@@ -8,25 +8,29 @@ import { categoryValidationSchema } from "./category.validation";
 
 const router = express.Router();
 
+// Route to post category
 router.post(
-  "/category",
-  //   auth(UserRole.ADMIN, UserRole.USER),
+  "/",
+  auth(UserRole.ADMIN),
   validateRequest(categoryValidationSchema.createCategorySchema),
   categoryControllers.createCategory
 );
 
-router.get("/categories", categoryControllers.getAllCategories);
+// Route to get all categories
+router.get("/all", categoryControllers.getAllCategories);
 
+// Route to update specific categories
 router.put(
-  "/category/:categoryId",
-  //   auth(UserRole.ADMIN, UserRole.USER),
+  "/:categoryId",
+  auth(UserRole.ADMIN),
   validateRequest(categoryValidationSchema.updateCategorySchema),
   categoryControllers.updateCategory
 );
 
+// Route to delete specific categories
 router.delete(
-  "/category/:categoryId",
-  //  auth(UserRole.ADMIN),
+  "/:categoryId",
+  auth(UserRole.ADMIN),
   categoryControllers.deleteCategory
 );
 
