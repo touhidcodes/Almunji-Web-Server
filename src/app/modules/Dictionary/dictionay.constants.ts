@@ -1,4 +1,4 @@
-// for all searching
+// For all searching
 export const wordSearchableFields: string[] = [
   "limit",
   "page",
@@ -6,5 +6,5 @@ export const wordSearchableFields: string[] = [
   "sortOrder",
 ];
 
-// for all filtering
+// For all filtering
 export const wordFilterableFields: string[] = ["word", "isDeleted"];

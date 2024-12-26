@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Schema to create a word
 const createWordSchema = z.object({
   body: z.object({
     word: z.string({ required_error: "Word is required" }),
@@ -8,6 +9,7 @@ const createWordSchema = z.object({
   }),
 });
 
+// Schema to update a word
 const updateWordSchema = z.object({
   body: z.object({
     word: z.string().optional(),
