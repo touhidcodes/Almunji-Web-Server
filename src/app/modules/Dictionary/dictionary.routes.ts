@@ -16,7 +16,7 @@ router.post(
 router.get("/word", dictionaryControllers.getWords);
 
 // Route to get all dictionary words
-router.get("/", dictionaryControllers.getAllWords);
+router.get("/all", dictionaryControllers.getAllWords);
 
 // Route to get a specific dictionary word by id
 router.get("/:wordId", dictionaryControllers.getWordById);
