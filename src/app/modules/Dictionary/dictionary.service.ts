@@ -41,6 +41,7 @@ const createWord = async (data: Dictionary) => {
   return result;
 };
 
+// Service to retrieve dictionary words
 const getWords = async (params: any, options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, isDeleted, ...filterData } = params;

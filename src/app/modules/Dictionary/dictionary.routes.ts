@@ -7,13 +7,16 @@ const router = express.Router();
 
 // Route to create a new dictionary word
 router.post(
-  "/dictionary",
+  "/dictionary/word",
   validateRequest(dictionaryValidationSchema.createWordSchema),
   dictionaryControllers.createWord
 );
 
+// Route to get dictionary words
+router.get("/dictionary/word", dictionaryControllers.getWords);
+
 // Route to get all dictionary words
-router.get("/dictionaries", dictionaryControllers.getAllWords);
+router.get("/dictionary", dictionaryControllers.getAllWords);
 
 // Route to get a specific dictionary word by id
 router.get("/dictionary/:wordId", dictionaryControllers.getWordById);
