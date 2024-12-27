@@ -9,31 +9,30 @@ const router = express.Router();
 
 // Route to create a book
 router.post(
-  "/book",
+  "/",
   auth(UserRole.ADMIN),
   validateRequest(bookValidationSchema.createBookSchema),
   bookControllers.createBook
 );
 
+// Route to get book
+router.get("/", bookControllers.getAllBooks);
+
 // Route to get all book
-router.get("/books", bookControllers.getAllBooks);
+router.get("/all", bookControllers.getAllBooks);
 
 // Route to get a specific book
-router.get("/book/:bookId", bookControllers.getSingleBook);
+router.get("/:bookId", bookControllers.getSingleBook);
 
 // Route to update a specific book
 router.put(
-  "/book/:bookId",
+  "/:bookId",
   auth(UserRole.ADMIN),
   validateRequest(bookValidationSchema.updateBookSchema),
   bookControllers.updateBook
 );
 
 // Route to delete a book
-router.delete(
-  "/book/:bookId",
-  auth(UserRole.ADMIN),
-  bookControllers.deleteBook
-);
+router.delete("/:bookId", auth(UserRole.ADMIN), bookControllers.deleteBook);
 
 export const bookRoutes = router;
