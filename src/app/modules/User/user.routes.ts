@@ -13,25 +13,33 @@ router.post(
   userControllers.createUser
 );
 
-router.get("/profile", auth(), userControllers.getUserProfile);
+router.get(
+  "/profile",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
+  userControllers.getUserProfile
+);
 
-router.get("/all-users", auth(UserRole.ADMIN), userControllers.getAllUser);
+router.get(
+  "/all-users",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  userControllers.getAllUser
+);
 
 router.get(
   "/user",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUser
 );
 
 router.get(
   "/user-profile",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUserWithProfile
 );
 
 router.put(
   "/profile",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   validateRequest(userValidationSchema.updateUserSchema),
   userControllers.updateUser
 );
