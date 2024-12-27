@@ -1,7 +1,9 @@
-import { Book } from "@prisma/client";
+import { Book, Prisma } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import { paginationHelper } from "../../utils/paginationHelpers";
+import { TPaginationOptions } from "../../interfaces/pagination";
 
 // Service to create a book
 const createBook = async (data: Book) => {
@@ -40,6 +42,83 @@ const createBook = async (data: Book) => {
   });
 
   return result;
+};
+
+// Service to get book
+const getBooks = async (params: any, options: TPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm, isDeleted, ...filterData } = params;
+
+  const andConditions: Prisma.BookWhereInput[] = [];
+
+  // Search by book name or description
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        {
+          name: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
+    });
+  }
+
+  // Filter by isDeleted flag
+  if (typeof isDeleted !== "undefined") {
+    const isDeletedFilter = isDeleted === "true" ? true : false;
+    andConditions.push({
+      isDeleted: isDeletedFilter,
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.BookWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.book.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? {
+            [options.sortBy]: options.sortOrder,
+          }
+        : {
+            createdAt: "desc",
+          },
+  });
+
+  const total = await prisma.book.count({
+    where: whereConditions,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
 };
 
 // Service to get all book
@@ -143,6 +222,7 @@ const deleteBook = async (id: string) => {
 
 export const bookServices = {
   createBook,
+  getBooks,
   getAllBooks,
   getSingleBook,
   updateBook,
