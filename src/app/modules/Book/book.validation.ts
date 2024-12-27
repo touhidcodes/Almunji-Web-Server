@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Schema to create a book
 const createBookSchema = z.object({
   body: z.object({
     name: z.string({ required_error: "Book name is required" }),
@@ -11,6 +12,7 @@ const createBookSchema = z.object({
   }),
 });
 
+// Schema to update a book
 const updateBookSchema = z.object({
   body: z.object({
     name: z.string().optional(),

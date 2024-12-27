@@ -1,8 +1,9 @@
-import { Book, Prisma } from "@prisma/client";
+import { Book } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 
+// Service to create a book
 const createBook = async (data: Book) => {
   const existingBook = await prisma.book.findFirst({
     where: {
@@ -41,6 +42,7 @@ const createBook = async (data: Book) => {
   return result;
 };
 
+// Service to get all book
 const getAllBooks = async () => {
   const result = await prisma.book.findMany({
     select: {
@@ -59,6 +61,7 @@ const getAllBooks = async () => {
   return result;
 };
 
+// Service to get a specific book
 const getSingleBook = async (id: string) => {
   const result = await prisma.book.findUniqueOrThrow({
     where: { id: id },
@@ -78,6 +81,7 @@ const getSingleBook = async (id: string) => {
   return result;
 };
 
+// Service to update a book
 const updateBook = async (id: string, data: Partial<Book>) => {
   const existingBook = await prisma.book.findUniqueOrThrow({
     where: { id: id },
@@ -120,6 +124,7 @@ const updateBook = async (id: string, data: Partial<Book>) => {
   return result;
 };
 
+// Service to delete a book
 const deleteBook = async (id: string) => {
   const result = await prisma.book.update({
     where: { id: id },

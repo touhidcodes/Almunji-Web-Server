@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { bookServices } from "./book.service";
 
+// Controller to create a book
 const createBook = catchAsync(async (req, res) => {
   const result = await bookServices.createBook(req.body);
   sendResponse(res, {
@@ -13,6 +14,7 @@ const createBook = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get all book
 const getAllBooks = catchAsync(async (req, res) => {
   const result = await bookServices.getAllBooks();
   sendResponse(res, {
@@ -23,6 +25,7 @@ const getAllBooks = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get a specific book
 const getSingleBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.getSingleBook(bookId);
@@ -34,6 +37,7 @@ const getSingleBook = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to update a book
 const updateBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.updateBook(bookId, req.body);
@@ -45,6 +49,7 @@ const updateBook = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to delete a book
 const deleteBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.deleteBook(bookId);
