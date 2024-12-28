@@ -6,6 +6,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import config from "../../config/config";
 
+//  Service to create user
 const createUser = async (data: TUserData) => {
   const existingUser = await prisma.user.findUnique({
     where: {
@@ -52,6 +53,7 @@ const createUser = async (data: TUserData) => {
   return result;
 };
 
+//  Service to get user
 const getUser = async (id: string) => {
   const result = await prisma.user.findUniqueOrThrow({
     where: {
@@ -68,6 +70,7 @@ const getUser = async (id: string) => {
   return result;
 };
 
+//  Service to get all user
 const getAllUser = async (currentUserEmail: string) => {
   const result = await prisma.user.findMany({
     where: {
@@ -80,6 +83,7 @@ const getAllUser = async (currentUserEmail: string) => {
   return result;
 };
 
+//  Service to get user with profile
 const getUserWithProfile = async (id: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
@@ -104,6 +108,7 @@ const getUserWithProfile = async (id: string) => {
   };
 };
 
+//  Service to get user profile
 const getUserProfile = async (id: string) => {
   const result = await prisma.userProfile.findUniqueOrThrow({
     where: {
@@ -113,20 +118,19 @@ const getUserProfile = async (id: string) => {
   return result;
 };
 
+//  Service to update user
 const updateUser = async (
   id: string,
   userData: Partial<UserProfile> & { username?: string; email?: string }
 ) => {
   const { email, username, ...profileData } = userData;
 
-  // Retrieve the current user
   const existingUser = await prisma.user.findUniqueOrThrow({
     where: {
       id: id,
     },
   });
 
-  // Check if the username or email is being updated
   if (username && username !== existingUser.username) {
     const existingUsername = await prisma.user.findUnique({
       where: {
@@ -149,7 +153,6 @@ const updateUser = async (
     }
   }
 
-  // Update user
   const result = await prisma.user.update({
     where: {
       id: id,
@@ -168,7 +171,7 @@ const updateUser = async (
     },
   });
 
-  // Update user profile
+  // Service to update user profile
   const updatedProfile = await prisma.userProfile.update({
     where: {
       userId: id,
@@ -182,7 +185,7 @@ const updateUser = async (
   };
 };
 
-//  update user status
+//Service to update user status
 const updateUserStatus = async (
   userId: string,
   updatedData: Partial<Prisma.UserUpdateInput>
