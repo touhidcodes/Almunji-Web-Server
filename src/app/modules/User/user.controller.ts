@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { userServices } from "./user.service";
 
+// Controller to create user
 const createUser = catchAsync(async (req, res) => {
   const result = await userServices.createUser(req.body);
   sendResponse(res, {
@@ -13,6 +14,7 @@ const createUser = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get user
 const getUser = catchAsync(async (req, res) => {
   const { userId } = req.user;
 
@@ -25,6 +27,7 @@ const getUser = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get all user
 const getAllUser = catchAsync(async (req, res) => {
   const { email } = req.user;
 
@@ -37,6 +40,7 @@ const getAllUser = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get user profile
 const getUserProfile = catchAsync(async (req, res) => {
   const { userId } = req.user;
 
@@ -49,6 +53,7 @@ const getUserProfile = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get user with profile
 const getUserWithProfile = catchAsync(async (req, res) => {
   const { userId } = req.user;
 
@@ -61,6 +66,7 @@ const getUserWithProfile = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to update user
 const updateUser = catchAsync(async (req, res) => {
   const { userId } = req.user;
 
@@ -73,6 +79,7 @@ const updateUser = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to update user status
 const updateUserStatus = catchAsync(async (req, res) => {
   const { userId } = req.params;
 
