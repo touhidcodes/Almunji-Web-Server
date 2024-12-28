@@ -7,36 +7,42 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
+// Routes to register user
 router.post(
   "/register",
   validateRequest(userValidationSchema.createUserSchema),
   userControllers.createUser
 );
 
+// Routes to get user
 router.get(
   "/profile",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUserProfile
 );
 
+// Routes to get all user
 router.get(
   "/all-users",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   userControllers.getAllUser
 );
 
+// Routes to get user
 router.get(
   "/user",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUser
 );
 
+// Routes to get user with profile
 router.get(
   "/user-profile",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUserWithProfile
 );
 
+// Routes to update user
 router.put(
   "/profile",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
@@ -44,6 +50,7 @@ router.put(
   userControllers.updateUser
 );
 
+// Routes to update user status
 router.put(
   "/status/:userId",
   auth(UserRole.ADMIN),
