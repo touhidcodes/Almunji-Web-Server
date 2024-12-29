@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+//  Schema to login user
 const loginZodSchema = z.object({
   body: z.object({
     email: z.string({
@@ -11,6 +12,7 @@ const loginZodSchema = z.object({
   }),
 });
 
+//  Schema to get refresh token
 const refreshTokenZodSchema = z.object({
   cookies: z.object({
     refreshToken: z.string({
@@ -19,6 +21,7 @@ const refreshTokenZodSchema = z.object({
   }),
 });
 
+//  Schema to change password
 const changePasswordZodSchema = z.object({
   body: z.object({
     oldPassword: z.string({

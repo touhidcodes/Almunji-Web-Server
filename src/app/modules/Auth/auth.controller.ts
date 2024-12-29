@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { authServices } from "./auth.service";
 
+// Controller to login user
 const loginUser = catchAsync(async (req, res) => {
   const result = await authServices.loginUser(req.body);
 
@@ -26,6 +27,7 @@ const loginUser = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get refresh token
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
 
@@ -39,6 +41,7 @@ const refreshToken = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to change password
 const changePassword = catchAsync(async (req, res) => {
   const { userId } = req.user;
   const { ...passwordData } = req.body;

@@ -185,7 +185,7 @@ const updateUser = async (
   };
 };
 
-//Service to update user status
+// Service to update user status
 const updateUserStatus = async (
   userId: string,
   updatedData: Partial<Prisma.UserUpdateInput>
