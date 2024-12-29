@@ -7,10 +7,13 @@ import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
+//  Routes to login user
 router.post("/login", authControllers.loginUser);
 
+//  Routes to refresh token
 router.post("/refresh-token", authControllers.refreshToken);
 
+//  Routes to change password
 router.post(
   "/change-password",
   validateRequest(AuthValidation.changePasswordZodSchema),
