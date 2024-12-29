@@ -10,6 +10,7 @@ import { IChangePassword } from "./auth.interface";
 import { comparePasswords } from "../../utils/comparePassword";
 import { hashedPassword } from "../../utils/hashedPassword";
 
+//  Service to login user
 const loginUser = async (payload: { identifier: string; password: string }) => {
   let userData = await prisma.user.findUnique({
     where: {
@@ -68,6 +69,7 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
   };
 };
 
+//  Service to get refresh token
 const refreshToken = async (token: string) => {
   let decodedData;
   try {
@@ -99,6 +101,7 @@ const refreshToken = async (token: string) => {
   };
 };
 
+//  Service to change password
 const changePassword = async (userId: string, payload: IChangePassword) => {
   const { oldPassword, newPassword } = payload;
 
