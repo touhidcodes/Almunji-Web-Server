@@ -71,7 +71,11 @@ const createUser = async (data: TUserData) => {
       config.jwt.refresh_token_expires_in as string
     );
 
-    return createdUserData;
+    return {
+      accessToken,
+      refreshToken,
+      createdUserData,
+    };
   });
 
   return result;
