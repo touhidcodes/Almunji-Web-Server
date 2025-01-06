@@ -12,21 +12,16 @@ import { hashedPassword } from "../../utils/hashedPassword";
 
 //  Service to login user
 const loginUser = async (payload: { identifier: string; password: string }) => {
-  let userData = await prisma.user.findUnique({
+  const userData = await prisma.user.findFirst({
     where: {
-      email: payload.identifier,
-      status: UserStatus.ACTIVE,
+      AND: [
+        { status: UserStatus.ACTIVE },
+        {
+          OR: [{ email: payload.identifier }, { username: payload.identifier }],
+        },
+      ],
     },
   });
-
-  if (!userData) {
-    userData = await prisma.user.findUnique({
-      where: {
-        username: payload.identifier,
-        status: UserStatus.ACTIVE,
-      },
-    });
-  }
 
   if (!userData) {
     throw new APIError(httpStatus.NOT_FOUND, "User not found!");

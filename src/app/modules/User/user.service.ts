@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt";
 import prisma from "../../utils/prisma";
-import { Prisma, User, UserProfile, UserRole } from "@prisma/client";
+import { Prisma, UserProfile, UserRole } from "@prisma/client";
 import { TUserData } from "./user.interface";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
