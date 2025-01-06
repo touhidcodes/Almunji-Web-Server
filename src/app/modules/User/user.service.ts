@@ -47,6 +47,27 @@ const createUser = async (data: TUserData) => {
       },
     });
 
+    const accessToken = jwtHelpers.generateToken(
+      {
+        email: userData.email,
+        username: userData.username,
+        userId: userData.id,
+        role: userData.role,
+      },
+      config.jwt.access_token_secret as Secret,
+      config.jwt.access_token_expires_in as string
+    );
+
+    const refreshToken = jwtHelpers.generateToken(
+      {
+        email: userData.email,
+        username: userData.username,
+        userId: userData.id,
+      },
+      config.jwt.refresh_token_secret as Secret,
+      config.jwt.refresh_token_expires_in as string
+    );
+
     return createdUserData;
   });
 
