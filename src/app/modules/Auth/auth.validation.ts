@@ -1,7 +1,18 @@
 import { z } from "zod";
 
+//  Schema to create user
+const createUserSchema = z.object({
+  body: z.object({
+    username: z.string({ required_error: "Username is required" }),
+    email: z.string({ required_error: "Email is required" }),
+    password: z
+      .string({ required_error: "Password is required" })
+      .min(8, { message: "Password must be at least 8 characters long" }),
+  }),
+});
+
 //  Schema to login user
-const loginZodSchema = z.object({
+const loginUserSchema = z.object({
   body: z.object({
     email: z.string({
       required_error: "Email is required",
@@ -33,8 +44,9 @@ const changePasswordZodSchema = z.object({
   }),
 });
 
-export const AuthValidation = {
-  loginZodSchema,
+export const authValidationSchema = {
+  createUserSchema,
+  loginUserSchema,
   refreshTokenZodSchema,
   changePasswordZodSchema,
 };

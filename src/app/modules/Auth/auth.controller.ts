@@ -3,6 +3,22 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { authServices } from "./auth.service";
 
+// Controller to create user
+const createUser = catchAsync(async (req, res) => {
+  const result = await authServices.createUser(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User registered successfully!",
+    data: {
+      id: result.createdUserData.id,
+      username: result.createdUserData.username,
+      email: result.createdUserData.email,
+      token: result.accessToken,
+    },
+  });
+});
+
 // Controller to login user
 const loginUser = catchAsync(async (req, res) => {
   const result = await authServices.loginUser(req.body);
@@ -60,6 +76,7 @@ const changePassword = catchAsync(async (req, res) => {
 });
 
 export const authControllers = {
+  createUser,
   loginUser,
   refreshToken,
   changePassword,

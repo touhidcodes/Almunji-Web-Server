@@ -1,85 +1,8 @@
-import * as bcrypt from "bcrypt";
 import prisma from "../../utils/prisma";
-import { Prisma, UserProfile, UserRole } from "@prisma/client";
-import { TUserData } from "./user.interface";
+import { Prisma, UserProfile } from "@prisma/client";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import config from "../../config/config";
-import { jwtHelpers } from "../../utils/jwtHelpers";
-import { Secret } from "jsonwebtoken";
-
-//  Service to create user
-const createUser = async (data: TUserData) => {
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      username: data.username,
-    },
-  });
-
-  if (existingUser) {
-    throw new APIError(httpStatus.CONFLICT, "Username is already taken");
-  }
-
-  const hashedPassword: string = await bcrypt.hash(data.password, 12);
-
-  const userData = {
-    username: data.username,
-    email: data.email,
-    role: UserRole.USER,
-    password: hashedPassword,
-  };
-
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const createdUserData = await transactionClient.user.create({
-      data: userData,
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-
-    const userId = createdUserData.id;
-
-    await transactionClient.userProfile.create({
-      data: {
-        userId: userId,
-      },
-    });
-
-    const accessToken = jwtHelpers.generateToken(
-      {
-        email: userData.email,
-        username: userData.username,
-        userId: userId,
-        role: UserRole.USER,
-      },
-      config.jwt.access_token_secret as Secret,
-      config.jwt.access_token_expires_in as string
-    );
-
-    const refreshToken = jwtHelpers.generateToken(
-      {
-        email: userData.email,
-        username: userData.username,
-        userId: userId,
-        role: UserRole.USER,
-      },
-      config.jwt.refresh_token_secret as Secret,
-      config.jwt.refresh_token_expires_in as string
-    );
-
-    return {
-      accessToken,
-      refreshToken,
-      createdUserData,
-    };
-  });
-
-  return result;
-};
 
 //  Service to get user
 const getUser = async (id: string) => {
@@ -226,7 +149,6 @@ const updateUserStatus = async (
 };
 
 export const userServices = {
-  createUser,
   getUser,
   getUserProfile,
   updateUser,

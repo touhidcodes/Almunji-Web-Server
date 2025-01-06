@@ -1,16 +1,5 @@
 import { z } from "zod";
 
-//  Schema to create user
-const createUserSchema = z.object({
-  body: z.object({
-    username: z.string({ required_error: "Username is required" }),
-    email: z.string({ required_error: "Email is required" }),
-    password: z
-      .string({ required_error: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters long" }),
-  }),
-});
-
 //  Schema to update user
 const updateUserSchema = z.object({
   body: z.object({
@@ -25,6 +14,5 @@ const updateUserSchema = z.object({
 });
 
 export const userValidationSchema = {
-  createUserSchema,
   updateUserSchema,
 };

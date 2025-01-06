@@ -5,10 +5,84 @@ import * as bcrypt from "bcrypt";
 import config from "../../config/config";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
-import { UserStatus } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import { IChangePassword } from "./auth.interface";
 import { comparePasswords } from "../../utils/comparePassword";
 import { hashedPassword } from "../../utils/hashedPassword";
+import { TUserData } from "../User/user.interface";
+
+//  Service to create user
+const createUser = async (data: TUserData) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      username: data.username,
+    },
+  });
+
+  if (existingUser) {
+    throw new APIError(httpStatus.CONFLICT, "Username is already taken");
+  }
+
+  const hashedPassword: string = await bcrypt.hash(data.password, 12);
+
+  const userData = {
+    username: data.username,
+    email: data.email,
+    role: UserRole.USER,
+    password: hashedPassword,
+  };
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const createdUserData = await transactionClient.user.create({
+      data: userData,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const userId = createdUserData.id;
+
+    await transactionClient.userProfile.create({
+      data: {
+        userId: userId,
+      },
+    });
+
+    const accessToken = jwtHelpers.generateToken(
+      {
+        email: userData.email,
+        username: userData.username,
+        userId: userId,
+        role: UserRole.USER,
+      },
+      config.jwt.access_token_secret as Secret,
+      config.jwt.access_token_expires_in as string
+    );
+
+    const refreshToken = jwtHelpers.generateToken(
+      {
+        email: userData.email,
+        username: userData.username,
+        userId: userId,
+        role: UserRole.USER,
+      },
+      config.jwt.refresh_token_secret as Secret,
+      config.jwt.refresh_token_expires_in as string
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+      createdUserData,
+    };
+  });
+
+  return result;
+};
 
 //  Service to login user
 const loginUser = async (payload: { identifier: string; password: string }) => {
@@ -132,6 +206,7 @@ const changePassword = async (userId: string, payload: IChangePassword) => {
 };
 
 export const authServices = {
+  createUser,
   loginUser,
   refreshToken,
   changePassword,

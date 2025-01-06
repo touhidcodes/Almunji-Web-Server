@@ -7,13 +7,6 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-// Routes to register user
-router.post(
-  "/register",
-  validateRequest(userValidationSchema.createUserSchema),
-  userControllers.createUser
-);
-
 // Routes to get user
 router.get(
   "/profile",
