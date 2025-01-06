@@ -5,6 +5,8 @@ import { TUserData } from "./user.interface";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import config from "../../config/config";
+import { jwtHelpers } from "../../utils/jwtHelpers";
+import { Secret } from "jsonwebtoken";
 
 //  Service to create user
 const createUser = async (data: TUserData) => {
@@ -51,8 +53,8 @@ const createUser = async (data: TUserData) => {
       {
         email: userData.email,
         username: userData.username,
-        userId: userData.id,
-        role: userData.role,
+        userId: userId,
+        role: UserRole.USER,
       },
       config.jwt.access_token_secret as Secret,
       config.jwt.access_token_expires_in as string
@@ -62,7 +64,8 @@ const createUser = async (data: TUserData) => {
       {
         email: userData.email,
         username: userData.username,
-        userId: userData.id,
+        userId: userId,
+        role: UserRole.USER,
       },
       config.jwt.refresh_token_secret as Secret,
       config.jwt.refresh_token_expires_in as string
