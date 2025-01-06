@@ -1,6 +1,6 @@
 import * as bcrypt from "bcrypt";
 import prisma from "../../utils/prisma";
-import { Prisma, User, UserProfile } from "@prisma/client";
+import { Prisma, User, UserProfile, UserRole } from "@prisma/client";
 import { TUserData } from "./user.interface";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
@@ -23,7 +23,7 @@ const createUser = async (data: TUserData) => {
   const userData = {
     username: data.username,
     email: data.email,
-    role: data.role,
+    role: UserRole.USER,
     password: hashedPassword,
   };
 
