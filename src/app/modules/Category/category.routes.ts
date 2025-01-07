@@ -11,7 +11,7 @@ const router = express.Router();
 // Route to post category
 router.post(
   "/",
-  // auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   validateRequest(categoryValidationSchema.createCategorySchema),
   categoryControllers.createCategory
 );
