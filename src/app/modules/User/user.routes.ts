@@ -17,7 +17,7 @@ router.get(
 // Routes to get all user
 router.get(
   "/all-users",
-  // auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   userControllers.getAllUser
 );
 
