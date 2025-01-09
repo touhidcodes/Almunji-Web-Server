@@ -59,13 +59,13 @@ const getBooks = async (params: any, options: TPaginationOptions) => {
           name: {
             contains: searchTerm,
             mode: "insensitive",
-          },
+          } as any,
         },
         {
           description: {
             contains: searchTerm,
             mode: "insensitive",
-          },
+          } as any,
         },
       ],
     });

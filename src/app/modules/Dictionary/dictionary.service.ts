@@ -56,13 +56,13 @@ const getWords = async (params: any, options: TPaginationOptions) => {
           word: {
             contains: searchTerm,
             mode: "insensitive",
-          },
+          } as any,
         },
         {
           description: {
             contains: searchTerm,
             mode: "insensitive",
-          },
+          } as any,
         },
       ],
     });
