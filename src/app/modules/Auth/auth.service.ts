@@ -86,16 +86,27 @@ const createUser = async (data: TUserData) => {
 
 //  Service to login user
 const loginUser = async (payload: { identifier: string; password: string }) => {
-  const userData = await prisma.user.findFirst({
+  const { identifier } = payload;
+
+  if (!identifier) {
+    throw new APIError(httpStatus.NOT_FOUND, "Email or Username is required");
+  }
+
+  let userData = await prisma.user.findUnique({
     where: {
-      AND: [
-        { status: UserStatus.ACTIVE },
-        {
-          OR: [{ email: payload.identifier }, { username: payload.identifier }],
-        },
-      ],
+      email: identifier,
+      status: UserStatus.ACTIVE,
     },
   });
+
+  if (!userData) {
+    userData = await prisma.user.findUnique({
+      where: {
+        username: identifier,
+        status: UserStatus.ACTIVE,
+      },
+    });
+  }
 
   if (!userData) {
     throw new APIError(httpStatus.NOT_FOUND, "User not found!");
