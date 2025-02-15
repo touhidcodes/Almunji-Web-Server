@@ -17,10 +17,6 @@ const uploadDictionaryData = catchAsync(
     const fileContent = fs.readFileSync(file.path, "utf-8"); // Use "utf-8" encoding to get a string
     const jsonData = JSON.parse(fileContent);
 
-    // Process and store data (service handles Prisma operations)
-    //   const result = await uploadService.uploadDictionaryData(jsonData);
-    // console.log(jsonData);
-
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
