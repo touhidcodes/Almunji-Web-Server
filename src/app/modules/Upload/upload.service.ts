@@ -19,4 +19,4 @@ const getAllWords = async () => {
     },
   });
 };
-export const uploadServices = {};
+export const uploadServices = { getAllWords };
