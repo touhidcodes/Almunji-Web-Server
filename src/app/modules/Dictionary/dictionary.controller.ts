@@ -6,7 +6,7 @@ import queryPickers from "../../utils/queryPickers";
 import {
   wordFilterableFields,
   wordSearchableFields,
-} from "./dictionay.constants";
+} from "./dictionary.constants";
 
 // Controller to create a new dictionary word
 const createWord = catchAsync(async (req, res) => {
