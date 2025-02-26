@@ -15,18 +15,17 @@ const uploadDictionaryData = catchAsync(
     const file = req.file as IUploadFile;
 
     // Parse JSON data from uploaded file
-    const fileContent = fs.readFileSync(file.path, "utf-8"); // Use "utf-8" Encoding to get a string
+    const fileContent = fs.readFileSync(file.path, "utf-8");
+    // Use "utf-8" Encoding to get a string
     const jsonData = JSON.parse(fileContent);
 
     const result = await uploadServices.uploadWordsFromFiles(jsonData);
-    console.log(result);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: "JSON file uploaded and processed successfully",
-      // data: result,
-      data: jsonData,
+      data: result,
     });
   }
 );
