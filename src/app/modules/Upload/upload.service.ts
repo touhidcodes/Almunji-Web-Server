@@ -29,20 +29,16 @@ import fs from "fs";
 import { IUploadFile } from "../../interfaces/file";
 
 // Service to upload dictionary words from a JSON file
-const uploadWordsFromFiles = async (file: IUploadFile) => {
+const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
   try {
-    // Read file content
-    const fileContent = fs.readFileSync(file.path, "utf-8");
-    const jsonData: Dictionary[] = JSON.parse(fileContent);
-
-    if (!Array.isArray(jsonData)) {
+    if (!Array.isArray(data)) {
       throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format");
     }
 
     const createdWords: Dictionary[] = [];
     const existingWords: string[] = [];
 
-    for (const wordData of jsonData) {
+    for (const wordData of data) {
       const { word, description, pronunciation } = wordData;
 
       // Check if word already exists

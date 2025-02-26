@@ -22,7 +22,7 @@ const createWord = async (data: Dictionary) => {
 
   const wordData = {
     word: data.word,
-    description: data.description,
+    definition: data.definition,
     pronunciation: data.pronunciation,
   };
 
@@ -31,7 +31,7 @@ const createWord = async (data: Dictionary) => {
     select: {
       id: true,
       word: true,
-      description: true,
+      definition: true,
       pronunciation: true,
       createdAt: true,
       updatedAt: true,
@@ -59,7 +59,7 @@ const getWords = async (params: any, options: TPaginationOptions) => {
           } as any,
         },
         {
-          description: {
+          definition: {
             contains: searchTerm,
             mode: "insensitive",
           } as any,
@@ -125,7 +125,7 @@ const getAllWords = async () => {
     select: {
       id: true,
       word: true,
-      description: true,
+      definition: true,
       pronunciation: true,
       createdAt: true,
       updatedAt: true,
@@ -142,7 +142,7 @@ const getWordById = async (id: string) => {
     select: {
       id: true,
       word: true,
-      description: true,
+      definition: true,
       pronunciation: true,
       createdAt: true,
       updatedAt: true,
@@ -175,13 +175,13 @@ const updateWord = async (id: string, data: Partial<Dictionary>) => {
     where: { id },
     data: {
       word: data.word || existingWord.word,
-      description: data.description || existingWord.description,
+      definition: data.definition || existingWord.definition,
       pronunciation: data.pronunciation || existingWord.pronunciation,
     },
     select: {
       id: true,
       word: true,
-      description: true,
+      definition: true,
       pronunciation: true,
       createdAt: true,
       updatedAt: true,

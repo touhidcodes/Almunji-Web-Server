@@ -4,7 +4,7 @@ import { z } from "zod";
 const createWordSchema = z.object({
   body: z.object({
     word: z.string({ required_error: "Word is required" }),
-    description: z.string({ required_error: "Description is required" }),
+    definition: z.string({ required_error: "Definition is required" }),
     pronunciation: z.string({ required_error: "Pronunciation is required" }),
   }),
 });
@@ -13,7 +13,7 @@ const createWordSchema = z.object({
 const updateWordSchema = z.object({
   body: z.object({
     word: z.string().optional(),
-    description: z.string().optional(),
+    definition: z.string().optional(),
     pronunciation: z.string().optional(),
     isDeleted: z.boolean().optional(),
   }),

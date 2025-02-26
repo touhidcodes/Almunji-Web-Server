@@ -44,7 +44,7 @@ model UserProfile {
 model Dictionary {
   id            String   @id @default(uuid())
   word          String   @unique
-  description   String
+  definition    String
   pronunciation String
   isDeleted     Boolean  @default(false)
   createdAt     DateTime @default(now())

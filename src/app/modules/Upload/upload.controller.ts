@@ -5,6 +5,7 @@ import APIError from "../../errors/APIError";
 import sendResponse from "../../utils/sendResponse";
 import { IUploadFile } from "../../interfaces/file";
 import fs from "fs";
+import { uploadServices } from "./upload.service";
 
 const uploadDictionaryData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -16,6 +17,9 @@ const uploadDictionaryData = catchAsync(
     // Parse JSON data from uploaded file
     const fileContent = fs.readFileSync(file.path, "utf-8"); // Use "utf-8" Encoding to get a string
     const jsonData = JSON.parse(fileContent);
+
+    const result = await uploadServices.uploadWordsFromFiles(jsonData);
+    console.log(result);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
