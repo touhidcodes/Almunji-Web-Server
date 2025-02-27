@@ -14,19 +14,28 @@ const uploadDictionaryData = catchAsync(
     }
     const file = req.file as IUploadFile;
 
-    // Parse JSON data from uploaded file
-    const fileContent = fs.readFileSync(file.path, "utf-8");
-    // Use "utf-8" Encoding to get a string
-    const jsonData = JSON.parse(fileContent);
+    try {
+      // Parse JSON data from uploaded file
+      const fileContent = fs.readFileSync(file.path, "utf-8");
+      const jsonData = JSON.parse(fileContent);
 
-    const result = await uploadServices.uploadWordsFromFiles(jsonData);
+      const result = await uploadServices.uploadWordsFromFiles(jsonData);
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "JSON file uploaded and processed successfully",
-      data: result,
-    });
+      sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "JSON file uploaded and processed successfully",
+        data: result,
+      });
+    } catch (error) {
+      return next(error);
+    } finally {
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          console.error("Error deleting file:", err);
+        }
+      });
+    }
   }
 );
 
