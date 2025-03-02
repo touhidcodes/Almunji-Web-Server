@@ -79,6 +79,20 @@ model Book {
   @@map("books")
 }
 
+model Blog {
+  id         String       @id @default(uuid())
+  thumbnail  String?
+  title      String
+  content    String
+  category   BlogCategory @relation(fields: [categoryId], references: [id])
+  categoryId String       @db.ObjectId
+  published  Boolean      @default(false)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@map("blogs")
+}
+
 enum Status {
   PENDING
   BOOKED
