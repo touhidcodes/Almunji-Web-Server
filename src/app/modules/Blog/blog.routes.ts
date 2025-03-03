@@ -1,37 +1,29 @@
 import express from "express";
-
-import auth from "../../middlewares/auth";
+import { blogValidationSchemas } from "./blog.validation";
+import { blogControllers } from "./blog.controller";
 import validateRequest from "../../middlewares/validateRequest";
-import { UserRole } from "@prisma/client";
-import { categoryControllers } from "./caregory.controller";
-import { categoryValidationSchema } from "./category.validation";
+import auth from "../../middlewares/auth";
 
 const router = express.Router();
 
-// Route to post category
+router.get("/", blogControllers.getBlogs);
+
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(categoryValidationSchema.createCategorySchema),
-  categoryControllers.createCategory
+  auth(),
+  validateRequest(blogValidationSchemas.createBlogSchema),
+  blogControllers.createBlog
 );
 
-// Route to get all categories
-router.get("/all", categoryControllers.getAllCategories);
+router.get("/:blogId", blogControllers.getBlogById);
 
-// Route to update specific categories
 router.put(
-  "/:categoryId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(categoryValidationSchema.updateCategorySchema),
-  categoryControllers.updateCategory
+  "/:blogId",
+  auth(),
+  validateRequest(blogValidationSchemas.updateBlogSchema),
+  blogControllers.updateBlog
 );
 
-// Route to delete specific categories
-router.delete(
-  "/:categoryId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  categoryControllers.deleteCategory
-);
+router.delete("/:blogId", auth(), blogControllers.deleteBlog);
 
-export const categoryRoutes = router;
+export const blogRoutes = router;
