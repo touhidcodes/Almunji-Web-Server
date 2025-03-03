@@ -1,20 +1,25 @@
 import { z } from "zod";
 
-// Schema to create a category
-const createCategorySchema = z.object({
+const createBlogSchema = z.object({
   body: z.object({
-    name: z.string({ required_error: "Category name is required" }),
+    title: z.string().min(1, "Title is required"),
+    thumbnail: z.string().optional(),
+    content: z.string().min(1, "Content is required"),
+    categoryId: z.string().min(1, "Category ID is required"),
   }),
 });
 
-// Schema to update a category
-const updateCategorySchema = z.object({
+const updateBlogSchema = z.object({
   body: z.object({
-    name: z.string().optional(),
+    title: z.string().optional(),
+    thumbnail: z.string().optional(),
+    content: z.string().optional(),
+    categoryId: z.string().optional(),
+    published: z.boolean().optional(),
   }),
 });
 
-export const categoryValidationSchema = {
-  createCategorySchema,
-  updateCategorySchema,
+export const blogValidationSchemas = {
+  createBlogSchema,
+  updateBlogSchema,
 };
