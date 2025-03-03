@@ -1,99 +1,130 @@
+import { Prisma, Blog } from "@prisma/client";
 import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
-import httpStatus from "http-status";
+import { TPaginationOptions } from "../../interfaces/pagination";
+import { paginationHelper } from "../../utils/paginationHelpers";
 
-// Service to create a category
-const createCategory = async (data: { name: string; description?: string }) => {
-  const existingCategory = await prisma.category.findUnique({
-    where: {
-      name: data.name,
-    },
-  });
+const getBlogs = async (params: any, options: TPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm, category, published, ...filterData } = params;
 
-  if (existingCategory) {
-    throw new APIError(httpStatus.CONFLICT, "Category name is already taken");
-  }
+  const andConditions: Prisma.BlogWhereInput[] = [];
 
-  const categoryData = {
-    name: data.name,
-  };
-
-  const result = await prisma.category.create({
-    data: categoryData,
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-
-  return result;
-};
-
-// Service to get all categories
-const getAllCategories = async () => {
-  const result = await prisma.category.findMany({
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-
-  return result;
-};
-
-// Service to update a specific category
-const updateCategory = async (id: string, data: { name: string }) => {
-  const { name } = data;
-
-  const existingCategory = await prisma.category.findUniqueOrThrow({
-    where: { id: id },
-  });
-
-  if (name && name !== existingCategory.name) {
-    const existingName = await prisma.category.findUnique({
-      where: { name: name },
+  if (searchTerm) {
+    andConditions.push({
+      OR: [
+        { title: { contains: searchTerm, mode: "insensitive" } },
+        { content: { contains: searchTerm, mode: "insensitive" } },
+      ],
     });
-    if (existingName) {
-      throw new APIError(httpStatus.CONFLICT, "Category name is already taken");
-    }
   }
 
-  const result = await prisma.category.update({
-    where: { id: id },
+  if (category) {
+    andConditions.push({
+      category: { name: category },
+    });
+  }
+
+  if (published !== undefined) {
+    andConditions.push({
+      published: published,
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.BlogWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.blog.findMany({
+    where: whereConditions,
+    skip,
+    take: limit,
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : { createdAt: "desc" },
+    include: {
+      category: true,
+    },
+  });
+
+  const total = await prisma.blog.count({
+    where: whereConditions,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
+const getBlogById = async (blogId: string): Promise<Blog | null> => {
+  const result = await prisma.blog.findUnique({
+    where: {
+      id: blogId,
+    },
+    include: {
+      category: true,
+    },
+  });
+
+  return result;
+};
+
+const createBlog = async (blogData: Blog) => {
+  const { categoryId, ...data } = blogData;
+  const result = await prisma.blog.create({
     data: {
-      name: name || existingCategory.name,
-    },
-    select: {
-      id: true,
-      name: true,
-      createdAt: true,
-      updatedAt: true,
+      ...data,
+      category: {
+        connect: { id: categoryId },
+      },
     },
   });
-
   return result;
 };
 
-// Service to delete a  specific category
-const deleteCategory = async (id: string) => {
-  const result = await prisma.category.delete({
-    where: { id: id },
-    select: {
-      id: true,
-      name: true,
+const updateBlog = async (blogId: string, blogData: Partial<Blog>) => {
+  const { categoryId, ...data } = blogData;
+  const result = await prisma.blog.update({
+    where: {
+      id: blogId,
+    },
+    data: {
+      ...data,
+      category: {
+        connect: { id: categoryId },
+      },
     },
   });
-
   return result;
 };
 
-export const categoryServices = {
-  createCategory,
-  getAllCategories,
-  updateCategory,
-  deleteCategory,
+const deleteBlog = async (blogId: string) => {
+  const result = await prisma.blog.delete({
+    where: {
+      id: blogId,
+    },
+  });
+  return result;
+};
+
+export const blogServices = {
+  getBlogs,
+  getBlogById,
+  createBlog,
+  updateBlog,
+  deleteBlog,
 };
