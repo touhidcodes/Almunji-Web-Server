@@ -2,8 +2,4 @@
 export const blogSearchableFields: string[] = ["title", "category"];
 
 // for all filtering
-export const blogFilterableFields: string[] = [
-  "category",
-  "featured",
-  "searchTerm",
-];
+export const blogFilterableFields: string[] = ["featured", "searchTerm"];

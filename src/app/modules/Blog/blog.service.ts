@@ -12,15 +12,9 @@ const getBlogs = async (params: any, options: TPaginationOptions) => {
   if (searchTerm) {
     andConditions.push({
       OR: [
-        { title: { contains: searchTerm, mode: "insensitive" } },
-        { content: { contains: searchTerm, mode: "insensitive" } },
+        { title: { contains: searchTerm, mode: "insensitive" } as any },
+        { content: { contains: searchTerm, mode: "insensitive" } as any },
       ],
-    });
-  }
-
-  if (category) {
-    andConditions.push({
-      category: { name: category },
     });
   }
 
@@ -51,9 +45,6 @@ const getBlogs = async (params: any, options: TPaginationOptions) => {
       options.sortBy && options.sortOrder
         ? { [options.sortBy]: options.sortOrder }
         : { createdAt: "desc" },
-    include: {
-      category: true,
-    },
   });
 
   const total = await prisma.blog.count({
@@ -75,39 +66,24 @@ const getBlogById = async (blogId: string): Promise<Blog | null> => {
     where: {
       id: blogId,
     },
-    include: {
-      category: true,
-    },
   });
 
   return result;
 };
 
 const createBlog = async (blogData: Blog) => {
-  const { categoryId, ...data } = blogData;
   const result = await prisma.blog.create({
-    data: {
-      ...data,
-      category: {
-        connect: { id: categoryId },
-      },
-    },
+    data: blogData,
   });
   return result;
 };
 
 const updateBlog = async (blogId: string, blogData: Partial<Blog>) => {
-  const { categoryId, ...data } = blogData;
   const result = await prisma.blog.update({
     where: {
       id: blogId,
     },
-    data: {
-      ...data,
-      category: {
-        connect: { id: categoryId },
-      },
-    },
+    data: blogData,
   });
   return result;
 };
