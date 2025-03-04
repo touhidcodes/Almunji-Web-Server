@@ -5,6 +5,7 @@ import { categoryRoutes } from "../modules/Category/category.routes";
 import { bookRoutes } from "../modules/Book/book.routes";
 import { dictionaryRoutes } from "../modules/Dictionary/dictionary.routes";
 import { uploadRoutes } from "../modules/Upload/upload.routes";
+import { blogRoutes } from "../modules/Blog/blog.routes";
 
 const router = express.Router();
 
@@ -28,6 +29,10 @@ const moduleRoutes = [
   {
     path: "/dictionary",
     route: dictionaryRoutes,
+  },
+  {
+    path: "/blog",
+    route: blogRoutes,
   },
   {
     path: "/upload",
