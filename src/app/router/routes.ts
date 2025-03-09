@@ -6,6 +6,7 @@ import { bookRoutes } from "../modules/Book/book.routes";
 import { dictionaryRoutes } from "../modules/Dictionary/dictionary.routes";
 import { uploadRoutes } from "../modules/Upload/upload.routes";
 import { blogRoutes } from "../modules/Blog/blog.routes";
+import { duaRoutes } from "../modules/Dua/dua.routes";
 
 const router = express.Router();
 
@@ -33,6 +34,10 @@ const moduleRoutes = [
   {
     path: "/blog",
     route: blogRoutes,
+  },
+  {
+    path: "/dua",
+    route: duaRoutes,
   },
   {
     path: "/upload",
