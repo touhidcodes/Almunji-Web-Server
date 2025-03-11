@@ -1,6 +1,5 @@
 import express from "express";
-import { duaValidationSchemas } from "./dua.validation";
-import { duaControllers } from "./dua.controller";
+
 import validateRequest from "../../middlewares/validateRequest";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
