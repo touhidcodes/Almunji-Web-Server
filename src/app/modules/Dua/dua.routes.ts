@@ -1,34 +1,34 @@
 import express from "express";
-import { blogValidationSchemas } from "./blog.validation";
-import { blogControllers } from "./blog.controller";
+import { duaValidationSchemas } from "./dua.validation";
+import { duaControllers } from "./dua.controller";
 import validateRequest from "../../middlewares/validateRequest";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-router.get("/all", blogControllers.getBlogs);
+router.get("/all", duaControllers.getDuas);
 
 router.post(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(blogValidationSchemas.createBlogSchema),
-  blogControllers.createBlog
+  validateRequest(duaValidationSchemas.createDuaSchema),
+  duaControllers.createDua
 );
 
-router.get("/:blogId", blogControllers.getBlogById);
+router.get("/:duaId", duaControllers.getDuaById);
 
 router.put(
-  "/:blogId",
+  "/:duaId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(blogValidationSchemas.updateBlogSchema),
-  blogControllers.updateBlog
+  validateRequest(duaValidationSchemas.updateDuaSchema),
+  duaControllers.updateDua
 );
 
 router.delete(
-  "/:blogId",
+  "/:duaId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  blogControllers.deleteBlog
+  duaControllers.deleteDua
 );
 
 export const duaRoutes = router;
