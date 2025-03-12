@@ -1,44 +1,12 @@
-import { Prisma, Blog } from "@prisma/client";
+import { Dua } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 
-const getBlogs = async (params: any, options: TPaginationOptions) => {
+const getDuas = async (options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, category, published, ...filterData } = params;
 
-  const andConditions: Prisma.BlogWhereInput[] = [];
-
-  if (searchTerm) {
-    andConditions.push({
-      OR: [
-        { title: { contains: searchTerm, mode: "insensitive" } as any },
-        { content: { contains: searchTerm, mode: "insensitive" } as any },
-      ],
-    });
-  }
-
-  if (published !== undefined) {
-    andConditions.push({
-      published: published,
-    });
-  }
-
-  if (Object.keys(filterData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
-        [key]: {
-          equals: (filterData as any)[key],
-        },
-      })),
-    });
-  }
-
-  const whereConditions: Prisma.BlogWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
-
-  const result = await prisma.blog.findMany({
-    where: whereConditions,
+  const result = await prisma.dua.findMany({
     skip,
     take: limit,
     orderBy:
@@ -47,9 +15,7 @@ const getBlogs = async (params: any, options: TPaginationOptions) => {
         : { createdAt: "desc" },
   });
 
-  const total = await prisma.blog.count({
-    where: whereConditions,
-  });
+  const total = await prisma.dua.count();
 
   return {
     meta: {
@@ -61,46 +27,41 @@ const getBlogs = async (params: any, options: TPaginationOptions) => {
   };
 };
 
-const getBlogById = async (blogId: string): Promise<Blog | null> => {
-  const result = await prisma.blog.findUnique({
+const getDuaById = async (duaId: string): Promise<Dua | null> => {
+  return await prisma.dua.findUnique({
     where: {
-      id: blogId,
+      id: duaId,
     },
   });
-
-  return result;
 };
 
-const createBlog = async (blogData: Blog) => {
-  const result = await prisma.blog.create({
-    data: blogData,
+const createDua = async (duaData: Dua) => {
+  return await prisma.dua.create({
+    data: duaData,
   });
-  return result;
 };
 
-const updateBlog = async (blogId: string, blogData: Partial<Blog>) => {
-  const result = await prisma.blog.update({
+const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
+  return await prisma.dua.update({
     where: {
-      id: blogId,
+      id: duaId,
     },
-    data: blogData,
+    data: duaData,
   });
-  return result;
 };
 
-const deleteBlog = async (blogId: string) => {
-  const result = await prisma.blog.delete({
+const deleteDua = async (duaId: string) => {
+  return await prisma.dua.delete({
     where: {
-      id: blogId,
+      id: duaId,
     },
   });
-  return result;
 };
 
-export const blogServices = {
-  getBlogs,
-  getBlogById,
-  createBlog,
-  updateBlog,
-  deleteBlog,
+export const duaServices = {
+  getDuas,
+  getDuaById,
+  createDua,
+  updateDua,
+  deleteDua,
 };
