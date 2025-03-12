@@ -1,25 +1,26 @@
 import { z } from "zod";
 
-const createBlogSchema = z.object({
+const createDuaSchema = z.object({
   body: z.object({
-    title: z.string().min(1, "Title is required"),
-    thumbnail: z.string().optional(),
-    content: z.string().min(1, "Content is required"),
-    categoryId: z.string().min(1, "Category ID is required"),
+    name: z.string().min(1, "Name is required"),
+    arabicText: z.string().min(1, "Arabic text is required"),
+    transliteration: z.string().optional(),
+    translation: z.string().min(1, "Translation is required"),
+    reference: z.string().optional(),
   }),
 });
 
-const updateBlogSchema = z.object({
+const updateDuaSchema = z.object({
   body: z.object({
-    title: z.string().optional(),
-    thumbnail: z.string().optional(),
-    content: z.string().optional(),
-    categoryId: z.string().optional(),
-    published: z.boolean().optional(),
+    name: z.string().optional(),
+    arabicText: z.string().optional(),
+    transliteration: z.string().optional(),
+    translation: z.string().optional(),
+    reference: z.string().optional(),
   }),
 });
 
-export const blogValidationSchemas = {
-  createBlogSchema,
-  updateBlogSchema,
+export const duaValidationSchemas = {
+  createDuaSchema,
+  updateDuaSchema,
 };

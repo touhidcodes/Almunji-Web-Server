@@ -2,8 +2,8 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import auth from "../../middlewares/auth";
 import { UserRole } from "@prisma/client";
-import { duaControllers } from "../../controllers/dua.controller";
-import { duaValidationSchemas } from "../../validations/dua.validation";
+import { duaControllers } from "./dua.conteoller";
+import { duaValidationSchemas } from "./dua.validation";
 
 const router = express.Router();
 
