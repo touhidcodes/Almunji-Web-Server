@@ -101,6 +101,8 @@ model Dua {
   reference       String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@map("duas")
 }
 
 enum Status {
