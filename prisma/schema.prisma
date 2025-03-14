@@ -99,6 +99,7 @@ model Dua {
   transliteration String?
   translation     String
   reference       String?
+  isDeleted       Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

@@ -7,6 +7,9 @@ const getDuas = async (options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
 
   const result = await prisma.dua.findMany({
+    where: {
+      isDeleted: false,
+    },
     skip,
     take: limit,
     orderBy:
@@ -15,7 +18,11 @@ const getDuas = async (options: TPaginationOptions) => {
         : { createdAt: "desc" },
   });
 
-  const total = await prisma.dua.count();
+  const total = await prisma.dua.count({
+    where: {
+      isDeleted: false,
+    },
+  });
 
   return {
     meta: {
@@ -27,10 +34,11 @@ const getDuas = async (options: TPaginationOptions) => {
   };
 };
 
-const getDuaById = async (duaId: string): Promise<Dua | null> => {
+const getDuaById = async (duaId: string) => {
   return await prisma.dua.findUnique({
     where: {
       id: duaId,
+      isDeleted: false,
     },
   });
 };
@@ -45,15 +53,19 @@ const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   return await prisma.dua.update({
     where: {
       id: duaId,
+      isDeleted: false,
     },
     data: duaData,
   });
 };
 
 const deleteDua = async (duaId: string) => {
-  return await prisma.dua.delete({
+  return await prisma.dua.update({
     where: {
       id: duaId,
+    },
+    data: {
+      isDeleted: true,
     },
   });
 };
