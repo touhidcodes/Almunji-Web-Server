@@ -16,7 +16,7 @@ router.get(
 
 // Routes to get all user
 router.get(
-  "/all-users",
+  "/users/all",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   userControllers.getAllUser
 );
@@ -30,7 +30,7 @@ router.get(
 
 // Routes to get user with profile
 router.get(
-  "/user-profile",
+  "/user/profile",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   userControllers.getUserWithProfile
 );
