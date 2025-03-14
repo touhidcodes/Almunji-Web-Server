@@ -37,7 +37,7 @@ router.get(
 
 // Routes to update user
 router.put(
-  "/profile",
+  "/user/profile",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
   validateRequest(userValidationSchema.updateUserSchema),
   userControllers.updateUser
