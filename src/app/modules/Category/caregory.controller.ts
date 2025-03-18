@@ -27,7 +27,7 @@ const getAllCategories = catchAsync(async (req, res) => {
 
 // Controller to update a specific category
 const updateCategory = catchAsync(async (req, res) => {
-  const { categoryId } = req.user;
+  const { categoryId } = req.params;
 
   const result = await categoryServices.updateCategory(categoryId, req.body);
   sendResponse(res, {

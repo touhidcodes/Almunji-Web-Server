@@ -80,8 +80,11 @@ const updateCategory = async (id: string, data: { name: string }) => {
 
 // Service to delete a  specific category
 const deleteCategory = async (id: string) => {
-  const result = await prisma.category.delete({
+  const result = await prisma.category.update({
     where: { id: id },
+    data: {
+      isDeleted: true,
+    },
     select: {
       id: true,
       name: true,

@@ -30,7 +30,7 @@ router.put(
 // Route to delete specific categories
 router.delete(
   "/:categoryId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN),
   categoryControllers.deleteCategory
 );
 

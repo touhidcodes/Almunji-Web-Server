@@ -57,6 +57,7 @@ model Category {
   id        String   @id @default(uuid())
   name      String   @unique
   book      Book[]
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
