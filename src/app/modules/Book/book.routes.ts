@@ -15,9 +15,6 @@ router.post(
   bookControllers.createBook
 );
 
-// Route to get book
-router.get("/", bookControllers.getAllBooks);
-
 // Route to get all book
 router.get("/all", bookControllers.getAllBooks);
 

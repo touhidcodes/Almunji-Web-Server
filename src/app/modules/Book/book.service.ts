@@ -152,6 +152,11 @@ const getSingleBook = async (id: string) => {
       content: true,
       featured: true,
       categoryId: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
       createdAt: true,
       updatedAt: true,
     },
