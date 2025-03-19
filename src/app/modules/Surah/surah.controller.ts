@@ -24,7 +24,7 @@ const getAllSurahs = catchAsync(async (req, res) => {
   const options = queryPickers(req.query, surahSearchableFields);
   const filters = queryPickers(req.query, surahFilterableFields);
 
-  const result = await surahServices.getSurahs(filters, options);
+  const result = await surahServices.getAllSurahs(filters, options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

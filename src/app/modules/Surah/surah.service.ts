@@ -23,7 +23,7 @@ const createSurah = async (data: Surah) => {
 };
 
 // Service to retrieve Surahs with filtering & pagination
-const getSurahs = async (params: any, options: TPaginationOptions) => {
+const getAllSurahs = async (params: any, options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
@@ -63,15 +63,6 @@ const getSurahs = async (params: any, options: TPaginationOptions) => {
   const total = await prisma.surah.count({ where: whereConditions });
 
   return { meta: { page, limit, total }, data: result };
-};
-
-// Service to retrieve all Surahs
-const getAllSurahs = async () => {
-  const result = await prisma.surah.findMany({
-    orderBy: { chapter: "asc" },
-  });
-
-  return result;
 };
 
 // Service to retrieve a Surah by ID
@@ -115,7 +106,6 @@ const deleteSurah = async (id: string) => {
 
 export const surahServices = {
   createSurah,
-  getSurahs,
   getAllSurahs,
   getSurahById,
   updateSurah,
