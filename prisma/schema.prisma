@@ -107,6 +107,22 @@ model Dua {
   @@map("duas")
 }
 
+model Surah {
+  id          String   @id @default(uuid())
+  chapter     Int      @unique
+  totalVerse  Int
+  arabicName  String
+  englishName String
+  banglaName  String?
+  persianName String?
+  history     String?
+  revelation  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("surahs")
+}
+
 enum Status {
   PENDING
   BOOKED
