@@ -126,7 +126,7 @@ model Surah {
 model Ayah {
   id          String   @id @default(uuid())
   surahId     String
-  surah       Surah    @relation(fields: [surahId], references: [id], onDelete: Cascade)
+  surah       Surah    @relation(fields: [surahId], references: [id])
   ayahNumber  Int
   arabicText  String
   banglaText  String?
@@ -142,7 +142,7 @@ model Ayah {
 model Tafsir {
   id        String   @id @default(uuid())
   ayahId    String
-  ayah      Ayah     @relation(fields: [ayahId], references: [id], onDelete: Cascade)
+  ayah      Ayah     @relation(fields: [ayahId], references: [id])
   heading   String?
   text      String
   scholar   String?
