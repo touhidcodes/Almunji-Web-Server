@@ -3,6 +3,7 @@ import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import auth from "../../middlewares/auth";
 import { surahControllers } from "./surah.controller";
+import { surahValidationSchema } from "./surah.validation";
 
 const router = express.Router();
 
