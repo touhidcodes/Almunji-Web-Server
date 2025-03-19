@@ -110,17 +110,32 @@ model Dua {
 model Surah {
   id          String   @id @default(uuid())
   chapter     Int      @unique
-  totalVerse  Int
+  totalAyah   Int
   arabicName  String
   englishName String
   banglaName  String?
-  persianName String?
   history     String?
   revelation  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  ayah        Ayah[]
 
   @@map("surahs")
+}
+
+model Ayah {
+  id          String   @id @default(uuid())
+  surahId     String
+  surah       Surah    @relation(fields: [surahId], references: [id], onDelete: Cascade)
+  ayahNumber  Int
+  arabicText  String
+  banglaText  String?
+  englishText String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([surahId, ayahNumber])
+  @@map("ayahs")
 }
 
 enum Status {
@@ -132,6 +147,7 @@ enum Status {
 enum UserRole {
   SUPERADMIN
   ADMIN
+  MODERATOR
   USER
 }
 
