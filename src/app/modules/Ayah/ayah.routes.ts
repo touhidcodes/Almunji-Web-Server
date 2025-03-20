@@ -1,0 +1,37 @@
+import express from "express";
+import validateRequest from "../../middlewares/validateRequest";
+import { UserRole } from "@prisma/client";
+import auth from "../../middlewares/auth";
+
+const router = express.Router();
+
+// Route to create a new Ayah
+router.post(
+  "/",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  validateRequest(ayahValidationSchema.createAyahSchema),
+  ayahControllers.createAyah
+);
+
+// Route to get all Ayahs of a specific Surah
+router.get("/surah/:surahId", ayahControllers.getAyahsBySurah);
+
+// Route to get a specific Ayah by ID
+router.get("/:ayahId", ayahControllers.getAyahById);
+
+// Route to update an existing Ayah by ID
+router.put(
+  "/:ayahId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  validateRequest(ayahValidationSchema.updateAyahSchema),
+  ayahControllers.updateAyah
+);
+
+// Route to delete an Ayah by ID
+router.delete(
+  "/:ayahId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  ayahControllers.deleteAyah
+);
+
+export const ayahRoutes = router;
