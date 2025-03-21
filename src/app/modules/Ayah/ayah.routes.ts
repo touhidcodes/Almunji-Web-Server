@@ -3,6 +3,7 @@ import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import auth from "../../middlewares/auth";
 import { ayahValidationSchema } from "./ayah.validation";
+import { ayahControllers } from "./ayah.controller";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.post(
 );
 
 // Route to get all Ayahs of a specific Surah
-router.get("/surah/:surahId", ayahControllers.getAyahsBySurah);
+router.get("/surah/:surahId", ayahControllers.getAyahById);
 
 // Route to get a specific Ayah by ID
 router.get("/:ayahId", ayahControllers.getAyahById);
