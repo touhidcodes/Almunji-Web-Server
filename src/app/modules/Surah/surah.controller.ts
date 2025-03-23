@@ -18,6 +18,16 @@ const createSurah = catchAsync(async (req, res) => {
     data: result,
   });
 });
+// Controller to create a new Surah
+const createSingleSurah = catchAsync(async (req, res) => {
+  const result = await surahServices.createSurah(req.body);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Surah created successfully!",
+    data: result,
+  });
+});
 
 // Controller to get all Surahs with filtering & pagination
 const getAllSurahs = catchAsync(async (req, res) => {
