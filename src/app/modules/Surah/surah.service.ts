@@ -8,7 +8,7 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 // Service to create a new Surah
 const createSurah = async (data: Surah) => {
   const existingSurah = await prisma.surah.findUnique({
-    where: { chapter: data.chapter },
+    where: { chapter: data?.chapter },
   });
 
   if (existingSurah) {

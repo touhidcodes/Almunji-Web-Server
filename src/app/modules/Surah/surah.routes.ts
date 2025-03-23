@@ -10,7 +10,7 @@ const router = express.Router();
 // Route to create a new Surah
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(surahValidationSchema.createSurahSchema),
   surahControllers.createSurah
 );

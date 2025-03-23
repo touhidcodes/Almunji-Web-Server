@@ -7,6 +7,7 @@ import { dictionaryRoutes } from "../modules/Dictionary/dictionary.routes";
 import { uploadRoutes } from "../modules/Upload/upload.routes";
 import { blogRoutes } from "../modules/Blog/blog.routes";
 import { duaRoutes } from "../modules/Dua/dua.routes";
+import { surahRoutes } from "../modules/Surah/surah.routes";
 
 const router = express.Router();
 
@@ -38,6 +39,10 @@ const moduleRoutes = [
   {
     path: "/dua",
     route: duaRoutes,
+  },
+  {
+    path: "/surah",
+    route: surahRoutes,
   },
   {
     path: "/upload",
