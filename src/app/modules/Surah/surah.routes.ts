@@ -24,7 +24,7 @@ router.get("/:surahId", surahControllers.getSurahById);
 // Route to update an existing Surah by ID
 router.put(
   "/:surahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(surahValidationSchema.updateSurahSchema),
   surahControllers.updateSurah
 );
