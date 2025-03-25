@@ -7,6 +7,24 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 
 // Service to create a new Ayah
 const createAyah = async (data: Ayah) => {
+  // Fetch the surah to get the total ayah count
+  const surah = await prisma.surah.findUnique({
+    where: { id: data.surahId },
+    select: { totalAyah: true },
+  });
+
+  if (!surah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Surah not found");
+  }
+
+  // Validate ayahNumber does not exceed totalAyah
+  if (data.ayahNumber > surah.totalAyah) {
+    throw new APIError(
+      httpStatus.BAD_REQUEST,
+      `Ayah number exceeds the total number of ayahs (${surah.totalAyah}) in this Surah`
+    );
+  }
+
   const existingAyah = await prisma.ayah.findUnique({
     where: {
       surahId_ayahNumber: {

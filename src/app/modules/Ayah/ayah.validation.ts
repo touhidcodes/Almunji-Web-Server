@@ -21,6 +21,7 @@ const updateAyahSchema = z.object({
     surahId: z.string().optional(),
     ayahNumber: z.number().int().positive().optional(),
     arabicText: z.string().optional(),
+    pronunciation: z.string().optional(),
     banglaText: z.string().optional(),
     englishText: z.string().optional(),
   }),
