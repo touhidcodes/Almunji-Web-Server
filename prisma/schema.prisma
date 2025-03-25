@@ -124,16 +124,17 @@ model Surah {
 }
 
 model Ayah {
-  id          String   @id @default(uuid())
-  surahId     String
-  surah       Surah    @relation(fields: [surahId], references: [id])
-  ayahNumber  Int
-  arabicText  String
-  banglaText  String?
-  englishText String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  tafsir      Tafsir[]
+  id            String   @id @default(uuid())
+  surahId       String
+  surah         Surah    @relation(fields: [surahId], references: [id])
+  ayahNumber    Int
+  arabicText    String
+  pronanciation String?
+  banglaText    String?
+  englishText   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  tafsir        Tafsir[]
 
   @@unique([surahId, ayahNumber])
   @@map("ayahs")
