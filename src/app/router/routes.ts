@@ -9,6 +9,7 @@ import { blogRoutes } from "../modules/Blog/blog.routes";
 import { duaRoutes } from "../modules/Dua/dua.routes";
 import { surahRoutes } from "../modules/Surah/surah.routes";
 import { ayahRoutes } from "../modules/Ayah/ayah.routes";
+import { tafsirRoutes } from "../modules/Tafsir/tafsir.routes";
 
 const router = express.Router();
 
@@ -48,6 +49,10 @@ const moduleRoutes = [
   {
     path: "/ayah",
     route: ayahRoutes,
+  },
+  {
+    path: "/tafsir",
+    route: tafsirRoutes,
   },
   {
     path: "/upload",
