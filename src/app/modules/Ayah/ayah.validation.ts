@@ -9,6 +9,7 @@ const createAyahSchema = z.object({
       .int()
       .positive(),
     arabicText: z.string({ required_error: "Arabic text is required" }),
+    pronunciation: z.string().optional(),
     banglaText: z.string().optional(),
     englishText: z.string().optional(),
   }),

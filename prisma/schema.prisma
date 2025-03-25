@@ -129,7 +129,7 @@ model Ayah {
   surah         Surah    @relation(fields: [surahId], references: [id])
   ayahNumber    Int
   arabicText    String
-  pronanciation String?
+  pronunciation String?
   banglaText    String?
   englishText   String?
   createdAt     DateTime @default(now())
