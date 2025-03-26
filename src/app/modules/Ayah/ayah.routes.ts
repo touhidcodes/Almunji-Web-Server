@@ -15,9 +15,6 @@ router.post(
   ayahControllers.createAyah
 );
 
-// Route to get all Ayahs of a specific Surah
-router.get("/surah/:surahId", ayahControllers.getAyahById);
-
 // Route to get a specific Ayah by ID
 router.get("/:ayahId", ayahControllers.getAyahById);
 

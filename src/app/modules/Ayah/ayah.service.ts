@@ -94,7 +94,6 @@ const getAllAyahs = async (params: any, options: TPaginationOptions) => {
 const getAyahById = async (id: string) => {
   const result = await prisma.ayah.findUniqueOrThrow({
     where: { id },
-    include: { tafsir: true, surah: true }, // Include Tafsir and Surah details
   });
 
   return result;
