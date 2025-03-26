@@ -21,7 +21,7 @@ router.get("/:ayahId", ayahControllers.getAyahById);
 // Route to update an existing Ayah by ID
 router.put(
   "/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(ayahValidationSchema.updateAyahSchema),
   ayahControllers.updateAyah
 );
