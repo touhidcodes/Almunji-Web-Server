@@ -10,7 +10,7 @@ const router = express.Router();
 // Route to create a new Tafsir
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(tafsirValidationSchema.createTafsirSchema),
   tafsirControllers.createTafsir
 );
