@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { tafsirServices } from "./tafsir.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
 
 // Controller to create a new Tafsir
-const createTafsir = async (req: Request, res: Response) => {
-  const tafsirData = req.body;
-  const result = await tafsirServices.createTafsir(tafsirData);
+const createTafsir = catchAsync(async (req, res) => {
+  const result = await tafsirServices.createTafsir(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -14,7 +14,7 @@ const createTafsir = async (req: Request, res: Response) => {
     message: "Tafsir created successfully",
     data: result,
   });
-};
+});
 
 // Controller to get all Tafsirs of a specific Ayah
 const getTafsirsByAyah = async (req: Request, res: Response) => {

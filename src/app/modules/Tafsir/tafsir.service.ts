@@ -1,16 +1,17 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Tafsir } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 
 // Service to create a new Tafsir
-const createTafsir = async (data: Prisma.TafsirCreateInput) => {
-  // Check if the Ayah exists before adding Tafsir
-  const existingAyah = await prisma.ayah.findUnique({
+const createTafsir = async (data: Tafsir) => {
+  // Check if ayahId exists
+  const ayah = await prisma.ayah.findFirst({
     where: { id: data.ayahId },
   });
 
-  if (!existingAyah) {
+  if (!ayah) {
+    console.error("Ayah not found with ID:", data.ayahId);
     throw new APIError(httpStatus.NOT_FOUND, "Ayah not found");
   }
 
