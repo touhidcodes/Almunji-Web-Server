@@ -78,7 +78,15 @@ const getAllAyahs = async (params: any, options: TPaginationOptions) => {
     where: whereConditions,
     skip,
     take: limit,
-    include: { tafsir: true, surah: true }, // Include Tafsir and Surah relations
+    include: {
+      surah: {
+        select: {
+          arabicName: true,
+          banglaName: true,
+          englishName: true,
+        },
+      },
+    },
     orderBy:
       options.sortBy && options.sortOrder
         ? { [options.sortBy]: options.sortOrder }

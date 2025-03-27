@@ -15,6 +15,9 @@ router.post(
   ayahControllers.createAyah
 );
 
+// Route to get a all Ayah
+router.get("/all", ayahControllers.getAllAyahs);
+
 // Route to get a specific Ayah by ID
 router.get("/:ayahId", ayahControllers.getAyahById);
 
