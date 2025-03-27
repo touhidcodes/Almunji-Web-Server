@@ -108,27 +108,26 @@ const getAyahById = async (id: string) => {
 };
 
 // Service to update an Ayah
-const updateAyah = async (id: string, data: Partial<Ayah>) => {
+const updateAyah = async (
+  id: string,
+  data: Omit<Partial<Ayah>, "surahId" | "ayahNumber">
+) => {
+  // Fetch the existing Ayah
   const existingAyah = await prisma.ayah.findUniqueOrThrow({ where: { id } });
 
-  if (data.ayahNumber && data.ayahNumber !== existingAyah.ayahNumber) {
-    const ayahConflict = await prisma.ayah.findUnique({
-      where: {
-        surahId_ayahNumber: {
-          surahId: existingAyah.surahId,
-          ayahNumber: data.ayahNumber,
-        },
-      },
-    });
-
-    if (ayahConflict) {
-      throw new APIError(
-        httpStatus.CONFLICT,
-        "Ayah number already exists in this Surah"
-      );
-    }
+  if (!existingAyah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Ayah not found");
   }
 
+  // Ensure surahId and ayahNumber are not modified
+  if ("surahId" in data || "ayahNumber" in data) {
+    throw new APIError(
+      httpStatus.BAD_REQUEST,
+      "Modification of surahId and ayahNumber is not allowed"
+    );
+  }
+
+  // Perform update with only allowed fields
   const result = await prisma.ayah.update({
     where: { id },
     data,
