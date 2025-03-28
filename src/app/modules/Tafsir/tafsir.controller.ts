@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { tafsirServices } from "./tafsir.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
