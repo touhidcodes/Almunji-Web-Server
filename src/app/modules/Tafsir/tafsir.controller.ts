@@ -17,7 +17,7 @@ const createTafsir = catchAsync(async (req, res) => {
 });
 
 // Controller to get all Tafsirs of a specific Ayah
-const getTafsirsByAyah = async (req: Request, res: Response) => {
+const getTafsirsByAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
   const result = await tafsirServices.getTafsirsByAyah(ayahId);
 
@@ -27,10 +27,10 @@ const getTafsirsByAyah = async (req: Request, res: Response) => {
     message: "Tafsirs retrieved successfully",
     data: result,
   });
-};
+});
 
 // Controller to get a specific Tafsir by ID
-const getTafsirById = async (req: Request, res: Response) => {
+const getTafsirById = catchAsync(async (req, res) => {
   const { tafsirId } = req.params;
   const result = await tafsirServices.getTafsirById(tafsirId);
 
@@ -40,10 +40,10 @@ const getTafsirById = async (req: Request, res: Response) => {
     message: "Tafsir retrieved successfully",
     data: result,
   });
-};
+});
 
 // Controller to update a Tafsir
-const updateTafsir = async (req: Request, res: Response) => {
+const updateTafsir = catchAsync(async (req, res) => {
   const { tafsirId } = req.params;
   const tafsirData = req.body;
   const result = await tafsirServices.updateTafsir(tafsirId, tafsirData);
@@ -54,10 +54,10 @@ const updateTafsir = async (req: Request, res: Response) => {
     message: "Tafsir updated successfully",
     data: result,
   });
-};
+});
 
 // Controller to delete a Tafsir
-const deleteTafsir = async (req: Request, res: Response) => {
+const deleteTafsir = catchAsync(async (req, res) => {
   const { tafsirId } = req.params;
   const result = await tafsirServices.deleteTafsir(tafsirId);
 
@@ -67,7 +67,7 @@ const deleteTafsir = async (req: Request, res: Response) => {
     message: "Tafsir deleted successfully",
     data: result,
   });
-};
+});
 
 export const tafsirControllers = {
   createTafsir,
