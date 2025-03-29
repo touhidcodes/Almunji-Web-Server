@@ -21,9 +21,6 @@ router.get("/ayah/:ayahId", tafsirControllers.getTafsirsByAyah);
 // Route to get a specific Tafsir by ID
 router.get("/:tafsirId", tafsirControllers.getTafsirById);
 
-// Route to get a specific Tafsir by  surah
-router.get("/:surahId", tafsirControllers.getTafsirById);
-
 // Route to update an existing Tafsir by ID
 router.put(
   "/:tafsirId",
