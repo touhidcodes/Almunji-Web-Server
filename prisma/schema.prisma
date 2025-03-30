@@ -123,10 +123,25 @@ model Surah {
   @@map("surahs")
 }
 
+model Para {
+  id          String   @id @default(uuid())
+  paraNumber  Int      @unique
+  englishName String
+  arabicName  String?
+  banglaName  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  ayah        Ayah[]
+
+  @@map("paras")
+}
+
 model Ayah {
   id            String   @id @default(uuid())
   surahId       String
   surah         Surah    @relation(fields: [surahId], references: [id])
+  paraId        String
+  para          Para     @relation(fields: [paraId], references: [id])
   ayahNumber    Int
   arabicText    String
   pronunciation String?
