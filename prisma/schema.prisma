@@ -151,7 +151,7 @@ model Ayah {
   updatedAt     DateTime @updatedAt
   tafsir        Tafsir[]
 
-  @@unique([surahId, ayahNumber])
+  @@unique([surahId, paraId, ayahNumber])
   @@map("ayahs")
 }
 
