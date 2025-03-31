@@ -2,8 +2,6 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import auth from "../../middlewares/auth";
-import { tafsirControllers } from "./tafsir.controller";
-import { tafsirValidationSchema } from "./tafsir.validation";
 
 const router = express.Router();
 
@@ -36,4 +34,4 @@ router.delete(
   tafsirControllers.deleteTafsir
 );
 
-export const tafsirRoutes = router;
+export const paraRoutes = router;
