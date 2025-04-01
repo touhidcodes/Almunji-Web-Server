@@ -2,36 +2,38 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import auth from "../../middlewares/auth";
+import { paraControllers } from "../../controllers/paraControllers";
+import { paraValidationSchema } from "../../validations/paraValidationSchema";
 
 const router = express.Router();
 
-// Route to create a new Tafsir
+// Route to create a new Para
 router.post(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
-  validateRequest(tafsirValidationSchema.createTafsirSchema),
-  tafsirControllers.createTafsir
+  validateRequest(paraValidationSchema.createParaSchema),
+  paraControllers.createPara
 );
 
-// Route to get all Tafsirs of a specific Ayah
-router.get("/ayah/:ayahId", tafsirControllers.getTafsirsByAyah);
+// Route to get all Paras
+router.get("/", paraControllers.getAllParas);
 
-// Route to get a specific Tafsir by ID
-router.get("/:tafsirId", tafsirControllers.getTafsirById);
+// Route to get a specific Para by ID
+router.get("/:paraId", paraControllers.getParaById);
 
-// Route to update an existing Tafsir by ID
+// Route to update an existing Para by ID
 router.put(
-  "/:tafsirId",
+  "/:paraId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(tafsirValidationSchema.updateTafsirSchema),
-  tafsirControllers.updateTafsir
+  validateRequest(paraValidationSchema.updateParaSchema),
+  paraControllers.updatePara
 );
 
-// Route to delete a Tafsir by ID
+// Route to delete a Para by ID
 router.delete(
-  "/:tafsirId",
+  "/:paraId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  tafsirControllers.deleteTafsir
+  paraControllers.deletePara
 );
 
 export const paraRoutes = router;
