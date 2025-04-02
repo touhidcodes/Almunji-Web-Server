@@ -1,77 +1,76 @@
-import { tafsirServices } from "./tafsir.service";
+import { paraServices } from "./para.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 
-// Controller to create a new Tafsir
-const createTafsir = catchAsync(async (req, res) => {
-  const result = await tafsirServices.createTafsir(req.body);
+// Controller to create a new Para
+const createPara = catchAsync(async (req, res) => {
+  const result = await paraServices.createPara(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsir created successfully",
+    message: "Para created successfully",
     data: result,
   });
 });
 
-// Controller to get all Tafsirs of a specific Ayah
-const getTafsirsByAyah = catchAsync(async (req, res) => {
-  const { ayahId } = req.params;
-  const result = await tafsirServices.getTafsirsByAyah(ayahId);
+// Controller to get all Paras
+const getAllParas = catchAsync(async (req, res) => {
+  const result = await paraServices.getAllParas();
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsirs retrieved successfully",
+    message: "Paras retrieved successfully",
     data: result,
   });
 });
 
-// Controller to get a specific Tafsir by ID
-const getTafsirById = catchAsync(async (req, res) => {
-  const { tafsirId } = req.params;
-  const result = await tafsirServices.getTafsirById(tafsirId);
+// Controller to get a specific Para by ID
+const getParaById = catchAsync(async (req, res) => {
+  const { paraId } = req.params;
+  const result = await paraServices.getParaById(paraId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsir retrieved successfully",
+    message: "Para retrieved successfully",
     data: result,
   });
 });
 
-// Controller to update a Tafsir
-const updateTafsir = catchAsync(async (req, res) => {
-  const { tafsirId } = req.params;
-  const tafsirData = req.body;
-  const result = await tafsirServices.updateTafsir(tafsirId, tafsirData);
+// Controller to update a Para
+const updatePara = catchAsync(async (req, res) => {
+  const { paraId } = req.params;
+  const paraData = req.body;
+  const result = await paraServices.updatePara(paraId, paraData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsir updated successfully",
+    message: "Para updated successfully",
     data: result,
   });
 });
 
-// Controller to delete a Tafsir
-const deleteTafsir = catchAsync(async (req, res) => {
-  const { tafsirId } = req.params;
-  const result = await tafsirServices.deleteTafsir(tafsirId);
+// Controller to delete a Para
+const deletePara = catchAsync(async (req, res) => {
+  const { paraId } = req.params;
+  const result = await paraServices.deletePara(paraId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsir deleted successfully",
+    message: "Para deleted successfully",
     data: result,
   });
 });
 
-export const tafsirControllers = {
-  createTafsir,
-  getTafsirsByAyah,
-  getTafsirById,
-  updateTafsir,
-  deleteTafsir,
+export const paraControllers = {
+  createPara,
+  getAllParas,
+  getParaById,
+  updatePara,
+  deletePara,
 };
