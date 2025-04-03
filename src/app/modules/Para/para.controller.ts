@@ -1,4 +1,3 @@
-import { paraServices } from "./para.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";

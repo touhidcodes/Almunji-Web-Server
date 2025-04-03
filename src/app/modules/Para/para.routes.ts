@@ -2,8 +2,6 @@ import express from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import auth from "../../middlewares/auth";
-import { paraControllers } from "../../controllers/paraControllers";
-import { paraValidationSchema } from "../../validations/paraValidationSchema";
 
 const router = express.Router();
 

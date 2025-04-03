@@ -1,127 +1,97 @@
-import { Prisma, Tafsir } from "@prisma/client";
+import { Prisma, Para } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 
-// Service to create a new Tafsir
-const createTafsir = async (data: Tafsir) => {
-  // Check if ayahId exists
-  const ayah = await prisma.ayah.findFirst({
-    where: { id: data.ayahId },
-  });
-
-  if (!ayah) {
-    console.error("Ayah not found with ID:", data.ayahId);
-    throw new APIError(httpStatus.NOT_FOUND, "Ayah not found");
-  }
-
-  const result = await prisma.tafsir.create({
+// Service to create a new Para
+const createPara = async (data: Para) => {
+  const result = await prisma.para.create({
     data,
+  });
+
+  return result;
+};
+
+// Service to retrieve all Paras
+const getAllParas = async () => {
+  const result = await prisma.para.findMany({
     select: {
       id: true,
-      ayahId: true,
-      heading: true,
-      text: true,
-      scholar: true,
-      reference: true,
-      createdAt: true,
-      updatedAt: true,
+      paraNumber: true,
+      englishName: true,
+      arabicName: true,
+      banglaName: true,
     },
   });
 
   return result;
 };
 
-// Service to retrieve all Tafsirs of a specific Ayah
-const getTafsirsByAyah = async (ayahId: string) => {
-  const result = await prisma.tafsir.findMany({
-    where: { ayahId },
-    select: {
-      id: true,
-      ayahId: true,
-      heading: true,
-      text: true,
-      scholar: true,
-      reference: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-
-  return result;
-};
-
-// Service to retrieve a specific Tafsir by ID
-const getTafsirById = async (id: string) => {
-  const result = await prisma.tafsir.findUniqueOrThrow({
+// Service to retrieve a specific Para by ID
+const getParaById = async (id: string) => {
+  const result = await prisma.para.findUniqueOrThrow({
     where: { id },
     select: {
       id: true,
-      ayahId: true,
-      heading: true,
-      text: true,
-      scholar: true,
-      reference: true,
-      createdAt: true,
-      updatedAt: true,
+      paraNumber: true,
+      englishName: true,
+      arabicName: true,
+      banglaName: true,
     },
   });
 
   return result;
 };
 
-// Service to update a Tafsir
-const updateTafsir = async (
+// Service to update a Para
+const updatePara = async (
   id: string,
-  data: Partial<Prisma.TafsirUpdateInput>
+  data: Partial<Prisma.ParaUpdateInput>
 ) => {
-  const existingTafsir = await prisma.tafsir.findUnique({
+  const existingPara = await prisma.para.findUnique({
     where: { id },
   });
 
-  if (!existingTafsir) {
-    throw new APIError(httpStatus.NOT_FOUND, "Tafsir not found");
+  if (!existingPara) {
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found");
   }
 
-  const result = await prisma.tafsir.update({
+  const result = await prisma.para.update({
     where: { id },
     data,
     select: {
       id: true,
-      ayahId: true,
-      heading: true,
-      text: true,
-      scholar: true,
-      reference: true,
-      createdAt: true,
-      updatedAt: true,
+      paraNumber: true,
+      englishName: true,
+      arabicName: true,
+      banglaName: true,
     },
   });
 
   return result;
 };
 
-// Service to delete a Tafsir
-const deleteTafsir = async (id: string) => {
-  const existingTafsir = await prisma.tafsir.findUnique({
+// Service to delete a Para
+const deletePara = async (id: string) => {
+  const existingPara = await prisma.para.findUnique({
     where: { id },
   });
 
-  if (!existingTafsir) {
-    throw new APIError(httpStatus.NOT_FOUND, "Tafsir not found");
+  if (!existingPara) {
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found");
   }
 
-  await prisma.tafsir.delete({
+  await prisma.para.delete({
     where: { id },
   });
 
-  return { message: "Tafsir deleted successfully" };
+  return { message: "Para deleted successfully" };
 };
 
-export const tafsirServices = {
-  createTafsir,
-  getTafsirsByAyah,
-  getTafsirById,
-  updateTafsir,
-  deleteTafsir,
+export const paraServices = {
+  createPara,
+  getAllParas,
+  getParaById,
+  updatePara,
+  deletePara,
 };
