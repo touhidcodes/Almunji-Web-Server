@@ -72,7 +72,7 @@ model Book {
   content     String
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
-  featured    Boolean
+  featured    Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -142,16 +142,16 @@ model Ayah {
   surah         Surah    @relation(fields: [surahId], references: [id])
   paraId        String
   para          Para     @relation(fields: [paraId], references: [id])
-  ayahNumber    Int
-  arabicText    String
+  number        Int
+  arabic        String
   pronunciation String?
-  banglaText    String?
-  englishText   String?
+  bangla        String?
+  english       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   tafsir        Tafsir[]
 
-  @@unique([surahId, paraId, ayahNumber])
+  @@unique([surahId, paraId, number])
   @@map("ayahs")
 }
 
@@ -159,7 +159,7 @@ model Tafsir {
   id        String   @id @default(uuid())
   ayahId    String
   ayah      Ayah     @relation(fields: [ayahId], references: [id])
-  heading   String?
+  title     String?
   text      String
   scholar   String?
   reference String?
