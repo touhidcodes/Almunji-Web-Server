@@ -64,7 +64,7 @@ CREATE TABLE `books` (
     `cover` VARCHAR(191) NOT NULL,
     `content` VARCHAR(191) NOT NULL,
     `categoryId` VARCHAR(191) NOT NULL,
-    `featured` BOOLEAN NOT NULL,
+    `featured` BOOLEAN NOT NULL DEFAULT true,
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `blogs` (
 CREATE TABLE `duas` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `arabicText` VARCHAR(191) NOT NULL,
+    `arabic` VARCHAR(191) NOT NULL,
     `transliteration` VARCHAR(191) NULL,
     `translation` VARCHAR(191) NOT NULL,
     `reference` VARCHAR(191) NULL,
@@ -107,9 +107,9 @@ CREATE TABLE `surahs` (
     `id` VARCHAR(191) NOT NULL,
     `chapter` INTEGER NOT NULL,
     `totalAyah` INTEGER NOT NULL,
-    `arabicName` VARCHAR(191) NOT NULL,
-    `englishName` VARCHAR(191) NOT NULL,
-    `banglaName` VARCHAR(191) NULL,
+    `arabic` VARCHAR(191) NOT NULL,
+    `english` VARCHAR(191) NOT NULL,
+    `bangla` VARCHAR(191) NULL,
     `history` VARCHAR(191) NULL,
     `revelation` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -122,14 +122,14 @@ CREATE TABLE `surahs` (
 -- CreateTable
 CREATE TABLE `paras` (
     `id` VARCHAR(191) NOT NULL,
-    `paraNumber` INTEGER NOT NULL,
-    `englishName` VARCHAR(191) NOT NULL,
-    `arabicName` VARCHAR(191) NULL,
-    `banglaName` VARCHAR(191) NULL,
+    `number` INTEGER NOT NULL,
+    `english` VARCHAR(191) NOT NULL,
+    `arabic` VARCHAR(191) NULL,
+    `bangla` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `paras_paraNumber_key`(`paraNumber`),
+    UNIQUE INDEX `paras_number_key`(`number`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -138,15 +138,15 @@ CREATE TABLE `ayahs` (
     `id` VARCHAR(191) NOT NULL,
     `surahId` VARCHAR(191) NOT NULL,
     `paraId` VARCHAR(191) NOT NULL,
-    `ayahNumber` INTEGER NOT NULL,
-    `arabicText` VARCHAR(191) NOT NULL,
+    `number` INTEGER NOT NULL,
+    `arabic` VARCHAR(191) NOT NULL,
     `pronunciation` VARCHAR(191) NULL,
-    `banglaText` VARCHAR(191) NULL,
-    `englishText` VARCHAR(191) NULL,
+    `bangla` VARCHAR(191) NULL,
+    `english` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `ayahs_surahId_paraId_ayahNumber_key`(`surahId`, `paraId`, `ayahNumber`),
+    UNIQUE INDEX `ayahs_surahId_paraId_number_key`(`surahId`, `paraId`, `number`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -154,7 +154,7 @@ CREATE TABLE `ayahs` (
 CREATE TABLE `tafsirs` (
     `id` VARCHAR(191) NOT NULL,
     `ayahId` VARCHAR(191) NOT NULL,
-    `heading` VARCHAR(191) NULL,
+    `title` VARCHAR(191) NULL,
     `text` VARCHAR(191) NOT NULL,
     `scholar` VARCHAR(191) NULL,
     `reference` VARCHAR(191) NULL,
