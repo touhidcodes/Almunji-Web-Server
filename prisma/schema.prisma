@@ -96,7 +96,7 @@ model Blog {
 model Dua {
   id              String   @id @default(uuid())
   name            String
-  arabicText      String
+  arabic          String
   transliteration String?
   translation     String
   reference       String?
@@ -108,30 +108,30 @@ model Dua {
 }
 
 model Surah {
-  id          String   @id @default(uuid())
-  chapter     Int      @unique
-  totalAyah   Int
-  arabicName  String
-  englishName String
-  banglaName  String?
-  history     String?
-  revelation  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  ayah        Ayah[]
+  id         String   @id @default(uuid())
+  chapter    Int      @unique
+  totalAyah  Int
+  arabic     String
+  english    String
+  bangla     String?
+  history    String?
+  revelation String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  ayah       Ayah[]
 
   @@map("surahs")
 }
 
 model Para {
-  id          String   @id @default(uuid())
-  paraNumber  Int      @unique
-  englishName String
-  arabicName  String?
-  banglaName  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  ayah        Ayah[]
+  id        String   @id @default(uuid())
+  number    Int      @unique
+  english   String
+  arabic    String?
+  bangla    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ayah      Ayah[]
 
   @@map("paras")
 }
