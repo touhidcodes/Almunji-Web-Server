@@ -32,9 +32,9 @@ const getAllSurahs = async (params: any, options: TPaginationOptions) => {
   if (searchTerm) {
     andConditions.push({
       OR: [
-        { arabicName: { contains: searchTerm, mode: "insensitive" } as any },
-        { englishName: { contains: searchTerm, mode: "insensitive" } as any },
-        { banglaName: { contains: searchTerm, mode: "insensitive" } as any },
+        { arabic: { contains: searchTerm, mode: "insensitive" } as any },
+        { english: { contains: searchTerm, mode: "insensitive" } as any },
+        { bangla: { contains: searchTerm, mode: "insensitive" } as any },
       ],
     });
   }
