@@ -17,10 +17,10 @@ const getAllParas = async () => {
   const result = await prisma.para.findMany({
     select: {
       id: true,
-      paraNumber: true,
-      englishName: true,
-      arabicName: true,
-      banglaName: true,
+      number: true,
+      english: true,
+      arabic: true,
+      bangla: true,
     },
   });
 
@@ -33,10 +33,10 @@ const getParaById = async (id: string) => {
     where: { id },
     select: {
       id: true,
-      paraNumber: true,
-      englishName: true,
-      arabicName: true,
-      banglaName: true,
+      number: true,
+      english: true,
+      arabic: true,
+      bangla: true,
     },
   });
 
@@ -61,10 +61,10 @@ const updatePara = async (
     data,
     select: {
       id: true,
-      paraNumber: true,
-      englishName: true,
-      arabicName: true,
-      banglaName: true,
+      number: true,
+      english: true,
+      arabic: true,
+      bangla: true,
     },
   });
 
