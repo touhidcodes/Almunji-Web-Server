@@ -20,7 +20,7 @@ const createTafsir = async (data: Tafsir) => {
     select: {
       id: true,
       ayahId: true,
-      heading: true,
+      title: true,
       text: true,
       scholar: true,
       reference: true,
@@ -39,7 +39,7 @@ const getTafsirsByAyah = async (ayahId: string) => {
     select: {
       id: true,
       ayahId: true,
-      heading: true,
+      title: true,
       text: true,
       scholar: true,
       reference: true,
@@ -58,7 +58,7 @@ const getTafsirById = async (id: string) => {
     select: {
       id: true,
       ayahId: true,
-      heading: true,
+      title: true,
       text: true,
       scholar: true,
       reference: true,
@@ -89,7 +89,7 @@ const updateTafsir = async (
     select: {
       id: true,
       ayahId: true,
-      heading: true,
+      title: true,
       text: true,
       scholar: true,
       reference: true,
