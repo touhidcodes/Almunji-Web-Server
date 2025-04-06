@@ -18,7 +18,7 @@ const createAyah = async (data: Ayah) => {
   }
 
   // Validate ayahNumber does not exceed totalAyah
-  if (data.ayahNumber > surah.totalAyah) {
+  if (data.number > surah.totalAyah) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
       `Ayah number exceeds the total number of ayahs (${surah.totalAyah}) in this Surah`
@@ -27,9 +27,9 @@ const createAyah = async (data: Ayah) => {
 
   const existingAyah = await prisma.ayah.findUnique({
     where: {
-      surahId_ayahNumber: {
+      surahId_number: {
         surahId: data.surahId,
-        ayahNumber: data.ayahNumber,
+        ayahNumber: data.number,
       },
     },
   });
@@ -56,9 +56,9 @@ const getAllAyahs = async (params: any, options: TPaginationOptions) => {
   if (searchTerm) {
     andConditions.push({
       OR: [
-        { arabicText: { contains: searchTerm, mode: "insensitive" } as any },
-        { banglaText: { contains: searchTerm, mode: "insensitive" } as any },
-        { englishText: { contains: searchTerm, mode: "insensitive" } as any },
+        { arabic: { contains: searchTerm, mode: "insensitive" } as any },
+        { bangla: { contains: searchTerm, mode: "insensitive" } as any },
+        { english: { contains: searchTerm, mode: "insensitive" } as any },
       ],
     });
   }
@@ -81,16 +81,16 @@ const getAllAyahs = async (params: any, options: TPaginationOptions) => {
     include: {
       surah: {
         select: {
-          arabicName: true,
-          banglaName: true,
-          englishName: true,
+          arabic: true,
+          bangla: true,
+          english: true,
         },
       },
     },
     orderBy:
       options.sortBy && options.sortOrder
         ? { [options.sortBy]: options.sortOrder }
-        : { ayahNumber: "asc" },
+        : { number: "asc" },
   });
 
   const total = await prisma.ayah.count({ where: whereConditions });
