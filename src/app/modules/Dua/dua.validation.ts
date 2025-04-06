@@ -5,7 +5,7 @@ const createDuaSchema = z.object({
     name: z.string().min(1, "Name is required"),
     arabicText: z.string().min(1, "Arabic text is required"),
     transliteration: z.string().optional(),
-    translation: z.string().min(1, "Translation is required"),
+    bangla: z.string().min(1, "Bangla Text is required"),
     reference: z.string().optional(),
   }),
 });
@@ -13,9 +13,9 @@ const createDuaSchema = z.object({
 const updateDuaSchema = z.object({
   body: z.object({
     name: z.string().optional(),
-    arabicText: z.string().optional(),
+    arabic: z.string().optional(),
     transliteration: z.string().optional(),
-    translation: z.string().optional(),
+    bangla: z.string().optional(),
     reference: z.string().optional(),
   }),
 });

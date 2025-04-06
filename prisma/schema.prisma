@@ -98,7 +98,7 @@ model Dua {
   name            String
   arabic          String
   transliteration String?
-  translation     String
+  bangla          String
   reference       String?
   isDeleted       Boolean  @default(false)
   createdAt       DateTime @default(now())
