@@ -27,9 +27,10 @@ const createAyah = async (data: Ayah) => {
 
   const existingAyah = await prisma.ayah.findUnique({
     where: {
-      surahId_number: {
+      surahId_paraId_number: {
         surahId: data.surahId,
-        ayahNumber: data.number,
+        paraId: data.paraId,
+        number: data.number,
       },
     },
   });
