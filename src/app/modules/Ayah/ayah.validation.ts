@@ -4,14 +4,14 @@ import { z } from "zod";
 const createAyahSchema = z.object({
   body: z.object({
     surahId: z.string({ required_error: "Surah ID is required" }),
-    ayahNumber: z
+    number: z
       .number({ required_error: "Ayah number is required" })
       .int()
       .positive(),
-    arabicText: z.string({ required_error: "Arabic text is required" }),
+    arabic: z.string({ required_error: "Arabic text is required" }),
     pronunciation: z.string().optional(),
-    banglaText: z.string().optional(),
-    englishText: z.string().optional(),
+    bangla: z.string().optional(),
+    english: z.string().optional(),
   }),
 });
 
@@ -19,11 +19,11 @@ const createAyahSchema = z.object({
 const updateAyahSchema = z.object({
   body: z.object({
     surahId: z.string().optional(),
-    ayahNumber: z.number().int().positive().optional(),
-    arabicText: z.string().optional(),
+    number: z.number().int().positive().optional(),
+    arabic: z.string().optional(),
     pronunciation: z.string().optional(),
-    banglaText: z.string().optional(),
-    englishText: z.string().optional(),
+    bangla: z.string().optional(),
+    english: z.string().optional(),
   }),
 });
 
