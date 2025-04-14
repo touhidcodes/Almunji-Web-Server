@@ -86,7 +86,8 @@ model Blog {
   title     String
   content   String
   published Boolean  @default(false)
-  features  Boolean  @default(true)
+  featured  Boolean  @default(true)
+  isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -124,32 +125,34 @@ model Surah {
 }
 
 model Para {
-  id        String   @id @default(uuid())
-  number    Int      @unique
-  english   String
-  arabic    String?
-  bangla    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  ayah      Ayah[]
+  id           String   @id @default(uuid())
+  number       Int      @unique
+  arabic       String
+  english      String?
+  bangla       String?
+  startAyahRef String
+  endAyahRef   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  ayah         Ayah[]
 
   @@map("paras")
 }
 
 model Ayah {
-  id            String   @id @default(uuid())
-  surahId       String
-  surah         Surah    @relation(fields: [surahId], references: [id])
-  paraId        String
-  para          Para     @relation(fields: [paraId], references: [id])
-  number        Int
-  arabic        String
-  pronunciation String?
-  bangla        String?
-  english       String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  tafsir        Tafsir[]
+  id              String   @id @default(uuid())
+  surahId         String
+  surah           Surah    @relation(fields: [surahId], references: [id])
+  paraId          String
+  para            Para     @relation(fields: [paraId], references: [id])
+  number          Int
+  arabic          String
+  transliteration String?
+  bangla          String?
+  english         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  tafsir          Tafsir[]
 
   @@unique([surahId, paraId, number])
   @@map("ayahs")
