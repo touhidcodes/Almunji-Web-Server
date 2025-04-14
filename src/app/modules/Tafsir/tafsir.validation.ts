@@ -4,7 +4,7 @@ import { z } from "zod";
 const createTafsirSchema = z.object({
   body: z.object({
     ayahId: z.string({ required_error: "Ayah ID is required" }),
-    heading: z.string().optional(),
+    title: z.string().optional(),
     text: z.string({ required_error: "Tafsir text is required" }),
     scholar: z.string().optional(),
     reference: z.string().optional(),
@@ -14,7 +14,7 @@ const createTafsirSchema = z.object({
 // Schema to update a Tafsir
 const updateTafsirSchema = z.object({
   body: z.object({
-    heading: z.string().optional(),
+    title: z.string().optional(),
     text: z.string().optional(),
     scholar: z.string().optional(),
     reference: z.string().optional(),
