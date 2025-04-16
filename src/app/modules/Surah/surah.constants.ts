@@ -7,4 +7,8 @@ export const surahSearchableFields: string[] = [
 ];
 
 // For all filtering
-export const surahFilterableFields: string[] = ["name", "chapter"];
+export const surahFilterableFields: string[] = [
+  "name",
+  "chapter",
+  "revelation",
+];
