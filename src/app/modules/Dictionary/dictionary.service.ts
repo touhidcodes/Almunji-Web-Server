@@ -68,6 +68,17 @@ const getWords = async (params: any, options: TPaginationOptions) => {
     });
   }
 
+  // if (params.searchTerm) {
+  //   andConditions.push({
+  //     OR: flatSearchableFields.map((field) => ({
+  //       [field]: {
+  //         contains: params.searchTerm,
+  //         mode: "insensitive",
+  //       },
+  //     })),
+  //   });
+  // }
+
   // Filter by isDeleted flag
   if (typeof isDeleted !== "undefined") {
     const isDeletedFilter = isDeleted === "true" ? true : false;
