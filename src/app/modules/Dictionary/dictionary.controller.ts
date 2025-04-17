@@ -20,12 +20,11 @@ const createWord = catchAsync(async (req, res) => {
 });
 
 // Controller to get dictionary words
-const getWords = catchAsync(async (req, res) => {
+const getSuggestion = catchAsync(async (req, res) => {
   const pagination = queryPickers(req.query, wordPaginationFields);
   const options = queryPickers(req.query, wordFilterableFields);
-  console.log("options", pagination, options);
 
-  const result = await dictionaryServices.getWords(options, pagination);
+  const result = await dictionaryServices.getSuggestion(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -85,7 +84,7 @@ const deleteWord = catchAsync(async (req, res) => {
 
 export const dictionaryControllers = {
   createWord,
-  getWords,
+  getSuggestion,
   getAllWords,
   getWordById,
   updateWord,

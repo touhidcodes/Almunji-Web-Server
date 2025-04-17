@@ -1,7 +1,6 @@
 type IOptions = {
   page?: number;
   limit?: number;
-  skip?: number;
   sortOrder?: string;
   sortBy?: string;
 };

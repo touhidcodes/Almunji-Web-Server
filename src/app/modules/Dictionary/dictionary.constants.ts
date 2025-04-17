@@ -5,10 +5,4 @@ export const wordFilterableFields: string[] = ["searchTerm", "query"];
 export const wordQueryFields: string[] = ["word", "definition"];
 
 // For pagination
-export const wordPaginationFields: string[] = [
-  "limit",
-  "page",
-  "skip",
-  "sortBy",
-  "sortOrder",
-];
+export const wordPaginationFields: string[] = ["limit", "page"];

@@ -40,15 +40,15 @@ const createWord = async (data: Dictionary) => {
   return result;
 };
 
-// Service to retrieve dictionary words
-const getWords = async (options: any, pagination: TPaginationOptions) => {
-  const { page, limit, skip, sortBy, sortOrder } =
+// Service to suggestion dictionary words
+const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
+  const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
   const { searchTerm, query, ...filterData } = options;
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
-  // Search by word or description
+  // Search by word suggestion
   if (query) {
     andConditions.push({
       word: {
@@ -57,6 +57,7 @@ const getWords = async (options: any, pagination: TPaginationOptions) => {
     });
   }
 
+  // Search by word or description
   if (searchTerm) {
     andConditions.push({
       OR: wordQueryFields.map((field) => ({
@@ -85,8 +86,7 @@ const getWords = async (options: any, pagination: TPaginationOptions) => {
     where: whereConditions,
     skip,
     take: limit,
-    orderBy:
-      sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "desc" },
+    orderBy: { word: "asc" },
     select: { word: true, definition: true, pronunciation: true },
   });
 
@@ -192,7 +192,7 @@ const deleteWord = async (id: string) => {
 
 export const dictionaryServices = {
   createWord,
-  getWords,
+  getSuggestion,
   getAllWords,
   getWordById,
   updateWord,
