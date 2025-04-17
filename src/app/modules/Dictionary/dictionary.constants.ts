@@ -1,10 +1,13 @@
-// For all searching
+// For filter
 export const wordFilterableFields: string[] = [
-  "limit",
-  "page",
+  "searchTerm",
+  "isDeleted",
   "sortBy",
   "sortOrder",
 ];
 
-// For all filtering
-export const wordSearchableFields: string[] = ["word", "definition"];
+// For query
+export const wordQueryFields: string[] = ["word", "definition"];
+
+// For pagination
+export const wordPaginationFields: string[] = ["limit", "page", "skip"];

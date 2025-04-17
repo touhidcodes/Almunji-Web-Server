@@ -10,7 +10,7 @@ const queryPickers = <T extends Record<string, unknown>, k extends keyof T>(
     }
   }
 
-  //   console.log(finalObj);
+  // console.log("query picker", finalObj);
   return finalObj;
 };
 

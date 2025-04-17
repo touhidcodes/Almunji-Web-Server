@@ -4,7 +4,6 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
-import { wordSearchableFields } from "./dictionary.constants";
 
 // Service to create a new dictionary word
 const createWord = async (data: Dictionary) => {
@@ -41,9 +40,10 @@ const createWord = async (data: Dictionary) => {
 };
 
 // Service to retrieve dictionary words
-const getWords = async (params: any, filters: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(filters);
-  const { searchTerm, isDeleted, ...filterData } = params;
+const getWords = async (options: any, pagination: TPaginationOptions) => {
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+  const { searchTerm, isDeleted, ...filterData } = options;
   console.log("service options", limit);
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
@@ -106,9 +106,9 @@ const getWords = async (params: any, filters: TPaginationOptions) => {
     skip,
     take: limit,
     orderBy:
-      filters.sortBy && filters.sortOrder
+      options.sortBy && options.sortOrder
         ? {
-            [filters.sortBy]: filters.sortOrder,
+            [options.sortBy]: options.sortOrder,
           }
         : {
             createdAt: "desc",

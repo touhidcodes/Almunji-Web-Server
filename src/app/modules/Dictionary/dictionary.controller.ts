@@ -5,7 +5,7 @@ import { dictionaryServices } from "./dictionary.service";
 import queryPickers from "../../utils/queryPickers";
 import {
   wordFilterableFields,
-  wordSearchableFields,
+  wordPaginationFields,
 } from "./dictionary.constants";
 
 // Controller to create a new dictionary word
@@ -21,12 +21,10 @@ const createWord = catchAsync(async (req, res) => {
 
 // Controller to get dictionary words
 const getWords = catchAsync(async (req, res) => {
-  const filters = queryPickers(req.query, wordFilterableFields);
-  const options = queryPickers(req.query, wordSearchableFields);
-  console.log("params", req.params);
-  console.log("options", options);
+  const pagination = queryPickers(req.query, wordPaginationFields);
+  const options = queryPickers(req.query, wordFilterableFields);
 
-  const result = await dictionaryServices.getWords(options, filters);
+  const result = await dictionaryServices.getWords(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
