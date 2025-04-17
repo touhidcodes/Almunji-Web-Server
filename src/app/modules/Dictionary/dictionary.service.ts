@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import { wordSearchableFields } from "./dictionary.constants";
 
 // Service to create a new dictionary word
 const createWord = async (data: Dictionary) => {
@@ -33,8 +34,6 @@ const createWord = async (data: Dictionary) => {
       word: true,
       definition: true,
       pronunciation: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -42,9 +41,10 @@ const createWord = async (data: Dictionary) => {
 };
 
 // Service to retrieve dictionary words
-const getWords = async (params: any, options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+const getWords = async (params: any, filters: TPaginationOptions) => {
+  const { page, limit, skip } = paginationHelper.calculatePagination(filters);
   const { searchTerm, isDeleted, ...filterData } = params;
+  console.log("service options", limit);
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
@@ -70,7 +70,7 @@ const getWords = async (params: any, options: TPaginationOptions) => {
 
   // if (params.searchTerm) {
   //   andConditions.push({
-  //     OR: flatSearchableFields.map((field) => ({
+  //     OR: wordSearchableFields.map((field) => ({
   //       [field]: {
   //         contains: params.searchTerm,
   //         mode: "insensitive",
@@ -106,13 +106,14 @@ const getWords = async (params: any, options: TPaginationOptions) => {
     skip,
     take: limit,
     orderBy:
-      options.sortBy && options.sortOrder
+      filters.sortBy && filters.sortOrder
         ? {
-            [options.sortBy]: options.sortOrder,
+            [filters.sortBy]: filters.sortOrder,
           }
         : {
             createdAt: "desc",
           },
+    select: { word: true, definition: true, pronunciation: true },
   });
 
   const total = await prisma.dictionary.count({
@@ -138,9 +139,8 @@ const getAllWords = async () => {
       word: true,
       definition: true,
       pronunciation: true,
-      createdAt: true,
-      updatedAt: true,
     },
+    orderBy: { createdAt: "desc" },
   });
 
   return result;

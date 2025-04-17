@@ -21,10 +21,12 @@ const createWord = catchAsync(async (req, res) => {
 
 // Controller to get dictionary words
 const getWords = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, wordSearchableFields);
   const filters = queryPickers(req.query, wordFilterableFields);
+  const options = queryPickers(req.query, wordSearchableFields);
+  console.log("params", req.params);
+  console.log("options", options);
 
-  const result = await dictionaryServices.getWords(filters, options);
+  const result = await dictionaryServices.getWords(options, filters);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
