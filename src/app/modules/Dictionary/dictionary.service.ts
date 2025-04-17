@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import { wordFilterableFields, wordQueryFields } from "./dictionary.constants";
 
 // Service to create a new dictionary word
 const createWord = async (data: Dictionary) => {
@@ -41,49 +42,28 @@ const createWord = async (data: Dictionary) => {
 
 // Service to retrieve dictionary words
 const getWords = async (options: any, pagination: TPaginationOptions) => {
-  const { page, limit, skip } =
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
-  const { searchTerm, isDeleted, ...filterData } = options;
-  console.log("service options", limit);
+  const { searchTerm, query, ...filterData } = options;
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
   // Search by word or description
-  if (searchTerm) {
+  if (query) {
     andConditions.push({
-      OR: [
-        {
-          word: {
-            contains: searchTerm,
-            mode: "insensitive",
-          } as any,
-        },
-        {
-          definition: {
-            contains: searchTerm,
-            mode: "insensitive",
-          } as any,
-        },
-      ],
+      word: {
+        contains: query.toLowerCase(),
+      },
     });
   }
 
-  // if (params.searchTerm) {
-  //   andConditions.push({
-  //     OR: wordSearchableFields.map((field) => ({
-  //       [field]: {
-  //         contains: params.searchTerm,
-  //         mode: "insensitive",
-  //       },
-  //     })),
-  //   });
-  // }
-
-  // Filter by isDeleted flag
-  if (typeof isDeleted !== "undefined") {
-    const isDeletedFilter = isDeleted === "true" ? true : false;
+  if (searchTerm) {
     andConditions.push({
-      isDeleted: isDeletedFilter,
+      OR: wordQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm.toLowerCase(),
+        },
+      })),
     });
   }
 
@@ -106,13 +86,7 @@ const getWords = async (options: any, pagination: TPaginationOptions) => {
     skip,
     take: limit,
     orderBy:
-      options.sortBy && options.sortOrder
-        ? {
-            [options.sortBy]: options.sortOrder,
-          }
-        : {
-            createdAt: "desc",
-          },
+      sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "desc" },
     select: { word: true, definition: true, pronunciation: true },
   });
 

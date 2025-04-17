@@ -23,6 +23,7 @@ const createWord = catchAsync(async (req, res) => {
 const getWords = catchAsync(async (req, res) => {
   const pagination = queryPickers(req.query, wordPaginationFields);
   const options = queryPickers(req.query, wordFilterableFields);
+  console.log("options", pagination, options);
 
   const result = await dictionaryServices.getWords(options, pagination);
 
