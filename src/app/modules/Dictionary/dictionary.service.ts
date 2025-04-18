@@ -48,6 +48,11 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
+  // Search by only non-deleted words
+  andConditions.push({
+    isDeleted: false,
+  });
+
   // Search by word suggestion
   if (query) {
     andConditions.push({
@@ -84,10 +89,10 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
 
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
+    select: { word: true, definition: true, pronunciation: true },
+    orderBy: { word: "asc" },
     skip,
     take: limit,
-    orderBy: { word: "asc" },
-    select: { word: true, definition: true, pronunciation: true },
   });
 
   const total = await prisma.dictionary.count({
@@ -104,20 +109,43 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
   };
 };
 
-// Service to retrieve all dictionary words
-const getAllWords = async () => {
+// Service to retrieve all dictionary words with optional isDeleted filter
+const getAllWords = async (options: any, pagination: TPaginationOptions) => {
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeleted =
+    typeof options.isDeleted !== "undefined"
+      ? options.isDeleted === "true"
+      : false;
+
   const result = await prisma.dictionary.findMany({
-    where: { isDeleted: false },
+    where: { isDeleted },
     select: {
       id: true,
       word: true,
       definition: true,
       pronunciation: true,
+      isDeleted: true,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: { word: "asc" },
+    skip,
+    take: limit,
   });
 
-  return result;
+  const total = await prisma.dictionary.count({
+    where: { isDeleted },
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
 };
 
 // Service to retrieve a specific word by ID

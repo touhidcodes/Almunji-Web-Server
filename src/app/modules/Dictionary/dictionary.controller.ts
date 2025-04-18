@@ -37,7 +37,11 @@ const getSuggestion = catchAsync(async (req, res) => {
 
 // Controller to get all dictionary words
 const getAllWords = catchAsync(async (req, res) => {
-  const result = await dictionaryServices.getAllWords();
+  const pagination = queryPickers(req.query, wordPaginationFields);
+  const options = queryPickers(req.query, ["isDeleted"]);
+  console.log(req.query);
+
+  const result = await dictionaryServices.getAllWords(options, pagination);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
