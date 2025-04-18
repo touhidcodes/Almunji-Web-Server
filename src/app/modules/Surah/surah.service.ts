@@ -18,6 +18,16 @@ const createSurah = async (data: Surah) => {
 
   const result = await prisma.surah.create({
     data,
+    select: {
+      id: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      history: true,
+      revelation: true,
+    },
   });
 
   return result;
@@ -89,6 +99,16 @@ const getAllSurahs = async (options: any, pagination: TPaginationOptions) => {
 const getSurahById = async (id: string) => {
   const result = await prisma.surah.findUniqueOrThrow({
     where: { id },
+    select: {
+      id: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      history: true,
+      revelation: true,
+    },
   });
 
   return result;
@@ -110,6 +130,16 @@ const updateSurah = async (id: string, data: Partial<Surah>) => {
   const result = await prisma.surah.update({
     where: { id },
     data,
+    select: {
+      id: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      history: true,
+      revelation: true,
+    },
   });
 
   return result;
@@ -119,6 +149,13 @@ const updateSurah = async (id: string, data: Partial<Surah>) => {
 const deleteSurah = async (id: string) => {
   const result = await prisma.surah.delete({
     where: { id },
+    select: {
+      id: true,
+      chapter: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+    },
   });
 
   return result;
