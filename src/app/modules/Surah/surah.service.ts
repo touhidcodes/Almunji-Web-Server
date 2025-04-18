@@ -52,12 +52,19 @@ const getAllSurahs = async (params: any, options: TPaginationOptions) => {
 
   const result = await prisma.surah.findMany({
     where: whereConditions,
+    select: {
+      id: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      history: true,
+      revelation: true,
+    },
     skip,
     take: limit,
-    orderBy:
-      options.sortBy && options.sortOrder
-        ? { [options.sortBy]: options.sortOrder }
-        : { chapter: "asc" },
+    orderBy: { chapter: "asc" },
   });
 
   const total = await prisma.surah.count({ where: whereConditions });

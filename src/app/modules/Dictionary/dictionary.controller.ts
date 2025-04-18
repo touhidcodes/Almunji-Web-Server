@@ -21,8 +21,8 @@ const createWord = catchAsync(async (req, res) => {
 
 // Controller to get dictionary words
 const getSuggestion = catchAsync(async (req, res) => {
-  const pagination = queryPickers(req.query, wordPaginationFields);
   const options = queryPickers(req.query, wordFilterableFields);
+  const pagination = queryPickers(req.query, wordPaginationFields);
 
   const result = await dictionaryServices.getSuggestion(options, pagination);
 

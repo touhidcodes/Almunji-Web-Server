@@ -1,14 +1,8 @@
-// For all searching
-export const surahSearchableFields: string[] = [
-  "limit",
-  "page",
-  "sortBy",
-  "sortOrder",
-];
+// For filter
+export const surahFilterableFields: string[] = ["searchTerm"];
 
-// For all filtering
-export const surahFilterableFields: string[] = [
-  "name",
-  "chapter",
-  "revelation",
-];
+// For pagination
+export const surahPaginationFields: string[] = ["limit", "page"];
+
+// For query
+export const surahQueryFields: string[] = ["name", "chapter", "revelation"];

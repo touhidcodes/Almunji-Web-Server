@@ -5,7 +5,7 @@ import { surahServices } from "./surah.service";
 import queryPickers from "../../utils/queryPickers";
 import {
   surahFilterableFields,
-  surahSearchableFields,
+  surahPaginationFields,
 } from "./surah.constants";
 
 // Controller to create a new Surah
@@ -21,8 +21,8 @@ const createSurah = catchAsync(async (req, res) => {
 
 // Controller to get all Surahs with filtering & pagination
 const getAllSurahs = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, surahSearchableFields);
-  const filters = queryPickers(req.query, surahFilterableFields);
+  const pagination = queryPickers(req.query, surahPaginationFields);
+  const options = queryPickers(req.query, surahFilterableFields);
 
   const result = await surahServices.getAllSurahs(filters, options);
 

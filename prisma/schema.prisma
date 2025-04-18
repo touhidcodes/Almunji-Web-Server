@@ -84,7 +84,7 @@ model Blog {
   id        String   @id @default(uuid())
   thumbnail String?
   title     String
-  content   String
+  content   String   @db.LongText
   published Boolean  @default(false)
   featured  Boolean  @default(true)
   isDeleted Boolean  @default(false)
