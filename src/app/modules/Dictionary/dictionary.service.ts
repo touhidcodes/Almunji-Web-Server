@@ -127,7 +127,6 @@ const getAllWords = async (options: any, pagination: TPaginationOptions) => {
       word: true,
       definition: true,
       pronunciation: true,
-      isDeleted: true,
     },
     orderBy: { word: "asc" },
     skip,
@@ -151,14 +150,12 @@ const getAllWords = async (options: any, pagination: TPaginationOptions) => {
 // Service to retrieve a specific word by ID
 const getWordById = async (id: string) => {
   const result = await prisma.dictionary.findUniqueOrThrow({
-    where: { id },
+    where: { id, isDeleted: false },
     select: {
       id: true,
       word: true,
       definition: true,
       pronunciation: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -196,8 +193,6 @@ const updateWord = async (id: string, data: Partial<Dictionary>) => {
       word: true,
       definition: true,
       pronunciation: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
