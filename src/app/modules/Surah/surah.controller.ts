@@ -21,10 +21,10 @@ const createSurah = catchAsync(async (req, res) => {
 
 // Controller to get all Surahs with filtering & pagination
 const getAllSurahs = catchAsync(async (req, res) => {
-  const pagination = queryPickers(req.query, surahPaginationFields);
   const options = queryPickers(req.query, surahFilterableFields);
+  const pagination = queryPickers(req.query, surahPaginationFields);
 
-  const result = await surahServices.getAllSurahs(filters, options);
+  const result = await surahServices.getAllSurahs(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import { surahQueryFields } from "./surah.constants";
 
 // Service to create a new Surah
 const createSurah = async (data: Surah) => {
@@ -23,26 +24,38 @@ const createSurah = async (data: Surah) => {
 };
 
 // Service to retrieve Surahs with filtering & pagination
-const getAllSurahs = async (params: any, options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filterData } = params;
+const getAllSurahs = async (options: any, pagination: TPaginationOptions) => {
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+  const { searchTerm, chapter, ...filterData } = options;
 
   const andConditions: Prisma.SurahWhereInput[] = [];
 
-  if (searchTerm) {
+  // Search by chapter
+  if (chapter) {
     andConditions.push({
-      OR: [
-        { arabic: { contains: searchTerm, mode: "insensitive" } as any },
-        { english: { contains: searchTerm, mode: "insensitive" } as any },
-        { bangla: { contains: searchTerm, mode: "insensitive" } as any },
-      ],
+      chapter: { equals: Number(chapter) } as any,
     });
   }
 
+  // Search by surah name and revelation
+  if (searchTerm) {
+    andConditions.push({
+      OR: surahQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Add additional filters
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map((key) => ({
-        [key]: { equals: (filterData as any)[key] },
+        [key]: {
+          equals: (filterData as any)[key],
+        },
       })),
     });
   }
