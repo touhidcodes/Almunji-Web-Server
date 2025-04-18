@@ -69,7 +69,7 @@ model Book {
   name        String   @unique
   description String
   cover       String
-  content     String
+  content     String   @db.LongText
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
   featured    Boolean  @default(true)
