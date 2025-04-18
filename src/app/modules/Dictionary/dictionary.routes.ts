@@ -43,7 +43,7 @@ router.delete(
 router.delete(
   "/admin/:wordId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  dictionaryControllers.deleteWord
+  dictionaryControllers.deleteWordByAdmin
 );
 
 export const dictionaryRoutes = router;

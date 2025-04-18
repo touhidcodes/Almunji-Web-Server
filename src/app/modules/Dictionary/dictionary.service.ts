@@ -217,6 +217,10 @@ const deleteWord = async (id: string) => {
 const deleteWordByAdmin = async (id: string) => {
   const result = await prisma.dictionary.delete({
     where: { id },
+    select: {
+      id: true,
+      word: true,
+    },
   });
 
   return result;
