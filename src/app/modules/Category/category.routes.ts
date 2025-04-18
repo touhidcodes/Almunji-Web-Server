@@ -11,7 +11,7 @@ const router = express.Router();
 // Route to post category
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(categoryValidationSchema.createCategorySchema),
   categoryControllers.createCategory
 );
@@ -22,7 +22,7 @@ router.get("/all", categoryControllers.getAllCategories);
 // Route to update specific categories
 router.put(
   "/:categoryId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(categoryValidationSchema.updateCategorySchema),
   categoryControllers.updateCategory
 );

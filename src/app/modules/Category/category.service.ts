@@ -23,8 +23,6 @@ const createCategory = async (data: { name: string; description?: string }) => {
     select: {
       id: true,
       name: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -37,8 +35,6 @@ const getAllCategories = async () => {
     select: {
       id: true,
       name: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -70,8 +66,6 @@ const updateCategory = async (id: string, data: { name: string }) => {
     select: {
       id: true,
       name: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
