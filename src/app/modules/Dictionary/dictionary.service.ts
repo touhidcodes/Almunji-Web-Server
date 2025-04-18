@@ -218,6 +218,15 @@ const deleteWord = async (id: string) => {
   return result;
 };
 
+// Service to delete a dictionary word (hard delete) only by admin
+const deleteWordByAdmin = async (id: string) => {
+  const result = await prisma.dictionary.delete({
+    where: { id },
+  });
+
+  return result;
+};
+
 export const dictionaryServices = {
   createWord,
   getSuggestion,
@@ -225,4 +234,5 @@ export const dictionaryServices = {
   getWordById,
   updateWord,
   deleteWord,
+  deleteWordByAdmin,
 };

@@ -39,7 +39,6 @@ const getSuggestion = catchAsync(async (req, res) => {
 const getAllWords = catchAsync(async (req, res) => {
   const pagination = queryPickers(req.query, wordPaginationFields);
   const options = queryPickers(req.query, ["isDeleted"]);
-  console.log(req.query);
 
   const result = await dictionaryServices.getAllWords(options, pagination);
   sendResponse(res, {
@@ -86,6 +85,18 @@ const deleteWord = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to delete a dictionary word by ID only admins
+const deleteWordByAdmin = catchAsync(async (req, res) => {
+  const { wordId } = req.params;
+  const result = await dictionaryServices.deleteWordByAdmin(wordId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Word deleted successfully!",
+    data: result,
+  });
+});
+
 export const dictionaryControllers = {
   createWord,
   getSuggestion,
@@ -93,4 +104,5 @@ export const dictionaryControllers = {
   getWordById,
   updateWord,
   deleteWord,
+  deleteWordByAdmin,
 };
