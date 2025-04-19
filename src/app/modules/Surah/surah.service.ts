@@ -147,18 +147,28 @@ const updateSurah = async (id: string, data: Partial<Surah>) => {
 
 // Service to delete a Surah
 const deleteSurah = async (id: string) => {
-  const result = await prisma.surah.delete({
-    where: { id },
-    select: {
-      id: true,
-      chapter: true,
-      arabic: true,
-      english: true,
-      bangla: true,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    // Delete related ayahs
+    await tx.ayah.deleteMany({
+      where: {
+        surahId: id,
+      },
+    });
 
-  return result;
+    // Then delete surah
+    const result = await tx.surah.delete({
+      where: { id },
+      select: {
+        id: true,
+        chapter: true,
+        arabic: true,
+        english: true,
+        bangla: true,
+      },
+    });
+
+    return result;
+  });
 };
 
 export const surahServices = {

@@ -143,18 +143,28 @@ const updatePara = async (
 
 // Service to delete a Para
 const deletePara = async (id: string) => {
-  const result = await prisma.para.delete({
-    where: { id },
-    select: {
-      id: true,
-      number: true,
-      arabic: true,
-      english: true,
-      bangla: true,
-    },
-  });
+  return await prisma.$transaction(async (tx) => {
+    // Delete related ayahs
+    await tx.ayah.deleteMany({
+      where: {
+        paraId: id,
+      },
+    });
 
-  return result;
+    // Then delete para
+    const result = await tx.para.delete({
+      where: { id },
+      select: {
+        id: true,
+        number: true,
+        arabic: true,
+        english: true,
+        bangla: true,
+      },
+    });
+
+    return result;
+  });
 };
 
 export const paraServices = {
