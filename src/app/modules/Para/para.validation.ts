@@ -5,11 +5,15 @@ const createParaSchema = z.object({
   body: z.object({
     number: z
       .number({ required_error: "Para number is required" })
-      .int()
-      .positive(),
-    english: z.string({ required_error: "English name is required" }),
-    arabic: z.string().optional(),
+      .min(1, { message: "Para must be at least 1" })
+      .max(30, { message: "Para cannot exceed 30" }),
+    arabic: z.string({ required_error: "Arabic name is required" }),
+    english: z.string().optional(),
     bangla: z.string().optional(),
+    startAyahRef: z.string({
+      required_error: "Start Ayah reference is required",
+    }),
+    endAyahRef: z.string({ required_error: "End Ayah reference is required" }),
   }),
 });
 
@@ -17,9 +21,11 @@ const createParaSchema = z.object({
 const updateParaSchema = z.object({
   body: z.object({
     number: z.number().int().positive().optional(),
-    english: z.string().optional(),
     arabic: z.string().optional(),
+    english: z.string().optional(),
     bangla: z.string().optional(),
+    startAyahRef: z.string().optional(),
+    endAyahRef: z.string().optional(),
   }),
 });
 

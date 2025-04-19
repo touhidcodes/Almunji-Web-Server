@@ -1,6 +1,7 @@
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
+import { paraServices } from "./para.service";
 
 // Controller to create a new Para
 const createPara = catchAsync(async (req, res) => {
