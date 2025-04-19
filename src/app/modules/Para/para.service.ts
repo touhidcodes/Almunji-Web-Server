@@ -5,8 +5,25 @@ import httpStatus from "http-status";
 
 // Service to create a new Para
 const createPara = async (data: Para) => {
+  const existingPara = await prisma.para.findUnique({
+    where: { number: data?.number },
+  });
+
+  if (existingPara) {
+    throw new APIError(httpStatus.CONFLICT, "Para number already exists");
+  }
+
   const result = await prisma.para.create({
     data,
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      startAyahRef: true,
+      endAyahRef: true,
+    },
   });
 
   return result;
