@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { paraServices } from "./para.service";
+import queryPickers from "../../utils/queryPickers";
+import { paraFilterableFields, paraPaginationFields } from "./para.constants";
 
 // Controller to create a new Para
 const createPara = catchAsync(async (req, res) => {
@@ -17,12 +19,15 @@ const createPara = catchAsync(async (req, res) => {
 
 // Controller to get all Paras
 const getAllParas = catchAsync(async (req, res) => {
-  const result = await paraServices.getAllParas();
+  const options = queryPickers(req.query, paraFilterableFields);
+  const pagination = queryPickers(req.query, paraPaginationFields);
+
+  const result = await paraServices.getAllParas(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Paras retrieved successfully",
+    message: "Paras retrieved successfully!",
     data: result,
   });
 });
@@ -35,7 +40,7 @@ const getParaById = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Para retrieved successfully",
+    message: "Para retrieved successfully!",
     data: result,
   });
 });
@@ -49,7 +54,7 @@ const updatePara = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Para updated successfully",
+    message: "Para updated successfully!",
     data: result,
   });
 });
@@ -62,7 +67,7 @@ const deletePara = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Para deleted successfully",
+    message: "Para deleted successfully!",
     data: result,
   });
 });

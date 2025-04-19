@@ -2,6 +2,9 @@ import { Prisma, Para } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import { paginationHelper } from "../../utils/paginationHelpers";
+import { paraQueryFields } from "./para.constants";
+import { TPaginationOptions } from "../../interfaces/pagination";
 
 // Service to create a new Para
 const createPara = async (data: Para) => {
@@ -30,18 +33,64 @@ const createPara = async (data: Para) => {
 };
 
 // Service to retrieve all Paras
-const getAllParas = async () => {
+const getAllParas = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, number, ...filterData } = options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+
+  const andConditions: Prisma.ParaWhereInput[] = [];
+
+  // Search by number
+  if (number) {
+    andConditions.push({
+      number: { equals: Number(number) } as any,
+    });
+  }
+
+  // Search by surah name
+  if (searchTerm) {
+    andConditions.push({
+      OR: paraQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.ParaWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const result = await prisma.para.findMany({
+    where: whereConditions,
     select: {
       id: true,
       number: true,
-      english: true,
       arabic: true,
+      english: true,
       bangla: true,
+      startAyahRef: true,
+      endAyahRef: true,
     },
+    skip,
+    take: limit,
+    orderBy: { number: "asc" },
   });
 
-  return result;
+  const total = await prisma.para.count({ where: whereConditions });
+
+  return { meta: { page, limit, total }, data: result };
 };
 
 // Service to retrieve a specific Para by ID

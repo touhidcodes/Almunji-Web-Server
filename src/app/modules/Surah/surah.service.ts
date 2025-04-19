@@ -35,9 +35,9 @@ const createSurah = async (data: Surah) => {
 
 // Service to retrieve Surahs with filtering & pagination
 const getAllSurahs = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, chapter, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
-  const { searchTerm, chapter, ...filterData } = options;
 
   const andConditions: Prisma.SurahWhereInput[] = [];
 
