@@ -18,12 +18,26 @@ const createAyahSchema = z.object({
 
 // Schema to update an Ayah
 const updateAyahSchema = z.object({
-  body: z.object({
-    arabic: z.string().optional(),
-    transliteration: z.string().optional(),
-    bangla: z.string().optional(),
-    english: z.string().optional(),
-  }),
+  body: z
+    .object({
+      number: z.any().optional(),
+      surahId: z.any().optional(),
+      paraId: z.any().optional(),
+      arabic: z.string().optional(),
+      transliteration: z.string().optional(),
+      bangla: z.string().optional(),
+      english: z.string().optional(),
+    })
+    .refine(
+      (data) =>
+        data.number === undefined &&
+        data.surahId === undefined &&
+        data.paraId === undefined,
+      {
+        message: "Fields 'number', 'surahId', and 'paraId' cannot be updated.",
+        path: ["restrictedFields"],
+      }
+    ),
 });
 
 export const ayahValidationSchema = {
