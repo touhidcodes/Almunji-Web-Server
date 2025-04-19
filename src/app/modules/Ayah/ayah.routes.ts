@@ -32,7 +32,7 @@ router.put(
 // Route to delete an Ayah by ID
 router.delete(
   "/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   ayahControllers.deleteAyah
 );
 

@@ -139,6 +139,30 @@ const getAllAyahs = async (options: any, pagination: TPaginationOptions) => {
 const getAyahById = async (id: string) => {
   const result = await prisma.ayah.findUniqueOrThrow({
     where: { id },
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      surah: {
+        select: {
+          chapter: true,
+          arabic: true,
+          english: true,
+          bangla: true,
+        },
+      },
+      para: {
+        select: {
+          number: true,
+          arabic: true,
+          english: true,
+          bangla: true,
+        },
+      },
+    },
   });
 
   return result;
@@ -147,7 +171,7 @@ const getAyahById = async (id: string) => {
 // Service to update an Ayah
 const updateAyah = async (
   id: string,
-  data: Omit<Partial<Ayah>, "surahId" | "ayahNumber">
+  data: Omit<Partial<Ayah>, "number" | "surahId" | "ayahNumber">
 ) => {
   // Fetch the existing Ayah
   const existingAyah = await prisma.ayah.findUniqueOrThrow({ where: { id } });
@@ -157,7 +181,7 @@ const updateAyah = async (
   }
 
   // Ensure surahId and ayahNumber are not modified
-  if ("surahId" in data || "ayahNumber" in data) {
+  if ("number" in data || "surahId" in data || "paraId" in data) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
       "Modification of surahId and ayahNumber is not allowed"
@@ -168,6 +192,16 @@ const updateAyah = async (
   const result = await prisma.ayah.update({
     where: { id },
     data,
+    select: {
+      id: true,
+      surahId: true,
+      paraId: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+    },
   });
 
   return result;
@@ -177,6 +211,13 @@ const updateAyah = async (
 const deleteAyah = async (id: string) => {
   const result = await prisma.ayah.delete({
     where: { id },
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      bangla: true,
+      english: true,
+    },
   });
 
   return result;
