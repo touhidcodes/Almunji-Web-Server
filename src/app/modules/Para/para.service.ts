@@ -103,6 +103,8 @@ const getParaById = async (id: string) => {
       english: true,
       arabic: true,
       bangla: true,
+      startAyahRef: true,
+      endAyahRef: true,
     },
   });
 
@@ -131,6 +133,8 @@ const updatePara = async (
       english: true,
       arabic: true,
       bangla: true,
+      startAyahRef: true,
+      endAyahRef: true,
     },
   });
 
@@ -139,19 +143,18 @@ const updatePara = async (
 
 // Service to delete a Para
 const deletePara = async (id: string) => {
-  const existingPara = await prisma.para.findUnique({
+  const result = await prisma.para.delete({
     where: { id },
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+    },
   });
 
-  if (!existingPara) {
-    throw new APIError(httpStatus.NOT_FOUND, "Para not found");
-  }
-
-  await prisma.para.delete({
-    where: { id },
-  });
-
-  return { message: "Para deleted successfully" };
+  return result;
 };
 
 export const paraServices = {

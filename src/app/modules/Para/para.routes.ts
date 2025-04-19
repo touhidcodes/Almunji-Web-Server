@@ -32,7 +32,7 @@ router.put(
 // Route to delete a Para by ID
 router.delete(
   "/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN),
   paraControllers.deletePara
 );
 
