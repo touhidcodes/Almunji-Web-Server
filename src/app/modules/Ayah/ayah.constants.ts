@@ -1,10 +1,8 @@
-// For all searching
-export const ayahSearchableFields: string[] = [
-  "limit",
-  "page",
-  "sortBy",
-  "sortOrder",
-];
+// For filter
+export const ayahFilterableFields: string[] = ["searchTerm", "name"];
 
-// For all filtering
-export const ayahFilterableFields: string[] = ["name", "chapter"];
+// For pagination
+export const ayahPaginationFields: string[] = ["limit", "page"];
+
+// For query
+export const surahQueryFields: string[] = ["arabic", "english", "bangla"];

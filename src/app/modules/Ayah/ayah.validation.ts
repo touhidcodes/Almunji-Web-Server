@@ -4,6 +4,7 @@ import { z } from "zod";
 const createAyahSchema = z.object({
   body: z.object({
     surahId: z.string({ required_error: "Surah ID is required" }),
+    paraId: z.string({ required_error: "Surah ID is required" }),
     number: z
       .number({ required_error: "Ayah number is required" })
       .int()
@@ -19,6 +20,7 @@ const createAyahSchema = z.object({
 const updateAyahSchema = z.object({
   body: z.object({
     surahId: z.string().optional(),
+    paraId: z.string().optional(),
     number: z.number().int().positive().optional(),
     arabic: z.string().optional(),
     pronunciation: z.string().optional(),

@@ -42,7 +42,18 @@ const createAyah = async (data: Ayah) => {
     );
   }
 
-  const result = await prisma.ayah.create({ data });
+  const result = await prisma.ayah.create({
+    data,
+    select: {
+      surahId: true,
+      paraId: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+    },
+  });
 
   return result;
 };
