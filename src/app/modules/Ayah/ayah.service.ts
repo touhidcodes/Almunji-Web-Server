@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import { ayahQueryFields } from "./ayah.constants";
 
 // Service to create a new Ayah
 const createAyah = async (data: Ayah) => {
@@ -59,26 +60,38 @@ const createAyah = async (data: Ayah) => {
 };
 
 // Service to retrieve Ayahs with filtering & pagination
-const getAllAyahs = async (params: any, options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filterData } = params;
+const getAllAyahs = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, number, ...filterData } = options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.AyahWhereInput[] = [];
 
-  if (searchTerm) {
+  // Search by number
+  if (number) {
     andConditions.push({
-      OR: [
-        { arabic: { contains: searchTerm, mode: "insensitive" } as any },
-        { bangla: { contains: searchTerm, mode: "insensitive" } as any },
-        { english: { contains: searchTerm, mode: "insensitive" } as any },
-      ],
+      number: { equals: Number(number) } as any,
     });
   }
 
+  // Search by ayah
+  if (searchTerm) {
+    andConditions.push({
+      OR: ayahQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Add additional filters
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map((key) => ({
-        [key]: { equals: (filterData as any)[key] },
+        [key]: {
+          equals: (filterData as any)[key],
+        },
       })),
     });
   }
@@ -88,21 +101,33 @@ const getAllAyahs = async (params: any, options: TPaginationOptions) => {
 
   const result = await prisma.ayah.findMany({
     where: whereConditions,
-    skip,
-    take: limit,
-    include: {
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
       surah: {
         select: {
+          chapter: true,
           arabic: true,
-          bangla: true,
           english: true,
+          bangla: true,
+        },
+      },
+      para: {
+        select: {
+          number: true,
+          arabic: true,
+          english: true,
+          bangla: true,
         },
       },
     },
-    orderBy:
-      options.sortBy && options.sortOrder
-        ? { [options.sortBy]: options.sortOrder }
-        : { number: "asc" },
+    skip,
+    take: limit,
+    orderBy: { number: "asc" },
   });
 
   const total = await prisma.ayah.count({ where: whereConditions });

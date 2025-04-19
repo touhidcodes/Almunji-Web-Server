@@ -3,7 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { ayahServices } from "./ayah.service";
 import queryPickers from "../../utils/queryPickers";
-import { ayahFilterableFields, ayahSearchableFields } from "./ayah.constants";
+import { ayahFilterableFields, ayahPaginationFields } from "./ayah.constants";
 
 // Controller to create a new Ayah
 const createAyah = catchAsync(async (req, res) => {
@@ -18,10 +18,10 @@ const createAyah = catchAsync(async (req, res) => {
 
 // Controller to get all Ayahs with filtering & pagination
 const getAllAyahs = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, ayahSearchableFields);
-  const filters = queryPickers(req.query, ayahFilterableFields);
+  const options = queryPickers(req.query, ayahFilterableFields);
+  const pagination = queryPickers(req.query, ayahPaginationFields);
 
-  const result = await ayahServices.getAllAyahs(filters, options);
+  const result = await ayahServices.getAllAyahs(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
