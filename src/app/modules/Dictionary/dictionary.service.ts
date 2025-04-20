@@ -44,7 +44,7 @@ const createWord = async (data: Dictionary) => {
 const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
-  const { searchTerm, query, ...filterData } = options;
+  const { searchTerm, query, sortBy, sortOrder, ...filterData } = options;
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
@@ -90,9 +90,14 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
     select: { word: true, definition: true, pronunciation: true },
-    orderBy: { word: "asc" },
     skip,
     take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { word: "asc" },
   });
 
   const total = await prisma.dictionary.count({
