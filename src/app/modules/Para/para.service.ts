@@ -34,7 +34,7 @@ const createPara = async (data: Para) => {
 
 // Service to retrieve all Paras
 const getAllParas = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, number, ...filterData } = options;
+  const { searchTerm, number, sortBy, sortOrder, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
@@ -85,7 +85,12 @@ const getAllParas = async (options: any, pagination: TPaginationOptions) => {
     },
     skip,
     take: limit,
-    orderBy: { number: "asc" },
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { number: "asc" },
   });
 
   const total = await prisma.para.count({ where: whereConditions });
