@@ -1,7 +1,15 @@
-// For filter
+// For filter from all words
 export const wordFilterableFields: string[] = [
   "searchTerm",
-  "query",
+  "word",
+  "isDeleted",
+  "sortBy",
+  "sortOrder",
+];
+// For filter from suggestion words
+export const wordSuggestionFilterableFields: string[] = [
+  "searchTerm",
+  "word",
   "sortBy",
   "sortOrder",
 ];

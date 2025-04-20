@@ -6,6 +6,7 @@ import queryPickers from "../../utils/queryPickers";
 import {
   wordFilterableFields,
   wordPaginationFields,
+  wordSuggestionFilterableFields,
 } from "./dictionary.constants";
 
 // Controller to create a new dictionary word
@@ -21,7 +22,7 @@ const createWord = catchAsync(async (req, res) => {
 
 // Controller to get dictionary words
 const getSuggestion = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, wordFilterableFields);
+  const options = queryPickers(req.query, wordSuggestionFilterableFields);
   const pagination = queryPickers(req.query, wordPaginationFields);
 
   const result = await dictionaryServices.getSuggestion(options, pagination);
@@ -37,8 +38,8 @@ const getSuggestion = catchAsync(async (req, res) => {
 
 // Controller to get all dictionary words
 const getAllWords = catchAsync(async (req, res) => {
+  const options = queryPickers(req.query, wordFilterableFields);
   const pagination = queryPickers(req.query, wordPaginationFields);
-  const options = queryPickers(req.query, ["isDeleted"]);
 
   const result = await dictionaryServices.getAllWords(options, pagination);
   sendResponse(res, {

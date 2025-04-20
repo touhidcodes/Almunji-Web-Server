@@ -42,9 +42,9 @@ const createWord = async (data: Dictionary) => {
 
 // Service to suggestion dictionary words
 const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, word, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
-  const { searchTerm, query, sortBy, sortOrder, ...filterData } = options;
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
@@ -54,10 +54,75 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
   });
 
   // Search by word suggestion
-  if (query) {
+  if (word) {
     andConditions.push({
       word: {
-        contains: query.toLowerCase(),
+        contains: word.toLowerCase(),
+      },
+    });
+  }
+
+  // Search by word or description
+  if (searchTerm) {
+    andConditions.push({
+      OR: wordQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm.toLowerCase(),
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.DictionaryWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  const result = await prisma.dictionary.findMany({
+    where: whereConditions,
+    select: { word: true, definition: true, pronunciation: true },
+    skip,
+    take: limit,
+    orderBy: { word: "asc" },
+  });
+
+  const total = await prisma.dictionary.count({
+    where: whereConditions,
+  });
+
+  return {
+    meta: {
+      page,
+      limit,
+      total,
+    },
+    data: result,
+  };
+};
+
+// Service to retrieve all dictionary words with optional isDeleted filter
+const getAllWords = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, word, sortBy, isDeleted, sortOrder, ...filterData } =
+    options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+
+  const andConditions: Prisma.DictionaryWhereInput[] = [];
+
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted words
+  if (isDeletedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: isDeletedQuery,
+    });
+  }
+
+  // Search by word suggestion
+  if (word) {
+    andConditions.push({
+      word: {
+        contains: word.toLowerCase(),
       },
     });
   }
@@ -89,57 +154,24 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
 
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
-    select: { word: true, definition: true, pronunciation: true },
-    skip,
-    take: limit,
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : { word: "asc" },
-  });
-
-  const total = await prisma.dictionary.count({
-    where: whereConditions,
-  });
-
-  return {
-    meta: {
-      page,
-      limit,
-      total,
-    },
-    data: result,
-  };
-};
-
-// Service to retrieve all dictionary words with optional isDeleted filter
-const getAllWords = async (options: any, pagination: TPaginationOptions) => {
-  const { page, limit, skip } =
-    paginationHelper.calculatePagination(pagination);
-
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeleted =
-    typeof options.isDeleted !== "undefined"
-      ? options.isDeleted === "true"
-      : false;
-
-  const result = await prisma.dictionary.findMany({
-    where: { isDeleted },
     select: {
       id: true,
       word: true,
       definition: true,
       pronunciation: true,
     },
-    orderBy: { word: "asc" },
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { word: "asc" },
     skip,
     take: limit,
   });
 
   const total = await prisma.dictionary.count({
-    where: { isDeleted },
+    where: { isDeleted: isDeletedQuery },
   });
 
   return {
