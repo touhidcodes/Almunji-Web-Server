@@ -24,8 +24,6 @@ const createTafsir = async (data: Tafsir) => {
       text: true,
       scholar: true,
       reference: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -61,13 +59,17 @@ const getTafsirById = async (id: string) => {
     where: { id },
     select: {
       id: true,
-      ayahId: true,
+      ayah: {
+        select: {
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
       title: true,
       text: true,
       scholar: true,
       reference: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
