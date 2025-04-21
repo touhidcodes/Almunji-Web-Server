@@ -32,19 +32,23 @@ const createTafsir = async (data: Tafsir) => {
   return result;
 };
 
-// Service to retrieve all Tafsirs of a specific Ayah
-const getTafsirsByAyah = async (ayahId: string) => {
+// Service to retrieve all Tafsir of a specific Ayah
+const getTafsirByAyah = async (ayahId: string) => {
   const result = await prisma.tafsir.findMany({
     where: { ayahId },
     select: {
       id: true,
-      ayahId: true,
+      ayah: {
+        select: {
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
       title: true,
       text: true,
       scholar: true,
       reference: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -120,7 +124,7 @@ const deleteTafsir = async (id: string) => {
 
 export const tafsirServices = {
   createTafsir,
-  getTafsirsByAyah,
+  getTafsirByAyah,
   getTafsirById,
   updateTafsir,
   deleteTafsir,

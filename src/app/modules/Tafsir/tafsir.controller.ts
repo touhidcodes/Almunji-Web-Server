@@ -16,9 +16,9 @@ const createTafsir = catchAsync(async (req, res) => {
 });
 
 // Controller to get all Tafsirs of a specific Ayah
-const getTafsirsByAyah = catchAsync(async (req, res) => {
+const getTafsirByAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
-  const result = await tafsirServices.getTafsirsByAyah(ayahId);
+  const result = await tafsirServices.getTafsirByAyah(ayahId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -70,7 +70,7 @@ const deleteTafsir = catchAsync(async (req, res) => {
 
 export const tafsirControllers = {
   createTafsir,
-  getTafsirsByAyah,
+  getTafsirByAyah,
   getTafsirById,
   updateTafsir,
   deleteTafsir,
