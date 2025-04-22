@@ -55,25 +55,69 @@ const getTafsirByAyah = async (ayahId: string) => {
 
 // Service to retrieve all Tafsir
 const getAllTafsir = async () => {
+  const { searchTerm, chapter, sortBy, sortOrder, ...filterData } = options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+
+  const andConditions: Prisma.SurahWhereInput[] = [];
+
+  // Search by chapter
+  if (chapter) {
+    andConditions.push({
+      chapter: { equals: Number(chapter) } as any,
+    });
+  }
+
+  // Search by surah name and revelation
+  if (searchTerm) {
+    andConditions.push({
+      OR: surahQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.SurahWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const result = await prisma.tafsir.findMany({
-    // where: { ayahId },
+    where: whereConditions,
     select: {
       id: true,
-      ayah: {
-        select: {
-          arabic: true,
-          bangla: true,
-          english: true,
-        },
-      },
-      title: true,
-      text: true,
-      scholar: true,
-      reference: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      history: true,
+      revelation: true,
     },
+    skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { chapter: "asc" },
   });
 
-  return result;
+  const total = await prisma.surah.count({ where: whereConditions });
+
+  return { meta: { page, limit, total }, data: result };
 };
 
 // Service to retrieve a specific Tafsir by ID
