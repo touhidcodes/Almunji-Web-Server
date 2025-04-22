@@ -53,6 +53,29 @@ const getTafsirByAyah = async (ayahId: string) => {
   return result;
 };
 
+// Service to retrieve all Tafsir
+const getAllTafsir = async () => {
+  const result = await prisma.tafsir.findMany({
+    // where: { ayahId },
+    select: {
+      id: true,
+      ayah: {
+        select: {
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
+      title: true,
+      text: true,
+      scholar: true,
+      reference: true,
+    },
+  });
+
+  return result;
+};
+
 // Service to retrieve a specific Tafsir by ID
 const getTafsirById = async (id: string) => {
   const result = await prisma.tafsir.findUniqueOrThrow({
