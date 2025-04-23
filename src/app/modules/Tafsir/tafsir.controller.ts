@@ -90,6 +90,7 @@ const deleteTafsir = catchAsync(async (req, res) => {
 
 export const tafsirControllers = {
   createTafsir,
+  getAllTafsir,
   getTafsirByAyah,
   getTafsirById,
   updateTafsir,

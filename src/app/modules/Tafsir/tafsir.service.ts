@@ -64,6 +64,17 @@ const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
 
   const andConditions: Prisma.TafsirWhereInput[] = [];
 
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted words
+  if (isDeletedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: isDeletedQuery,
+    });
+  }
+
   // Search by tafsir heading and text
   if (searchTerm) {
     andConditions.push({

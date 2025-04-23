@@ -15,6 +15,9 @@ router.post(
   tafsirControllers.createTafsir
 );
 
+// Route to get all Tafsir
+router.get("/all", tafsirControllers.getAllTafsir);
+
 // Route to get all Tafsir of a specific Ayah
 router.get("/ayah/:ayahId", tafsirControllers.getTafsirByAyah);
 
