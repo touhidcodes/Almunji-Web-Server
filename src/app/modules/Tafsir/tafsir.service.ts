@@ -2,6 +2,9 @@ import { Prisma, Tafsir } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import { paginationHelper } from "../../utils/paginationHelpers";
+import { TPaginationOptions } from "../../interfaces/pagination";
+import { tafsirQueryFields } from "./tafsir.constants";
 
 // Service to create a new Tafsir
 const createTafsir = async (data: Tafsir) => {
@@ -54,24 +57,17 @@ const getTafsirByAyah = async (ayahId: string) => {
 };
 
 // Service to retrieve all Tafsir
-const getAllTafsir = async () => {
-  const { searchTerm, chapter, sortBy, sortOrder, ...filterData } = options;
+const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, isDeleted, sortBy, sortOrder, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
-  const andConditions: Prisma.SurahWhereInput[] = [];
+  const andConditions: Prisma.TafsirWhereInput[] = [];
 
-  // Search by chapter
-  if (chapter) {
-    andConditions.push({
-      chapter: { equals: Number(chapter) } as any,
-    });
-  }
-
-  // Search by surah name and revelation
+  // Search by tafsir heading and text
   if (searchTerm) {
     andConditions.push({
-      OR: surahQueryFields.map((field) => ({
+      OR: tafsirQueryFields.map((field) => ({
         [field]: {
           contains: searchTerm,
         },
@@ -90,20 +86,24 @@ const getAllTafsir = async () => {
     });
   }
 
-  const whereConditions: Prisma.SurahWhereInput =
+  const whereConditions: Prisma.TafsirWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.tafsir.findMany({
     where: whereConditions,
     select: {
       id: true,
-      chapter: true,
-      totalAyah: true,
-      arabic: true,
-      english: true,
-      bangla: true,
-      history: true,
-      revelation: true,
+      ayah: {
+        select: {
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
+      title: true,
+      text: true,
+      scholar: true,
+      reference: true,
     },
     skip,
     take: limit,
@@ -112,10 +112,10 @@ const getAllTafsir = async () => {
         ? {
             [sortBy]: sortOrder,
           }
-        : { chapter: "asc" },
+        : { createdAt: "asc" },
   });
 
-  const total = await prisma.surah.count({ where: whereConditions });
+  const total = await prisma.tafsir.count({ where: whereConditions });
 
   return { meta: { page, limit, total }, data: result };
 };
@@ -193,6 +193,7 @@ const deleteTafsir = async (id: string) => {
 
 export const tafsirServices = {
   createTafsir,
+  getAllTafsir,
   getTafsirByAyah,
   getTafsirById,
   updateTafsir,

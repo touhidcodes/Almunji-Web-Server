@@ -2,6 +2,11 @@ import { tafsirServices } from "./tafsir.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
+import queryPickers from "../../utils/queryPickers";
+import {
+  tafsirFilterableFields,
+  tafsirPaginationFields,
+} from "./tafsir.constants";
 
 // Controller to create a new Tafsir
 const createTafsir = catchAsync(async (req, res) => {
@@ -15,7 +20,22 @@ const createTafsir = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get all Tafsirs of a specific Ayah
+// Controller to get all Tafsir
+const getAllTafsir = catchAsync(async (req, res) => {
+  const options = queryPickers(req.query, tafsirFilterableFields);
+  const pagination = queryPickers(req.query, tafsirPaginationFields);
+
+  const result = await tafsirServices.getAllTafsir(options, pagination);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Tafsir retrieved successfully",
+    data: result,
+  });
+});
+
+// Controller to get all Tafsir of a specific Ayah
 const getTafsirByAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
   const result = await tafsirServices.getTafsirByAyah(ayahId);
@@ -23,7 +43,7 @@ const getTafsirByAyah = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsirs retrieved successfully",
+    message: "Tafsir retrieved successfully",
     data: result,
   });
 });

@@ -1,5 +1,10 @@
 // For filter
-export const tafsirFilterableFields: string[] = ["searchTerm"];
+export const tafsirFilterableFields: string[] = [
+  "searchTerm",
+  "isDeleted",
+  "sortBy",
+  "sortOrder",
+];
 
 // For pagination
 export const tafsirPaginationFields: string[] = ["limit", "page"];
