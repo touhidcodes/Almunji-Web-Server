@@ -4,20 +4,28 @@ import { z } from "zod";
 const createTafsirSchema = z.object({
   body: z.object({
     ayahId: z.string({ required_error: "Ayah ID is required" }),
-    title: z.string().optional(),
-    text: z.string({ required_error: "Tafsir text is required" }),
+    heading: z.string().optional(),
+    summaryBn: z.string().optional(),
+    summaryEn: z.string().optional(),
+    detailBn: z.string().optional(),
+    detailEn: z.string().optional(),
     scholar: z.string().optional(),
     reference: z.string().optional(),
+    tags: z.string().optional(),
   }),
 });
 
 // Schema to update a Tafsir
 const updateTafsirSchema = z.object({
   body: z.object({
-    title: z.string().optional(),
-    text: z.string().optional(),
+    heading: z.string().optional(),
+    summaryBn: z.string().optional(),
+    summaryEn: z.string().optional(),
+    detailBn: z.string().optional(),
+    detailEn: z.string().optional(),
     scholar: z.string().optional(),
     reference: z.string().optional(),
+    tags: z.string().optional(),
   }),
 });
 
