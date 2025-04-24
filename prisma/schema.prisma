@@ -152,7 +152,7 @@ model Ayah {
   english         String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  tafsir          Tafsir[]
+  tafsir          Tafsir?
 
   @@unique([surahId, paraId, number])
   @@map("ayahs")
@@ -160,12 +160,16 @@ model Ayah {
 
 model Tafsir {
   id        String   @id @default(uuid())
-  ayahId    String
+  ayahId    String   @unique
   ayah      Ayah     @relation(fields: [ayahId], references: [id])
-  title     String?
-  text      String
+  heading   String?
+  summaryBn String?
+  summaryEn String?
+  detailBn  String?
+  detailEn  String?
   scholar   String?
   reference String?
+  tags      String?
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
