@@ -72,7 +72,8 @@ const getTafsirByAyah = async (ayahId: string) => {
 
 // Service to retrieve all Tafsir
 const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, isDeleted, sortBy, sortOrder, ...filterData } = options;
+  const { searchTerm, isDeleted, tags, sortBy, sortOrder, ...filterData } =
+    options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
@@ -97,6 +98,15 @@ const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
           contains: searchTerm,
         },
       })),
+    });
+  }
+
+  // Search by tafsir tags
+  if (tags) {
+    andConditions.push({
+      tags: {
+        contains: tags,
+      },
     });
   }
 
