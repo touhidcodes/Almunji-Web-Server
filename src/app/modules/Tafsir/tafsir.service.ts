@@ -251,6 +251,19 @@ const deleteTafsir = async (id: string) => {
   return { message: "Tafsir deleted successfully" };
 };
 
+// Service to delete a tafsir (hard delete) only by admin
+const deleteTafsirByAdmin = async (id: string) => {
+  const result = await prisma.tafsir.delete({
+    where: { id },
+    select: {
+      id: true,
+      heading: true,
+    },
+  });
+
+  return result;
+};
+
 export const tafsirServices = {
   createTafsir,
   getAllTafsir,
@@ -258,4 +271,5 @@ export const tafsirServices = {
   getTafsirById,
   updateTafsir,
   deleteTafsir,
+  deleteTafsirByAdmin,
 };

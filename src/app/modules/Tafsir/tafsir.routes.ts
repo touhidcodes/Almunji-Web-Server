@@ -39,4 +39,11 @@ router.delete(
   tafsirControllers.deleteTafsir
 );
 
+// Route to delete (hard) a tafsir by id only by admins
+router.delete(
+  "/admin/:tafsirId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  tafsirControllers.deleteTafsirByAdmin
+);
+
 export const tafsirRoutes = router;

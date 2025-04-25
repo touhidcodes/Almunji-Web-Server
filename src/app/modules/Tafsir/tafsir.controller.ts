@@ -88,6 +88,18 @@ const deleteTafsir = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to delete a tafsir by ID only admins
+const deleteTafsirByAdmin = catchAsync(async (req, res) => {
+  const { tafsirId } = req.params;
+  const result = await tafsirServices.deleteTafsirByAdmin(tafsirId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Word deleted successfully!",
+    data: result,
+  });
+});
+
 export const tafsirControllers = {
   createTafsir,
   getAllTafsir,
@@ -95,4 +107,5 @@ export const tafsirControllers = {
   getTafsirById,
   updateTafsir,
   deleteTafsir,
+  deleteTafsirByAdmin,
 };
