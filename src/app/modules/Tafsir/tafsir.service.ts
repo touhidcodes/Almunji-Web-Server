@@ -18,6 +18,18 @@ const createTafsir = async (data: Tafsir) => {
     throw new APIError(httpStatus.NOT_FOUND, "Ayah not found");
   }
 
+  // Check if Tafsir already exists for the ayahId
+  const existingTafsir = await prisma.tafsir.findUnique({
+    where: { ayahId: data.ayahId },
+  });
+
+  if (existingTafsir) {
+    throw new APIError(
+      httpStatus.CONFLICT,
+      "Tafsir already exists for this Ayah"
+    );
+  }
+
   const result = await prisma.tafsir.create({
     data,
     select: {
