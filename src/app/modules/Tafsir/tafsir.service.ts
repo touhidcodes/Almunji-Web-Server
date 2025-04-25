@@ -234,21 +234,17 @@ const updateTafsir = async (id: string, data: Partial<Tafsir>) => {
   return result;
 };
 
-// Service to delete a Tafsir
+// Service to delete a tafsir (soft delete)
 const deleteTafsir = async (id: string) => {
-  const existingTafsir = await prisma.tafsir.findUnique({
+  const result = await prisma.tafsir.update({
     where: { id },
+    data: { isDeleted: true },
+    select: {
+      id: true,
+      heading: true,
+    },
   });
-
-  if (!existingTafsir) {
-    throw new APIError(httpStatus.NOT_FOUND, "Tafsir not found");
-  }
-
-  await prisma.tafsir.delete({
-    where: { id },
-  });
-
-  return { message: "Tafsir deleted successfully" };
+  return result;
 };
 
 // Service to delete a tafsir (hard delete) only by admin

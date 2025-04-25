@@ -83,7 +83,7 @@ const deleteTafsir = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Tafsir deleted successfully",
+    message: "Tafsir removed successfully",
     data: result,
   });
 });
@@ -95,7 +95,7 @@ const deleteTafsirByAdmin = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Word deleted successfully!",
+    message: "Tafsir deleted successfully!",
     data: result,
   });
 });

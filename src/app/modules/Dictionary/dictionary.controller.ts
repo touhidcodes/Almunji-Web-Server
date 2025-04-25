@@ -81,7 +81,7 @@ const deleteWord = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Word deleted successfully!",
+    message: "Word removed successfully!",
     data: result,
   });
 });
