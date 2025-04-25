@@ -177,10 +177,7 @@ const getTafsirById = async (id: string) => {
 };
 
 // Service to update a Tafsir
-const updateTafsir = async (
-  id: string,
-  data: Partial<Prisma.TafsirUpdateInput>
-) => {
+const updateTafsir = async (id: string, data: Partial<Tafsir>) => {
   const existingTafsir = await prisma.tafsir.findUnique({
     where: { id },
   });

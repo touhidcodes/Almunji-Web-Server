@@ -27,7 +27,7 @@ router.get("/:tafsirId", tafsirControllers.getTafsirById);
 // Route to update an existing Tafsir by ID
 router.put(
   "/:tafsirId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(tafsirValidationSchema.updateTafsirSchema),
   tafsirControllers.updateTafsir
 );
