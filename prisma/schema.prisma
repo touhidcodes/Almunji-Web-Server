@@ -81,15 +81,17 @@ model Book {
 }
 
 model Blog {
-  id        String   @id @default(uuid())
-  thumbnail String?
-  title     String
-  content   String   @db.LongText
-  published Boolean  @default(false)
-  featured  Boolean  @default(true)
-  isDeleted Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  thumbnail   String?
+  title       String
+  summary     String?
+  content     String   @db.LongText
+  isPublished Boolean  @default(false)
+  IsFeatured  Boolean  @default(true)
+  isDeleted   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("blogs")
 }
@@ -100,7 +102,9 @@ model Dua {
   arabic          String
   transliteration String?
   bangla          String
+  english         String?
   reference       String?
+  tags            String?
   isDeleted       Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
