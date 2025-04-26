@@ -3,7 +3,24 @@ import prisma from "../../utils/prisma";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 
-const getDuas = async (options: TPaginationOptions) => {
+// Service to create a new dua
+const createDua = async (duaData: Dua) => {
+  return await prisma.dua.create({
+    data: duaData,
+    select: {
+      id: true,
+      name: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      reference: true,
+      tags: true,
+    },
+  });
+};
+
+const getAllDua = async (options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
 
   const result = await prisma.dua.findMany({
@@ -43,12 +60,6 @@ const getDuaById = async (duaId: string) => {
   });
 };
 
-const createDua = async (duaData: Dua) => {
-  return await prisma.dua.create({
-    data: duaData,
-  });
-};
-
 const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   return await prisma.dua.update({
     where: {
@@ -59,6 +70,7 @@ const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   });
 };
 
+// Service to delete a dua (soft delete)
 const deleteDua = async (duaId: string) => {
   return await prisma.dua.update({
     where: {
@@ -67,13 +79,31 @@ const deleteDua = async (duaId: string) => {
     data: {
       isDeleted: true,
     },
+    select: {
+      id: true,
+      name: true,
+    },
   });
 };
 
+// Service to delete a dua (hard delete) only by admin
+const deleteDuaByAdmin = async (id: string) => {
+  const result = await prisma.dua.delete({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return result;
+};
+
 export const duaServices = {
-  getDuas,
-  getDuaById,
   createDua,
+  getAllDua,
+  getDuaById,
   updateDua,
   deleteDua,
+  deleteDuaByAdmin,
 };
