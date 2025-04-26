@@ -3,23 +3,33 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import queryPickers from "../../utils/queryPickers";
 import { duaServices } from "./dua.service";
+import { duaFilterableFields, duaPaginationFields } from "./dua.constants";
 
-const getDuas = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, [
-    "limit",
-    "page",
-    "sortBy",
-    "sortOrder",
-  ]);
-  const result = await duaServices.getDuas(options);
+// Controller to create a new dua
+const createDua = catchAsync(async (req, res) => {
+  const result = await duaServices.createDua(req.body);
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
-    message: "Duas retrieved successfully!",
+    message: "Dua created successfully!",
     data: result,
   });
 });
 
+// Controller to get all dua
+const getAllDua = catchAsync(async (req, res) => {
+  const options = queryPickers(req.query, duaFilterableFields);
+  const pagination = queryPickers(req.query, duaPaginationFields);
+  const result = await duaServices.getAllDua(options, pagination);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dua retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get a specific dua by ID
 const getDuaById = catchAsync(async (req, res) => {
   const { duaId } = req.params;
   const result = await duaServices.getDuaById(duaId);
@@ -31,16 +41,7 @@ const getDuaById = catchAsync(async (req, res) => {
   });
 });
 
-const createDua = catchAsync(async (req, res) => {
-  const result = await duaServices.createDua(req.body);
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "Dua created successfully!",
-    data: result,
-  });
-});
-
+// Controller to update a dua
 const updateDua = catchAsync(async (req, res) => {
   const { duaId } = req.params;
   const result = await duaServices.updateDua(duaId, req.body);
@@ -52,6 +53,7 @@ const updateDua = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to delete a dua (soft delete)
 const deleteDua = catchAsync(async (req, res) => {
   const { duaId } = req.params;
   const result = await duaServices.deleteDua(duaId);
@@ -63,10 +65,23 @@ const deleteDua = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to delete a dua (hard delete) only by admin
+const deleteDuaByAdmin = catchAsync(async (req, res) => {
+  const { duaId } = req.params;
+  const result = await duaServices.deleteDuaByAdmin(duaId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dua deleted successfully!",
+    data: result,
+  });
+});
+
 export const duaControllers = {
-  getDuas,
+  getAllDua,
   getDuaById,
   createDua,
   updateDua,
   deleteDua,
+  deleteDuaByAdmin,
 };
