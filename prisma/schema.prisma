@@ -65,19 +65,34 @@ model Category {
 }
 
 model Book {
-  id          String   @id @default(uuid())
-  name        String   @unique
+  id          String        @id @default(uuid())
+  name        String        @unique
   description String
   cover       String
-  content     String   @db.LongText
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
-  featured    Boolean  @default(true)
-  isDeleted   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  category    Category      @relation(fields: [categoryId], references: [id])
+  featured    Boolean       @default(true)
+  isDeleted   Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  contents    BookContent[]
 
   @@map("books")
+}
+
+model BookContent {
+  id        String   @id @default(uuid())
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id])
+  title     String
+  order     Int
+  html      String   @db.LongText
+  isDeleted Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([bookId, order])
+  @@map("book_contents")
 }
 
 model Blog {
