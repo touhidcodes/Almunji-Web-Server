@@ -3,6 +3,8 @@ import prisma from "../../utils/prisma";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { duaQueryFields } from "./dua.constants";
+import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 
 // Service to create a new dua
 const createDua = async (duaData: Dua) => {
@@ -114,18 +116,43 @@ const getDuaById = async (duaId: string) => {
   return await prisma.dua.findUnique({
     where: {
       id: duaId,
-      isDeleted: false,
+    },
+    select: {
+      id: true,
+      name: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      reference: true,
+      tags: true,
     },
   });
 };
 
 const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
+  const existingDua = await prisma.dua.findUnique({
+    where: { id: duaId },
+  });
+
+  if (!existingDua) {
+    throw new APIError(httpStatus.NOT_FOUND, "Dua not found");
+  }
   return await prisma.dua.update({
     where: {
       id: duaId,
-      isDeleted: false,
     },
     data: duaData,
+    select: {
+      id: true,
+      name: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      reference: true,
+      tags: true,
+    },
   });
 };
 

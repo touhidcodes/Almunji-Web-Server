@@ -40,7 +40,7 @@ router.delete(
 router.delete(
   "/admin/:duaId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  duaControllers.deleteDua
+  duaControllers.deleteDuaByAdmin
 );
 
 export const duaRoutes = router;

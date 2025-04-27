@@ -60,7 +60,7 @@ const deleteDua = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Dua deleted successfully!",
+    message: "Dua removed successfully!",
     data: result,
   });
 });
