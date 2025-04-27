@@ -1,7 +1,8 @@
-import { Dua } from "@prisma/client";
+import { Dua, Prisma } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import { duaQueryFields } from "./dua.constants";
 
 // Service to create a new dua
 const createDua = async (duaData: Dua) => {
@@ -20,25 +21,83 @@ const createDua = async (duaData: Dua) => {
   });
 };
 
-const getAllDua = async (options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
+const getAllDua = async (options: any, pagination: TPaginationOptions) => {
+  const { searchTerm, isDeleted, tags, sortBy, sortOrder, ...filterData } =
+    options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+
+  const andConditions: Prisma.DuaWhereInput[] = [];
+
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted words
+  if (isDeletedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: isDeletedQuery,
+    });
+  }
+
+  // Search by dua heading and text
+  if (searchTerm) {
+    andConditions.push({
+      OR: duaQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Search by dua tags
+  if (tags) {
+    andConditions.push({
+      tags: {
+        contains: tags,
+      },
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.DuaWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.dua.findMany({
-    where: {
-      isDeleted: false,
+    where: whereConditions,
+    select: {
+      id: true,
+      name: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      reference: true,
+      tags: true,
     },
     skip,
     take: limit,
     orderBy:
-      options.sortBy && options.sortOrder
-        ? { [options.sortBy]: options.sortOrder }
-        : { createdAt: "desc" },
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { createdAt: "asc" },
   });
 
   const total = await prisma.dua.count({
-    where: {
-      isDeleted: false,
-    },
+    where: whereConditions,
   });
 
   return {
