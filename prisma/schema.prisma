@@ -71,7 +71,7 @@ model Book {
   cover       String
   categoryId  String
   category    Category      @relation(fields: [categoryId], references: [id])
-  featured    Boolean       @default(true)
+  isFeatured  Boolean       @default(true)
   isDeleted   Boolean       @default(false)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
