@@ -2,6 +2,33 @@ import { Prisma, Blog } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import httpStatus from "http-status";
+import slugify from "slugify";
+import APIError from "../../errors/APIError";
+
+const createBlog = async (blogData: Omit<Blog, "slug">) => {
+  const generatedSlug = slugify(blogData.title, { lower: true, strict: true });
+
+  const existingBlog = await prisma.blog.findFirst({
+    where: { slug: generatedSlug },
+  });
+
+  if (existingBlog) {
+    throw new APIError(
+      httpStatus.CONFLICT,
+      "Blog with this title already exists"
+    );
+  }
+
+  const result = await prisma.blog.create({
+    data: {
+      ...blogData,
+      slug: generatedSlug,
+    },
+  });
+
+  return result;
+};
 
 const getBlogs = async (params: any, options: TPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
@@ -68,13 +95,6 @@ const getBlogById = async (blogId: string): Promise<Blog | null> => {
     },
   });
 
-  return result;
-};
-
-const createBlog = async (blogData: Blog) => {
-  const result = await prisma.blog.create({
-    data: blogData,
-  });
   return result;
 };
 
