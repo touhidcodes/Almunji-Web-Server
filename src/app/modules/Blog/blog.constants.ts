@@ -1,5 +1,12 @@
-// for all searching
-export const blogSearchableFields: string[] = ["title", "category"];
+// For filter
+export const blogFilterableFields: string[] = [
+  "slug",
+  "isDeleted",
+  "isFeatured",
+  "isPublished",
+  "sortBy",
+  "sortOrder",
+];
 
-// for all filtering
-export const blogFilterableFields: string[] = ["featured", "searchTerm"];
+// For pagination
+export const blogPaginationFields: string[] = ["limit", "page"];
