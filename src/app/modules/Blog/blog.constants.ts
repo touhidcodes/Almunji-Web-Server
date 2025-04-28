@@ -1,9 +1,9 @@
 // For filter
 export const blogFilterableFields: string[] = [
   "slug",
-  "isDeleted",
   "isFeatured",
   "isPublished",
+  "isDeleted",
   "sortBy",
   "sortOrder",
 ];

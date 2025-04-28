@@ -41,39 +41,46 @@ const createBlog = async (blogData: Omit<Blog, "slug">) => {
 const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
-  const { slug, isDeleted, isFeatured, isPublished, sortBy, sortOrder } =
+  const { slug, isPublished, isFeatured, isDeleted, sortBy, sortOrder } =
     options;
 
   const andConditions: Prisma.BlogWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
+  // Convert query params to boolean if present
   const isDeletedQuery =
     typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+  const IsFeaturedQuery =
+    typeof isFeatured !== "undefined" ? isDeleted === "true" : undefined;
+  const isPublishedQuery =
+    typeof isPublished !== "undefined" ? isPublished === "true" : undefined;
 
-  // Search by only non-deleted tafsir
+  // Search published blog
+  if (isPublishedQuery !== undefined) {
+    andConditions.push({
+      isPublished: isPublishedQuery,
+    });
+  }
+
+  // Search by featured blog
+  if (IsFeaturedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: IsFeaturedQuery,
+    });
+  }
+
+  // Search by non-deleted blog
   if (isDeletedQuery !== undefined) {
     andConditions.push({
       isDeleted: isDeletedQuery,
     });
   }
 
+  // Search by blog slug
   if (slug) {
     andConditions.push({
       slug: {
         equals: slug,
       },
-    });
-  }
-
-  if (isFeatured !== undefined) {
-    andConditions.push({
-      IsFeatured: isFeatured,
-    });
-  }
-
-  if (isPublished !== undefined) {
-    andConditions.push({
-      isPublished: isPublished,
     });
   }
 
@@ -89,6 +96,9 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
       title: true,
       summary: true,
       content: true,
+      isPublished: true,
+      IsFeatured: true,
+      isDeleted: true,
     },
     skip,
     take: limit,

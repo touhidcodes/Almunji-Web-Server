@@ -102,8 +102,8 @@ model Blog {
   title       String
   summary     String?
   content     String   @db.LongText
-  isPublished Boolean  @default(false)
-  IsFeatured  Boolean  @default(true)
+  isPublished Boolean  @default(true)
+  isFeatured  Boolean  @default(true)
   isDeleted   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
