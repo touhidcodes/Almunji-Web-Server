@@ -95,7 +95,7 @@ const getAllDua = async (options: any, pagination: TPaginationOptions) => {
         ? {
             [sortBy]: sortOrder,
           }
-        : { createdAt: "asc" },
+        : { createdAt: "desc" },
   });
 
   const total = await prisma.dua.count({

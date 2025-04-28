@@ -25,39 +25,55 @@ const createBlog = async (blogData: Omit<Blog, "slug">) => {
       ...blogData,
       slug: generatedSlug,
     },
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+    },
   });
 
   return result;
 };
 
-const getBlogs = async (params: any, options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, category, published, ...filterData } = params;
+const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
+  const { slug, isDeleted, isFeatured, isPublished, sortBy, sortOrder } =
+    options;
 
   const andConditions: Prisma.BlogWhereInput[] = [];
 
-  if (searchTerm) {
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted tafsir
+  if (isDeletedQuery !== undefined) {
     andConditions.push({
-      OR: [
-        { title: { contains: searchTerm, mode: "insensitive" } as any },
-        { content: { contains: searchTerm, mode: "insensitive" } as any },
-      ],
+      isDeleted: isDeletedQuery,
     });
   }
 
-  if (published !== undefined) {
+  if (slug) {
     andConditions.push({
-      published: published,
+      slug: {
+        equals: slug,
+      },
     });
   }
 
-  if (Object.keys(filterData).length > 0) {
+  if (isFeatured !== undefined) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
-        [key]: {
-          equals: (filterData as any)[key],
-        },
-      })),
+      IsFeatured: isFeatured,
+    });
+  }
+
+  if (isPublished !== undefined) {
+    andConditions.push({
+      isPublished: isPublished,
     });
   }
 
@@ -66,11 +82,21 @@ const getBlogs = async (params: any, options: TPaginationOptions) => {
 
   const result = await prisma.blog.findMany({
     where: whereConditions,
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+    },
     skip,
     take: limit,
     orderBy:
-      options.sortBy && options.sortOrder
-        ? { [options.sortBy]: options.sortOrder }
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
         : { createdAt: "desc" },
   });
 
@@ -118,9 +144,9 @@ const deleteBlog = async (blogId: string) => {
 };
 
 export const blogServices = {
-  getBlogs,
-  getBlogById,
   createBlog,
+  getAllBlogs,
+  getBlogById,
   updateBlog,
   deleteBlog,
 };

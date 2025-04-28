@@ -7,14 +7,16 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-router.get("/all", blogControllers.getBlogs);
-
+// Route to create a new blog
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(blogValidationSchemas.createBlogSchema),
   blogControllers.createBlog
 );
+
+// Route to get all blog
+router.get("/all", blogControllers.getBlogs);
 
 router.get("/:blogId", blogControllers.getBlogById);
 

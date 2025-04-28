@@ -95,7 +95,7 @@ const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
   const isDeletedQuery =
     typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
 
-  // Search by only non-deleted words
+  // Search by only non-deleted tafsir
   if (isDeletedQuery !== undefined) {
     andConditions.push({
       isDeleted: isDeletedQuery,
@@ -163,7 +163,7 @@ const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
         ? {
             [sortBy]: sortOrder,
           }
-        : { createdAt: "asc" },
+        : { createdAt: "desc" },
   });
 
   const total = await prisma.tafsir.count({ where: whereConditions });
