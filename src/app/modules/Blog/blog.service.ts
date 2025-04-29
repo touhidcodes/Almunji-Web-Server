@@ -49,23 +49,20 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
   // Convert query params to boolean if present
   const isDeletedQuery =
     typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-  const IsFeaturedQuery =
-    typeof isFeatured !== "undefined" ? isDeleted === "true" : undefined;
-  const isPublishedQuery =
-    typeof isPublished !== "undefined" ? isPublished === "true" : undefined;
+  const isFeaturedQuery =
+    isFeatured === "true" ? true : isFeatured === "false" ? false : undefined;
 
-  // Search published blog
-  if (isPublishedQuery !== undefined) {
-    andConditions.push({
-      isPublished: isPublishedQuery,
-    });
+  const isPublishedQuery =
+    isPublished === "true" ? true : isPublished === "false" ? false : undefined;
+
+  // Search by published blog
+  if (typeof isPublishedQuery === "boolean") {
+    andConditions.push({ isPublished: isPublishedQuery });
   }
 
   // Search by featured blog
-  if (IsFeaturedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: IsFeaturedQuery,
-    });
+  if (typeof isFeaturedQuery === "boolean") {
+    andConditions.push({ isFeatured: isFeaturedQuery });
   }
 
   // Search by non-deleted blog
@@ -97,7 +94,7 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
       summary: true,
       content: true,
       isPublished: true,
-      IsFeatured: true,
+      isFeatured: true,
       isDeleted: true,
     },
     skip,
