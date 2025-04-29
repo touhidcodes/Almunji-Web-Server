@@ -75,7 +75,7 @@ const updateTafsir = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete a Tafsir
+// Controller to delete (soft delete) a Tafsir
 const deleteTafsir = catchAsync(async (req, res) => {
   const { tafsirId } = req.params;
   const result = await tafsirServices.deleteTafsir(tafsirId);
@@ -88,7 +88,7 @@ const deleteTafsir = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete a tafsir by ID only admins
+// Controller to delete (hard delete) a Tafsir by ID only admins
 const deleteTafsirByAdmin = catchAsync(async (req, res) => {
   const { tafsirId } = req.params;
   const result = await tafsirServices.deleteTafsirByAdmin(tafsirId);

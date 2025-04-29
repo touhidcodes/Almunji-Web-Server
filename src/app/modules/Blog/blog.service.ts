@@ -95,7 +95,6 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
       content: true,
       isPublished: true,
       isFeatured: true,
-      isDeleted: true,
     },
     skip,
     take: limit,
@@ -121,10 +120,19 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
   };
 };
 
-const getBlogById = async (blogId: string): Promise<Blog | null> => {
-  const result = await prisma.blog.findUnique({
-    where: {
-      id: blogId,
+// Service to retrieve a specific blog by ID
+const getBlogById = async (blogId: string) => {
+  const result = await prisma.blog.findUniqueOrThrow({
+    where: { id: blogId },
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+      isPublished: true,
+      isFeatured: true,
     },
   });
 
