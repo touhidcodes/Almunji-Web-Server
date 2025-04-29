@@ -141,6 +141,25 @@ const getBlogById = async (id: string) => {
   return result;
 };
 
+// Service to retrieve a specific Blog by slug
+const getBlogBySlug = async (slug: string) => {
+  const result = await prisma.blog.findUniqueOrThrow({
+    where: { slug },
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+      isPublished: true,
+      isFeatured: true,
+    },
+  });
+
+  return result;
+};
+
 // Service to update a Blog
 const updateBlog = async (id: string, blogData: Partial<Blog>) => {
   const existingBlog = await prisma.blog.findUnique({
@@ -199,6 +218,7 @@ export const blogServices = {
   createBlog,
   getAllBlogs,
   getBlogById,
+  getBlogBySlug,
   updateBlog,
   deleteBlog,
   deleteBlogByAdmin,

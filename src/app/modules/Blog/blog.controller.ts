@@ -42,6 +42,18 @@ const getBlogById = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get a specific Blog by slug
+const getBlogBySlug = catchAsync(async (req, res) => {
+  const { slug } = req.params;
+  const result = await blogServices.getBlogById(slug);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Blog retrieved successfully!",
+    data: result,
+  });
+});
+
 // Controller to update a Blog
 const updateBlog = catchAsync(async (req, res) => {
   const { blogId } = req.params;
@@ -82,7 +94,7 @@ export const blogControllers = {
   createBlog,
   getAllBlogs,
   getBlogById,
-
+  getBlogBySlug,
   updateBlog,
   deleteBlog,
   deleteBlogByAdmin,

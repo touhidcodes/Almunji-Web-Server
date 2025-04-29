@@ -21,6 +21,9 @@ router.get("/all", blogControllers.getAllBlogs);
 // Route to get a specific Blog by ID
 router.get("/:blogId", blogControllers.getBlogById);
 
+// Route to get a specific Blog by slug
+router.get("/slug/:slug", blogControllers.getBlogBySlug);
+
 // Route to update an existing Blog by ID
 router.put(
   "/:blogId",
