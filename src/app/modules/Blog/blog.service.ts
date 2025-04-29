@@ -6,6 +6,7 @@ import httpStatus from "http-status";
 import slugify from "slugify";
 import APIError from "../../errors/APIError";
 
+// Service to create a new Blog
 const createBlog = async (blogData: Omit<Blog, "slug">) => {
   const generatedSlug = slugify(blogData.title, { lower: true, strict: true });
 
@@ -38,6 +39,7 @@ const createBlog = async (blogData: Omit<Blog, "slug">) => {
   return result;
 };
 
+// Service to retrieve all Blog
 const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
@@ -120,10 +122,10 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
   };
 };
 
-// Service to retrieve a specific blog by ID
-const getBlogById = async (blogId: string) => {
+// Service to retrieve a specific Blog by ID
+const getBlogById = async (id: string) => {
   const result = await prisma.blog.findUniqueOrThrow({
-    where: { id: blogId },
+    where: { id },
     select: {
       id: true,
       slug: true,
@@ -139,20 +141,55 @@ const getBlogById = async (blogId: string) => {
   return result;
 };
 
-const updateBlog = async (blogId: string, blogData: Partial<Blog>) => {
+// Service to update a Blog
+const updateBlog = async (id: string, blogData: Partial<Blog>) => {
+  const existingBlog = await prisma.blog.findUnique({
+    where: { id },
+  });
+
+  if (!existingBlog) {
+    throw new APIError(httpStatus.NOT_FOUND, "Blog not found");
+  }
+
   const result = await prisma.blog.update({
-    where: {
-      id: blogId,
-    },
+    where: { id },
     data: blogData,
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+      isPublished: true,
+      isFeatured: true,
+    },
   });
   return result;
 };
 
-const deleteBlog = async (blogId: string) => {
+// Service to delete a Blog (soft delete)
+const deleteBlog = async (id: string) => {
+  const result = await prisma.blog.update({
+    where: { id },
+    data: { isDeleted: true },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+    },
+  });
+  return result;
+};
+
+// Service to delete a Blog (hard delete) only by Admin
+const deleteBlogByAdmin = async (id: string) => {
   const result = await prisma.blog.delete({
-    where: {
-      id: blogId,
+    where: { id },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
     },
   });
   return result;
@@ -164,4 +201,5 @@ export const blogServices = {
   getBlogById,
   updateBlog,
   deleteBlog,
+  deleteBlogByAdmin,
 };

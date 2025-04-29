@@ -32,14 +32,14 @@ router.put(
   tafsirControllers.updateTafsir
 );
 
-// Route to delete (soft) a tafsir by id
+// Route to delete (soft delete) a Tafsir by id
 router.delete(
   "/:tafsirId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   tafsirControllers.deleteTafsir
 );
 
-// Route to delete (hard) a tafsir by id only by admins
+// Route to delete (hard delete) a Tafsir by id only by Admins
 router.delete(
   "/admin/:tafsirId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),

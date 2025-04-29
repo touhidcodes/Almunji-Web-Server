@@ -234,7 +234,7 @@ const updateTafsir = async (id: string, data: Partial<Tafsir>) => {
   return result;
 };
 
-// Service to delete a tafsir (soft delete)
+// Service to delete a Tafsir (soft delete)
 const deleteTafsir = async (id: string) => {
   const result = await prisma.tafsir.update({
     where: { id },
@@ -247,7 +247,7 @@ const deleteTafsir = async (id: string) => {
   return result;
 };
 
-// Service to delete a tafsir (hard delete) only by admin
+// Service to delete a Tafsir (hard delete) only by Admin
 const deleteTafsirByAdmin = async (id: string) => {
   const result = await prisma.tafsir.delete({
     where: { id },

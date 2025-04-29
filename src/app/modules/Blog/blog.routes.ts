@@ -7,7 +7,7 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-// Route to create a new blog
+// Route to create a new Blog
 router.post(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
@@ -15,20 +15,30 @@ router.post(
   blogControllers.createBlog
 );
 
-// Route to get all blog
-router.get("/all", blogControllers.getBlogs);
+// Route to get all Bog
+router.get("/all", blogControllers.getAllBlogs);
 
+// Route to get a specific Blog by ID
 router.get("/:blogId", blogControllers.getBlogById);
 
+// Route to update an existing Blog by ID
 router.put(
   "/:blogId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(blogValidationSchemas.updateBlogSchema),
   blogControllers.updateBlog
 );
 
+// Route to delete (soft delete) a Blog by id
 router.delete(
   "/:blogId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  blogControllers.deleteBlog
+);
+
+// Route to delete (hard delete) a Tafsir by id only by Admins
+router.delete(
+  "/admin/:blogId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   blogControllers.deleteBlog
 );
