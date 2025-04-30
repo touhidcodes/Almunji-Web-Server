@@ -17,13 +17,28 @@ const createBook = async (bookData: Book) => {
     throw new APIError(httpStatus.CONFLICT, "Book name is already taken");
   }
 
+  // Check if the category exists
+  const category = await prisma.category.findUnique({
+    where: {
+      id: bookData.categoryId,
+    },
+  });
+
+  if (!category) {
+    throw new APIError(httpStatus.NOT_FOUND, "Category not found");
+  }
+
   const result = await prisma.book.create({
     data: bookData,
     select: {
       name: true,
       description: true,
       cover: true,
-      category: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
       isFeatured: true,
     },
   });
