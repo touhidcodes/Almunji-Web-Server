@@ -43,7 +43,7 @@ router.delete(
 router.delete(
   "/admin/:blogId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  blogControllers.deleteBlog
+  blogControllers.deleteBlogByAdmin
 );
 
 export const blogRoutes = router;
