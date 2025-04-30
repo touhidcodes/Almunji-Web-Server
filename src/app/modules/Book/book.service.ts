@@ -5,11 +5,11 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 
-// Service to create a book
-const createBook = async (data: Book) => {
+// Service to create a Book
+const createBook = async (bookData: Book) => {
   const existingBook = await prisma.book.findFirst({
     where: {
-      name: data.name,
+      name: bookData.name,
     },
   });
 
@@ -17,27 +17,14 @@ const createBook = async (data: Book) => {
     throw new APIError(httpStatus.CONFLICT, "Book name is already taken");
   }
 
-  const bookData = {
-    name: data.name,
-    description: data.description,
-    cover: data.cover,
-    content: data.content,
-    categoryId: data.categoryId,
-    featured: data.featured || false,
-  };
-
   const result = await prisma.book.create({
     data: bookData,
     select: {
-      id: true,
       name: true,
       description: true,
       cover: true,
-      content: true,
-      featured: true,
-      categoryId: true,
-      createdAt: true,
-      updatedAt: true,
+      category: true,
+      isFeatured: true,
     },
   });
 
