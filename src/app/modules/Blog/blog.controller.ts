@@ -33,6 +33,7 @@ const getAllBlogs = catchAsync(async (req, res) => {
 // Controller to get a specific Blog by ID
 const getBlogById = catchAsync(async (req, res) => {
   const { blogId } = req.params;
+
   const result = await blogServices.getBlogById(blogId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -45,7 +46,8 @@ const getBlogById = catchAsync(async (req, res) => {
 // Controller to get a specific Blog by slug
 const getBlogBySlug = catchAsync(async (req, res) => {
   const { slug } = req.params;
-  const result = await blogServices.getBlogById(slug);
+
+  const result = await blogServices.getBlogBySlug(slug);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -57,6 +59,7 @@ const getBlogBySlug = catchAsync(async (req, res) => {
 // Controller to update a Blog
 const updateBlog = catchAsync(async (req, res) => {
   const { blogId } = req.params;
+
   const result = await blogServices.updateBlog(blogId, req.body);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -69,6 +72,7 @@ const updateBlog = catchAsync(async (req, res) => {
 // Controller to delete (soft delete) a Blog
 const deleteBlog = catchAsync(async (req, res) => {
   const { blogId } = req.params;
+
   const result = await blogServices.deleteBlog(blogId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -81,6 +85,7 @@ const deleteBlog = catchAsync(async (req, res) => {
 // Controller to delete (hard delete) a Blog by ID only admins
 const deleteBlogByAdmin = catchAsync(async (req, res) => {
   const { blogId } = req.params;
+
   const result = await blogServices.deleteBlogByAdmin(blogId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
