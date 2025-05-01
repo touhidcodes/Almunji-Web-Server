@@ -18,8 +18,11 @@ router.post(
 // Route to get all Book
 router.get("/all", bookControllers.getAllBooks);
 
-// Route to get a specific Book
+// Route to get a specific Book by ID
 router.get("/:bookId", bookControllers.getBookById);
+
+// Route to get a specific Book by slug
+router.get("/slug/:slug", bookControllers.getBookBySlug);
 
 // Route to update a specific Book
 router.put(

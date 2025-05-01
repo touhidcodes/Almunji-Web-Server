@@ -32,10 +32,22 @@ const getAllBooks = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get a specific Book
+// Controller to get a specific Book by ID
 const getBookById = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.getBookById(bookId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get a specific Book by slug
+const getBookBySlug = catchAsync(async (req, res) => {
+  const { slug } = req.params;
+  const result = await bookServices.getBookBySlug(slug);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -72,6 +84,7 @@ export const bookControllers = {
   createBook,
   getAllBooks,
   getBookById,
+  getBookBySlug,
   updateBook,
   deleteBook,
 };
