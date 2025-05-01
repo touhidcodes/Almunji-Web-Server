@@ -32,6 +32,9 @@ const createCategory = async (data: { name: string; description?: string }) => {
 // Service to get all categories
 const getAllCategories = async () => {
   const result = await prisma.category.findMany({
+    where: {
+      isDeleted: false,
+    },
     select: {
       id: true,
       name: true,
@@ -90,6 +93,19 @@ const deleteCategory = async (id: string) => {
 
 // Service to delete a  specific Category (Hard Delete) only by Admin
 const deleteCategoryByAdmin = async (id: string) => {
+  const hasBooks = await prisma.book.findFirst({
+    where: {
+      categoryId: id,
+    },
+  });
+
+  if (hasBooks) {
+    throw new APIError(
+      httpStatus.BAD_REQUEST,
+      "Cannot delete category. Books exist under this category."
+    );
+  }
+
   const result = await prisma.category.delete({
     where: { id },
     select: {
