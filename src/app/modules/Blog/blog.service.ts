@@ -53,7 +53,6 @@ const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
     typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
   const isFeaturedQuery =
     isFeatured === "true" ? true : isFeatured === "false" ? false : undefined;
-
   const isPublishedQuery =
     isPublished === "true" ? true : isPublished === "false" ? false : undefined;
 

@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
+import { bookQueryFields } from "./book.constants";
 
 // Service to create a Book
 const createBook = async (bookData: Book) => {
@@ -46,38 +47,59 @@ const createBook = async (bookData: Book) => {
   return result;
 };
 
-// Service to get book
-const getBooks = async (params: any, options: TPaginationOptions) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, isDeleted, ...filterData } = params;
+// Service to get all Books
+const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
+  const {
+    searchTerm,
+    isFeatured,
+    isDeleted,
+    category,
+    sortBy,
+    sortOrder,
+    ...filterData
+  } = options;
+  const { page, limit, skip } =
+    paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.BookWhereInput[] = [];
 
-  // Search by book name or description
-  if (searchTerm) {
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+  const isFeaturedQuery =
+    isFeatured === "true" ? true : isFeatured === "false" ? false : undefined;
+
+  // Search by only non-deleted tafsir
+  if (isDeletedQuery !== undefined) {
     andConditions.push({
-      OR: [
-        {
-          name: {
-            contains: searchTerm,
-            mode: "insensitive",
-          } as any,
-        },
-        {
-          description: {
-            contains: searchTerm,
-            mode: "insensitive",
-          } as any,
-        },
-      ],
+      isDeleted: isDeletedQuery,
     });
   }
 
-  // Filter by isDeleted flag
-  if (typeof isDeleted !== "undefined") {
-    const isDeletedFilter = isDeleted === "true" ? true : false;
+  // Search by featured blog
+  if (typeof isFeaturedQuery === "boolean") {
+    andConditions.push({ isFeatured: isFeaturedQuery });
+  }
+
+  // Search by book name and description
+  if (searchTerm) {
     andConditions.push({
-      isDeleted: isDeletedFilter,
+      OR: bookQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Search by book category name
+  if (category) {
+    andConditions.push({
+      category: {
+        name: {
+          equals: category,
+        },
+      },
     });
   }
 
@@ -97,16 +119,25 @@ const getBooks = async (params: any, options: TPaginationOptions) => {
 
   const result = await prisma.book.findMany({
     where: whereConditions,
+    select: {
+      name: true,
+      description: true,
+      cover: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      isFeatured: true,
+    },
     skip,
     take: limit,
     orderBy:
-      options.sortBy && options.sortOrder
+      sortBy && sortOrder
         ? {
-            [options.sortBy]: options.sortOrder,
+            [sortBy]: sortOrder,
           }
-        : {
-            createdAt: "desc",
-          },
+        : { createdAt: "desc" },
   });
 
   const total = await prisma.book.count({
@@ -123,24 +154,6 @@ const getBooks = async (params: any, options: TPaginationOptions) => {
   };
 };
 
-// Service to get all book
-const getAllBooks = async () => {
-  const result = await prisma.book.findMany({
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      cover: true,
-      isFeatured: true,
-      categoryId: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
-
-  return result;
-};
-
 // Service to get a specific book
 const getSingleBook = async (id: string) => {
   const result = await prisma.book.findUniqueOrThrow({
@@ -150,8 +163,7 @@ const getSingleBook = async (id: string) => {
       name: true,
       description: true,
       cover: true,
-      content: true,
-      featured: true,
+      isFeatured: true,
       categoryId: true,
       category: {
         select: {
@@ -188,18 +200,18 @@ const updateBook = async (id: string, data: Partial<Book>) => {
       name: data.name || existingBook.name,
       description: data.description || existingBook.description,
       cover: data.cover || existingBook.cover,
-      content: data.content || existingBook.content,
       categoryId: data.categoryId || existingBook.categoryId,
-      featured:
-        data.featured !== undefined ? data.featured : existingBook.featured,
+      isFeatured:
+        data.isFeatured !== undefined
+          ? data.isFeatured
+          : existingBook.isFeatured,
     },
     select: {
       id: true,
       name: true,
       description: true,
       cover: true,
-      content: true,
-      featured: true,
+      isFeatured: true,
       categoryId: true,
       createdAt: true,
       updatedAt: true,
@@ -228,7 +240,6 @@ const deleteBook = async (id: string) => {
 
 export const bookServices = {
   createBook,
-  getBooks,
   getAllBooks,
   getSingleBook,
   updateBook,

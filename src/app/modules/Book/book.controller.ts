@@ -3,7 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { bookServices } from "./book.service";
 import queryPickers from "../../utils/queryPickers";
-import { bookFilterableFields, bookSearchableFields } from "./book.constants";
+import { bookFilterableFields, bookPaginationFields } from "./book.constants";
 
 // Controller to create a book
 const createBook = catchAsync(async (req, res) => {
@@ -16,11 +16,11 @@ const createBook = catchAsync(async (req, res) => {
   });
 });
 
-const getBooks = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, bookSearchableFields);
-  const filters = queryPickers(req.query, bookFilterableFields);
+const getAllBooks = catchAsync(async (req, res) => {
+  const options = queryPickers(req.query, bookFilterableFields);
+  const pagination = queryPickers(req.query, bookPaginationFields);
 
-  const result = await bookServices.getBooks(filters, options);
+  const result = await bookServices.getAllBooks(options, pagination);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -28,17 +28,6 @@ const getBooks = catchAsync(async (req, res) => {
     message: "Books retrieved successfully!",
     meta: result.meta,
     data: result.data,
-  });
-});
-
-// Controller to get all book
-const getAllBooks = catchAsync(async (req, res) => {
-  const result = await bookServices.getAllBooks();
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "All books retrieved successfully!",
-    data: result,
   });
 });
 
@@ -80,7 +69,6 @@ const deleteBook = catchAsync(async (req, res) => {
 
 export const bookControllers = {
   createBook,
-  getBooks,
   getAllBooks,
   getSingleBook,
   updateBook,

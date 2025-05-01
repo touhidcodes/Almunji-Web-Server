@@ -29,7 +29,7 @@ const createCategory = async (data: { name: string; description?: string }) => {
   return result;
 };
 
-// Service to get all categories
+// Service to get all Categories
 const getAllCategories = async () => {
   const result = await prisma.category.findMany({
     where: {
