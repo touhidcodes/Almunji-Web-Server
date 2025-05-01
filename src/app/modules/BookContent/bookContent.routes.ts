@@ -2,6 +2,7 @@ import express from "express";
 import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
+import { bookContentControllers } from "./bookContent.controller";
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.post(
   "/content",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   validateRequest(bookValidationSchema.createBookSchema),
-  bookControllers.createBook
+  bookContentControllers.createBookContent
 );
 
 // Route to get all Book
