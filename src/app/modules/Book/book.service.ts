@@ -252,21 +252,49 @@ const updateBook = async (id: string, bookData: Partial<Book>) => {
   return result;
 };
 
-// Service to delete a Book
+// Service to delete a Book (Soft Delete)
 const deleteBook = async (id: string) => {
   const result = await prisma.book.update({
-    where: { id: id },
+    where: { id },
     data: {
       isDeleted: true,
     },
     select: {
       id: true,
       name: true,
-      isDeleted: true,
+      slug: true,
     },
   });
 
   return result;
+};
+
+// Service to delete a Book (Hard Delete) by Admin
+const deleteBookByAdmin = async (id: string) => {
+  const existingBook = await prisma.book.findUnique({
+    where: { id },
+  });
+
+  if (!existingBook) {
+    throw new APIError(httpStatus.NOT_FOUND, "Book not found!");
+  }
+
+  const result = await prisma.$transaction([
+    prisma.bookContent.deleteMany({
+      where: { bookId: id },
+    }),
+
+    prisma.book.delete({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+      },
+    }),
+  ]);
+
+  return result[1];
 };
 
 export const bookServices = {
@@ -276,4 +304,5 @@ export const bookServices = {
   getBookBySlug,
   updateBook,
   deleteBook,
+  deleteBookByAdmin,
 };

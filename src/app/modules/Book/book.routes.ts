@@ -32,11 +32,18 @@ router.put(
   bookControllers.updateBook
 );
 
-// Route to delete a Book
+// Route to delete a Book (Soft Delete)
 router.delete(
   "/:bookId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   bookControllers.deleteBook
+);
+
+// Route to delete a Book (Hard Delete) by Admin
+router.delete(
+  "/admin/:bookId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  bookControllers.deleteBookByAdmin
 );
 
 export const bookRoutes = router;

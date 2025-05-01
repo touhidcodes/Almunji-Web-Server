@@ -68,10 +68,22 @@ const updateBook = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete a Book
+// Controller to delete a Book (Soft Delete)
 const deleteBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.deleteBook(bookId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book removed successfully!",
+    data: result,
+  });
+});
+
+// Controller to delete a Book (Hard Delete) by Admin
+const deleteBookByAdmin = catchAsync(async (req, res) => {
+  const { bookId } = req.params;
+  const result = await bookServices.deleteBookByAdmin(bookId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -87,4 +99,5 @@ export const bookControllers = {
   getBookBySlug,
   updateBook,
   deleteBook,
+  deleteBookByAdmin,
 };
