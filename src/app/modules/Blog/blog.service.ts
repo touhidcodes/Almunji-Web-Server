@@ -161,11 +161,11 @@ const getBlogBySlug = async (slug: string) => {
 
 // Service to update a Blog
 const updateBlog = async (id: string, blogData: Partial<Blog>) => {
-  // Block updates to `title` and `slug`
+  // Block updates to title and slug
   if ("title" in blogData || "slug" in blogData) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
-      "Updating 'title' or 'slug' is not allowed"
+      "Updating title or slug is not allowed!"
     );
   }
 
@@ -174,7 +174,7 @@ const updateBlog = async (id: string, blogData: Partial<Blog>) => {
   });
 
   if (!existingBlog) {
-    throw new APIError(httpStatus.NOT_FOUND, "Blog not found");
+    throw new APIError(httpStatus.NOT_FOUND, "Blog not found!");
   }
 
   const result = await prisma.blog.update({

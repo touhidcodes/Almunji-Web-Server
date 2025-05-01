@@ -213,49 +213,46 @@ const getBookBySlug = async (slug: string) => {
 };
 
 // Service to update a book
-const updateBook = async (id: string, data: Partial<Book>) => {
-  const existingBook = await prisma.book.findUniqueOrThrow({
-    where: { id: id },
-  });
-
-  if (data.name && data.name !== existingBook.name) {
-    const existingName = await prisma.book.findFirst({
-      where: { name: data.name },
-    });
-    if (existingName) {
-      throw new APIError(httpStatus.CONFLICT, "Book name is already taken");
-    }
+const updateBook = async (id: string, bookData: Partial<Book>) => {
+  // Block updates to name and slug
+  if ("name" in bookData || "slug" in bookData) {
+    throw new APIError(
+      httpStatus.BAD_REQUEST,
+      "Updating name or slug is not allowed!"
+    );
   }
 
-  // Update the book
+  const existingBook = await prisma.book.findUnique({
+    where: { id },
+  });
+
+  if (!existingBook) {
+    throw new APIError(httpStatus.NOT_FOUND, "Book not found!");
+  }
+
+  // Update the Book
   const result = await prisma.book.update({
-    where: { id: id },
-    data: {
-      name: data.name || existingBook.name,
-      description: data.description || existingBook.description,
-      cover: data.cover || existingBook.cover,
-      categoryId: data.categoryId || existingBook.categoryId,
-      isFeatured:
-        data.isFeatured !== undefined
-          ? data.isFeatured
-          : existingBook.isFeatured,
-    },
+    where: { id },
+    data: bookData,
     select: {
       id: true,
       name: true,
+      slug: true,
       description: true,
       cover: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
       isFeatured: true,
-      categoryId: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
   return result;
 };
 
-// Service to delete a book
+// Service to delete a Book
 const deleteBook = async (id: string) => {
   const result = await prisma.book.update({
     where: { id: id },
