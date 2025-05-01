@@ -3,43 +3,44 @@ import auth from "../../middlewares/auth";
 import validateRequest from "../../middlewares/validateRequest";
 import { UserRole } from "@prisma/client";
 import { bookContentControllers } from "./bookContent.controller";
+import { bookContentValidationSchema } from "./bookContent.validation";
 
 const router = express.Router();
 
 // Route to create a Book
 router.post(
-  "/content",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(bookValidationSchema.createBookSchema),
+  "/",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  validateRequest(bookContentValidationSchema.createContentSchema),
   bookContentControllers.createBookContent
 );
 
 // Route to get all Book
-router.get("/content/all", bookControllers.getAllBooks);
+router.get("/content/all", bookContentControllers.getAllBookContent);
 
 // Route to get a specific Book by ID
-router.get("/content/:contentId", bookControllers.getBookById);
+router.get("/content/:contentId", bookContentControllers.getBookContentById);
 
 // Route to update a specific Book
 router.put(
   "/content/:contentId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  validateRequest(bookValidationSchema.updateBookSchema),
-  bookControllers.updateBook
+  validateRequest(bookContentValidationSchema.updateContentSchema),
+  bookContentControllers.updateBookContent
 );
 
 // Route to delete a Book (Soft Delete)
 router.delete(
   "/content/:contentId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
-  bookControllers.deleteBook
+  bookContentControllers.deleteBookContent
 );
 
 // Route to delete a Book (Hard Delete) by Admin
 router.delete(
   "/content/admin/:contentId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  bookControllers.deleteBookByAdmin
+  bookContentControllers.deleteBookContentByAdmin
 );
 
-export const bookRoutes = router;
+export const bookContentRoutes = router;

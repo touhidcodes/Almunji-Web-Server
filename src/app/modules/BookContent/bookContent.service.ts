@@ -5,10 +5,10 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 
-// Create book content
-const createBookContent = async (data: BookContent) => {
+// Service to create Book Content
+const createBookContent = async (contentData: BookContent) => {
   const book = await prisma.book.findUnique({
-    where: { id: data.bookId },
+    where: { id: contentData.bookId },
   });
 
   if (!book) {
@@ -16,7 +16,7 @@ const createBookContent = async (data: BookContent) => {
   }
 
   const result = await prisma.bookContent.create({
-    data,
+    data: contentData,
   });
 
   return result;

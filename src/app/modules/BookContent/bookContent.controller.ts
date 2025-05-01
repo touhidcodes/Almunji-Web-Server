@@ -2,6 +2,11 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import queryPickers from "../../utils/queryPickers";
+import { bookContentServices } from "./bookContent.service";
+import {
+  bookContentFilterableFields,
+  bookContentPaginationFields,
+} from "./BookContent.constants";
 
 // Create a Book Content
 const createBookContent = catchAsync(async (req, res) => {
@@ -77,7 +82,7 @@ const deleteBookContent = catchAsync(async (req, res) => {
 // Hard Delete Book Content (Admin only)
 const deleteBookContentByAdmin = catchAsync(async (req, res) => {
   const { contentId } = req.params;
-  const result = await bookContentServices.deleteBookContentByAdmin(contentId);
+  const result = await bookContentServices.deleteBookContent(contentId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

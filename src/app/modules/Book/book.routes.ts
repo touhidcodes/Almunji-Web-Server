@@ -10,7 +10,7 @@ const router = express.Router();
 // Route to create a Book
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(bookValidationSchema.createBookSchema),
   bookControllers.createBook
 );
@@ -27,7 +27,7 @@ router.get("/slug/:slug", bookControllers.getBookBySlug);
 // Route to update a specific Book
 router.put(
   "/:bookId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(bookValidationSchema.updateBookSchema),
   bookControllers.updateBook
 );

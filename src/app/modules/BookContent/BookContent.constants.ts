@@ -1,5 +1,5 @@
 // For all filtering
-export const bookFilterableFields = [
+export const bookContentFilterableFields = [
   "searchTerm",
   "isDeleted",
   "sortBy",
@@ -7,7 +7,7 @@ export const bookFilterableFields = [
 ];
 
 // For pagination
-export const bookPaginationFields: string[] = ["limit", "page"];
+export const bookContentPaginationFields: string[] = ["limit", "page"];
 
 // For all searching
-export const bookQueryFields = ["title", "content"];
+export const bookContentQueryFields = ["title", "content"];
