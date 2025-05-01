@@ -120,6 +120,7 @@ const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
   const result = await prisma.book.findMany({
     where: whereConditions,
     select: {
+      id: true,
       name: true,
       description: true,
       cover: true,
@@ -154,8 +155,8 @@ const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
   };
 };
 
-// Service to get a specific book
-const getSingleBook = async (id: string) => {
+// Service to get a specific Book by ID
+const getBookById = async (id: string) => {
   const result = await prisma.book.findUniqueOrThrow({
     where: { id: id },
     select: {
@@ -163,15 +164,12 @@ const getSingleBook = async (id: string) => {
       name: true,
       description: true,
       cover: true,
-      isFeatured: true,
-      categoryId: true,
       category: {
         select: {
           name: true,
         },
       },
-      createdAt: true,
-      updatedAt: true,
+      isFeatured: true,
     },
   });
 
@@ -241,7 +239,7 @@ const deleteBook = async (id: string) => {
 export const bookServices = {
   createBook,
   getAllBooks,
-  getSingleBook,
+  getBookById,
   updateBook,
   deleteBook,
 };

@@ -5,7 +5,7 @@ import { bookServices } from "./book.service";
 import queryPickers from "../../utils/queryPickers";
 import { bookFilterableFields, bookPaginationFields } from "./book.constants";
 
-// Controller to create a book
+// Controller to create a Book
 const createBook = catchAsync(async (req, res) => {
   const result = await bookServices.createBook(req.body);
   sendResponse(res, {
@@ -16,6 +16,7 @@ const createBook = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get all Books
 const getAllBooks = catchAsync(async (req, res) => {
   const options = queryPickers(req.query, bookFilterableFields);
   const pagination = queryPickers(req.query, bookPaginationFields);
@@ -31,10 +32,10 @@ const getAllBooks = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get a specific book
-const getSingleBook = catchAsync(async (req, res) => {
+// Controller to get a specific Book
+const getBookById = catchAsync(async (req, res) => {
   const { bookId } = req.params;
-  const result = await bookServices.getSingleBook(bookId);
+  const result = await bookServices.getBookById(bookId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -43,7 +44,7 @@ const getSingleBook = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to update a book
+// Controller to update a Book
 const updateBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.updateBook(bookId, req.body);
@@ -55,7 +56,7 @@ const updateBook = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete a book
+// Controller to delete a Book
 const deleteBook = catchAsync(async (req, res) => {
   const { bookId } = req.params;
   const result = await bookServices.deleteBook(bookId);
@@ -70,7 +71,7 @@ const deleteBook = catchAsync(async (req, res) => {
 export const bookControllers = {
   createBook,
   getAllBooks,
-  getSingleBook,
+  getBookById,
   updateBook,
   deleteBook,
 };

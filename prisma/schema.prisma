@@ -67,6 +67,7 @@ model Category {
 model Book {
   id          String        @id @default(uuid())
   name        String        @unique
+  slug        String        @unique
   description String?
   cover       String
   categoryId  String
@@ -97,9 +98,9 @@ model BookContent {
 
 model Blog {
   id          String   @id @default(uuid())
+  title       String   @unique
   slug        String   @unique
   thumbnail   String?
-  title       String
   summary     String?
   content     String   @db.LongText
   isPublished Boolean  @default(true)

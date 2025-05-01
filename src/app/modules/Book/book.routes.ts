@@ -7,7 +7,7 @@ import { bookValidationSchema } from "./book.validation";
 
 const router = express.Router();
 
-// Route to create a book
+// Route to create a Book
 router.post(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
@@ -15,13 +15,13 @@ router.post(
   bookControllers.createBook
 );
 
-// Route to get all book
+// Route to get all Book
 router.get("/all", bookControllers.getAllBooks);
 
-// Route to get a specific book
-router.get("/:bookId", bookControllers.getSingleBook);
+// Route to get a specific Book
+router.get("/:bookId", bookControllers.getBookById);
 
-// Route to update a specific book
+// Route to update a specific Book
 router.put(
   "/:bookId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
@@ -29,7 +29,7 @@ router.put(
   bookControllers.updateBook
 );
 
-// Route to delete a book
+// Route to delete a Book
 router.delete(
   "/:bookId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
