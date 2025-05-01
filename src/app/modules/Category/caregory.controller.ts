@@ -3,7 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { categoryServices } from "./category.service";
 
-// Controller to update a category
+// Controller to update a Category
 const createCategory = catchAsync(async (req, res) => {
   const result = await categoryServices.createCategory(req.body);
   sendResponse(res, {
@@ -14,7 +14,7 @@ const createCategory = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get all category
+// Controller to get all Category
 const getAllCategories = catchAsync(async (req, res) => {
   const result = await categoryServices.getAllCategories();
   sendResponse(res, {
@@ -25,7 +25,7 @@ const getAllCategories = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to update a specific category
+// Controller to update a specific Category
 const updateCategory = catchAsync(async (req, res) => {
   const { categoryId } = req.params;
 
@@ -38,11 +38,24 @@ const updateCategory = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete a category
+// Controller to delete a Category
 const deleteCategory = catchAsync(async (req, res) => {
   const { categoryId } = req.params;
 
   const result = await categoryServices.deleteCategory(categoryId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Category removed successfully!",
+    data: result,
+  });
+});
+
+// Controller to delete a Category (Hard Delete) only by Admin
+const deleteCategoryByAdmin = catchAsync(async (req, res) => {
+  const { categoryId } = req.params;
+
+  const result = await categoryServices.deleteCategoryByAdmin(categoryId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -56,4 +69,5 @@ export const categoryControllers = {
   getAllCategories,
   updateCategory,
   deleteCategory,
+  deleteCategoryByAdmin,
 };

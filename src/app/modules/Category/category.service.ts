@@ -2,7 +2,7 @@ import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 
-// Service to create a category
+// Service to create a Category
 const createCategory = async (data: { name: string; description?: string }) => {
   const existingCategory = await prisma.category.findUnique({
     where: {
@@ -41,12 +41,12 @@ const getAllCategories = async () => {
   return result;
 };
 
-// Service to update a specific category
+// Service to update a specific Category
 const updateCategory = async (id: string, data: { name: string }) => {
   const { name } = data;
 
   const existingCategory = await prisma.category.findUniqueOrThrow({
-    where: { id: id },
+    where: { id },
   });
 
   if (name && name !== existingCategory.name) {
@@ -72,13 +72,26 @@ const updateCategory = async (id: string, data: { name: string }) => {
   return result;
 };
 
-// Service to delete a  specific category
+// Service to delete a  specific Category (Soft Delete)
 const deleteCategory = async (id: string) => {
   const result = await prisma.category.update({
-    where: { id: id },
+    where: { id },
     data: {
       isDeleted: true,
     },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+
+  return result;
+};
+
+// Service to delete a  specific Category (Hard Delete) only by Admin
+const deleteCategoryByAdmin = async (id: string) => {
+  const result = await prisma.category.delete({
+    where: { id },
     select: {
       id: true,
       name: true,
@@ -93,4 +106,5 @@ export const categoryServices = {
   getAllCategories,
   updateCategory,
   deleteCategory,
+  deleteCategoryByAdmin,
 };
