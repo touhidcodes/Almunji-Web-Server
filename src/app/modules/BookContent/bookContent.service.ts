@@ -4,6 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
+import { bookContentQueryFields } from "./BookContent.constants";
 
 // Service to create Book Content
 const createBookContent = async (contentData: BookContent) => {
@@ -17,6 +18,17 @@ const createBookContent = async (contentData: BookContent) => {
 
   const result = await prisma.bookContent.create({
     data: contentData,
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+      text: true,
+      order: true,
+    },
   });
 
   return result;
@@ -24,22 +36,75 @@ const createBookContent = async (contentData: BookContent) => {
 
 // Get all book contents
 const getAllBookContents = async (
-  filters: any,
+  options: any,
   pagination: TPaginationOptions
 ) => {
+  const { searchTerm, isDeleted, sortBy, sortOrder, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
+  const andConditions: Prisma.BookContentWhereInput[] = [];
+
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted book content
+  if (isDeletedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: isDeletedQuery,
+    });
+  }
+
+  // Search by book content title and text
+  if (searchTerm) {
+    andConditions.push({
+      OR: bookContentQueryFields.map((field) => ({
+        [field]: {
+          contains: searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.keys(filterData).map((key) => ({
+        [key]: {
+          equals: (filterData as any)[key],
+        },
+      })),
+    });
+  }
+
+  const whereConditions: Prisma.BookContentWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
   const result = await prisma.bookContent.findMany({
-    where: filters,
+    where: whereConditions,
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+      text: true,
+      order: true,
+    },
     skip,
     take: limit,
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { createdAt: "desc" },
   });
 
-  const total = await prisma.bookContent.count({ where: filters });
+  const total = await prisma.bookContent.count({ where: whereConditions });
 
   return {
     meta: {

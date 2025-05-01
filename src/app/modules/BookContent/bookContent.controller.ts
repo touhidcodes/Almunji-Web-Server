@@ -21,10 +21,10 @@ const createBookContent = catchAsync(async (req, res) => {
 
 // Get all Book Contents
 const getAllBookContent = catchAsync(async (req, res) => {
-  const filters = queryPickers(req.query, bookContentFilterableFields);
+  const options = queryPickers(req.query, bookContentFilterableFields);
   const pagination = queryPickers(req.query, bookContentPaginationFields);
   const result = await bookContentServices.getAllBookContents(
-    filters,
+    options,
     pagination
   );
 

@@ -7,7 +7,7 @@ import { bookContentValidationSchema } from "./bookContent.validation";
 
 const router = express.Router();
 
-// Route to create a Book
+// Route to create a Book Content
 router.post(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
