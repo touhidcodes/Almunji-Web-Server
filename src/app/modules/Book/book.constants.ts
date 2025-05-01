@@ -1,7 +1,8 @@
 // For all filtering
 export const bookFilterableFields = [
   "searchTerm",
-  "featured",
+  "slug",
+  "isFeatured",
   "isDeleted",
   "category",
   "sortBy",

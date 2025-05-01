@@ -5,17 +5,18 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookQueryFields } from "./book.constants";
+import slugify from "slugify";
 
 // Service to create a Book
-const createBook = async (bookData: Book) => {
-  const existingBook = await prisma.book.findFirst({
-    where: {
-      name: bookData.name,
-    },
+const createBook = async (bookData: Omit<Book, "slug">) => {
+  const generatedSlug = slugify(bookData.name, { lower: true, strict: true });
+
+  const existingBook = await prisma.blog.findFirst({
+    where: { slug: generatedSlug },
   });
 
   if (existingBook) {
-    throw new APIError(httpStatus.CONFLICT, "Book name is already taken");
+    throw new APIError(httpStatus.CONFLICT, "Book name is already taken!");
   }
 
   // Check if the category exists
@@ -26,13 +27,14 @@ const createBook = async (bookData: Book) => {
   });
 
   if (!category) {
-    throw new APIError(httpStatus.NOT_FOUND, "Category not found");
+    throw new APIError(httpStatus.NOT_FOUND, "Category not found!");
   }
 
   const result = await prisma.book.create({
-    data: bookData,
+    data: { ...bookData, slug: generatedSlug },
     select: {
       name: true,
+      slug: true,
       description: true,
       cover: true,
       category: {
@@ -51,6 +53,7 @@ const createBook = async (bookData: Book) => {
 const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
   const {
     searchTerm,
+    slug,
     isFeatured,
     isDeleted,
     category,
@@ -92,6 +95,15 @@ const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
     });
   }
 
+  // Search by book slug
+  if (slug) {
+    andConditions.push({
+      slug: {
+        equals: slug,
+      },
+    });
+  }
+
   // Search by book category name
   if (category) {
     andConditions.push({
@@ -122,6 +134,7 @@ const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
     select: {
       id: true,
       name: true,
+      slug: true,
       description: true,
       cover: true,
       category: {

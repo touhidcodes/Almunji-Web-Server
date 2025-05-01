@@ -39,6 +39,9 @@ const getAllCategories = async () => {
       id: true,
       name: true,
     },
+    orderBy: {
+      name: "asc",
+    },
   });
 
   return result;
