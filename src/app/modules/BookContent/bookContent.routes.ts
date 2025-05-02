@@ -21,6 +21,9 @@ router.get("/all", bookContentControllers.getAllBookContent);
 // Route to get a specific Book Content by ID
 router.get("/:contentId", bookContentControllers.getBookContentById);
 
+// Route to get a specific Book Contents by Book ID
+router.get("/book/:bookId", bookContentControllers.getContentsByBookId);
+
 // Route to update a specific Book Content
 router.put(
   "/:contentId",

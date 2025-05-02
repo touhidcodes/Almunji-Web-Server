@@ -138,14 +138,33 @@ const getBookContentById = async (id: string) => {
 
 // Service for get a specific Book Content
 const getContentsByBookId = async (bookId: string) => {
+  const existingBook = await prisma.book.findUnique({
+    where: { id: bookId },
+    select: { name: true, slug: true },
+  });
+
+  if (!existingBook) {
+    throw new APIError(httpStatus.NOT_FOUND, "Book not found!");
+  }
+
   const result = await prisma.bookContent.findMany({
     where: { bookId },
     orderBy: {
       order: "asc",
     },
+    select: {
+      id: true,
+      title: true,
+      text: true,
+      order: true,
+    },
   });
 
-  return result;
+  return {
+    book: existingBook.name,
+    slug: existingBook.slug,
+    content: result,
+  };
 };
 
 // Service for update Book Content

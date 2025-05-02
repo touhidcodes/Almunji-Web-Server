@@ -50,6 +50,19 @@ const getBookContentById = catchAsync(async (req, res) => {
   });
 });
 
+// Get a single Book Content by ID
+const getContentsByBookId = catchAsync(async (req, res) => {
+  const { bookId } = req.params;
+  const result = await bookContentServices.getContentsByBookId(bookId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book content retrieved successfully!",
+    data: result,
+  });
+});
+
 // Update Book Content
 const updateBookContent = catchAsync(async (req, res) => {
   const { contentId } = req.params;
@@ -96,6 +109,7 @@ export const bookContentControllers = {
   createBookContent,
   getAllBookContent,
   getBookContentById,
+  getContentsByBookId,
   updateBookContent,
   deleteBookContent,
   deleteBookContentByAdmin,
