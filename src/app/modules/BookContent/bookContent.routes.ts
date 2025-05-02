@@ -15,30 +15,30 @@ router.post(
   bookContentControllers.createBookContent
 );
 
-// Route to get all Book
-router.get("/content/all", bookContentControllers.getAllBookContent);
+// Route to get all Book Content
+router.get("/all", bookContentControllers.getAllBookContent);
 
-// Route to get a specific Book by ID
-router.get("/content/:contentId", bookContentControllers.getBookContentById);
+// Route to get a specific Book Content by ID
+router.get("/:contentId", bookContentControllers.getBookContentById);
 
-// Route to update a specific Book
+// Route to update a specific Book Content
 router.put(
-  "/content/:contentId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  "/:contentId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(bookContentValidationSchema.updateContentSchema),
   bookContentControllers.updateBookContent
 );
 
 // Route to delete a Book (Soft Delete)
 router.delete(
-  "/content/:contentId",
+  "/:contentId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   bookContentControllers.deleteBookContent
 );
 
-// Route to delete a Book (Hard Delete) by Admin
+// Route to delete a Book (Hard Delete) only by Admin
 router.delete(
-  "/content/admin/:contentId",
+  "/admin/:contentId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   bookContentControllers.deleteBookContentByAdmin
 );

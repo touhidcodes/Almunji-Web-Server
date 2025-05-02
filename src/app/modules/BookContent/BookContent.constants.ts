@@ -10,4 +10,4 @@ export const bookContentFilterableFields = [
 export const bookContentPaginationFields: string[] = ["limit", "page"];
 
 // For all searching
-export const bookContentQueryFields = ["title", "content"];
+export const bookContentQueryFields = ["title", "text"];

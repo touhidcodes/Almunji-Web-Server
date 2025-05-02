@@ -74,7 +74,7 @@ const deleteBookContent = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Book content soft-deleted successfully!",
+    message: "Book content removed successfully!",
     data: result,
   });
 });
@@ -82,12 +82,12 @@ const deleteBookContent = catchAsync(async (req, res) => {
 // Hard Delete Book Content (Admin only)
 const deleteBookContentByAdmin = catchAsync(async (req, res) => {
   const { contentId } = req.params;
-  const result = await bookContentServices.deleteBookContent(contentId);
+  const result = await bookContentServices.deleteBookContentByAdmin(contentId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Book content hard-deleted successfully!",
+    message: "Book content deleted successfully!",
     data: result,
   });
 });

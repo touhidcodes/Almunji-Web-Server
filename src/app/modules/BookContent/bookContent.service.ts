@@ -6,7 +6,7 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookContentQueryFields } from "./BookContent.constants";
 
-// Service to create Book Content
+// Service for create Book Content
 const createBookContent = async (contentData: BookContent) => {
   const book = await prisma.book.findUnique({
     where: { id: contentData.bookId },
@@ -34,7 +34,7 @@ const createBookContent = async (contentData: BookContent) => {
   return result;
 };
 
-// Get all book contents
+// Service for get all Book Contents
 const getAllBookContents = async (
   options: any,
   pagination: TPaginationOptions
@@ -116,16 +116,27 @@ const getAllBookContents = async (
   };
 };
 
-// Get a single book content by ID
+// Service for get a single Book Content by ID
 const getBookContentById = async (id: string) => {
   const result = await prisma.bookContent.findUniqueOrThrow({
     where: { id },
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+      text: true,
+      order: true,
+    },
   });
 
   return result;
 };
 
-// Get all contents for a specific book
+// Service for get a specific Book Content
 const getContentsByBookId = async (bookId: string) => {
   const result = await prisma.bookContent.findMany({
     where: { bookId },
@@ -137,26 +148,92 @@ const getContentsByBookId = async (bookId: string) => {
   return result;
 };
 
-// Update book content
+// Service for update Book Content
 const updateBookContent = async (id: string, data: Partial<BookContent>) => {
+  if ("bookId" in data) {
+    throw new APIError(
+      httpStatus.BAD_REQUEST,
+      "Updating bookId is not allowed!"
+    );
+  }
+
   const existing = await prisma.bookContent.findUnique({ where: { id } });
 
   if (!existing) {
     throw new APIError(httpStatus.NOT_FOUND, "Book content not found!");
   }
 
+  // If order is being updated, check for unique constraint violation
+  if (data.order !== undefined && data.order !== existing.order) {
+    const conflict = await prisma.bookContent.findFirst({
+      where: {
+        bookId: existing.bookId,
+        order: data.order,
+        NOT: { id },
+      },
+    });
+
+    if (conflict) {
+      throw new APIError(
+        httpStatus.CONFLICT,
+        `Content with order ${data.order} already exists for this book!`
+      );
+    }
+  }
+
   const result = await prisma.bookContent.update({
     where: { id },
     data,
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+      text: true,
+      order: true,
+    },
   });
 
   return result;
 };
 
-// Delete book content
+// Service for delete Book Content (Soft Delete)
 const deleteBookContent = async (id: string) => {
+  const result = await prisma.bookContent.update({
+    where: { id },
+    data: {
+      isDeleted: true,
+    },
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+    },
+  });
+
+  return result;
+};
+
+// Service for delete book content (Hard Delete) only by Admin
+const deleteBookContentByAdmin = async (id: string) => {
   const result = await prisma.bookContent.delete({
     where: { id },
+    select: {
+      id: true,
+      book: {
+        select: {
+          name: true,
+        },
+      },
+      title: true,
+    },
   });
 
   return result;
@@ -169,4 +246,5 @@ export const bookContentServices = {
   getContentsByBookId,
   updateBookContent,
   deleteBookContent,
+  deleteBookContentByAdmin,
 };
