@@ -136,11 +136,45 @@ const getBookContentById = async (id: string) => {
   return result;
 };
 
+// Service to get only the index of Book Contents by Book ID
+const getBookIndexByBookId = async (bookId: string) => {
+  const existingBook = await prisma.book.findUnique({
+    where: { id: bookId },
+    select: { id: true, name: true, slug: true },
+  });
+
+  if (!existingBook) {
+    throw new APIError(httpStatus.NOT_FOUND, "Book not found!");
+  }
+
+  const index = await prisma.bookContent.findMany({
+    where: {
+      bookId,
+      isDeleted: false,
+    },
+    orderBy: {
+      order: "asc",
+    },
+    select: {
+      id: true,
+      title: true,
+      order: true,
+    },
+  });
+
+  return {
+    id: existingBook.id,
+    book: existingBook.name,
+    slug: existingBook.slug,
+    index,
+  };
+};
+
 // Service for get a specific Book Content
 const getContentsByBookId = async (bookId: string) => {
   const existingBook = await prisma.book.findUnique({
     where: { id: bookId },
-    select: { name: true, slug: true },
+    select: { id: true, name: true, slug: true },
   });
 
   if (!existingBook) {
@@ -161,6 +195,7 @@ const getContentsByBookId = async (bookId: string) => {
   });
 
   return {
+    id: existingBook.id,
     book: existingBook.name,
     slug: existingBook.slug,
     content: result,
@@ -262,6 +297,7 @@ export const bookContentServices = {
   createBookContent,
   getAllBookContents,
   getBookContentById,
+  getBookIndexByBookId,
   getContentsByBookId,
   updateBookContent,
   deleteBookContent,

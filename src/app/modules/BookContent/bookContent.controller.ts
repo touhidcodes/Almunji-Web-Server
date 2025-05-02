@@ -50,6 +50,19 @@ const getBookContentById = catchAsync(async (req, res) => {
   });
 });
 
+// Get a single Book index Content by ID
+const getBookIndexByBookId = catchAsync(async (req, res) => {
+  const { bookId } = req.params;
+  const result = await bookContentServices.getBookIndexByBookId(bookId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Book index retrieved successfully!",
+    data: result,
+  });
+});
+
 // Get a single Book Content by ID
 const getContentsByBookId = catchAsync(async (req, res) => {
   const { bookId } = req.params;
@@ -109,6 +122,7 @@ export const bookContentControllers = {
   createBookContent,
   getAllBookContent,
   getBookContentById,
+  getBookIndexByBookId,
   getContentsByBookId,
   updateBookContent,
   deleteBookContent,
