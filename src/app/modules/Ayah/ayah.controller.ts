@@ -44,6 +44,18 @@ const getAyahById = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get all Ayah by Para ID
+const getAyahsByParaId = catchAsync(async (req, res) => {
+  const { paraId } = req.params;
+  const result = await ayahServices.getAyahsByParaId(paraId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Ayahs fetched successfully!",
+    data: result,
+  });
+});
+
 // Controller to update an Ayah by ID
 const updateAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
@@ -72,6 +84,7 @@ export const ayahControllers = {
   createAyah,
   getAllAyahs,
   getAyahById,
+  getAyahsByParaId,
   updateAyah,
   deleteAyah,
 };

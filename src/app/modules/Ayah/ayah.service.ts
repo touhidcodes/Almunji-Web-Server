@@ -168,6 +168,50 @@ const getAyahById = async (id: string) => {
   return result;
 };
 
+// Service to get all Ayahs by Para ID
+const getAyahsByParaId = async (paraId: string) => {
+  const para = await prisma.para.findUnique({
+    where: { id: paraId },
+    select: {
+      id: true,
+      number: true,
+      english: true,
+      arabic: true,
+      bangla: true,
+    },
+  });
+
+  if (!para) {
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found");
+  }
+
+  const ayahs = await prisma.ayah.findMany({
+    where: { paraId },
+    orderBy: { number: "asc" },
+    select: {
+      id: true,
+      arabic: true,
+      transliteration: true,
+      english: true,
+      bangla: true,
+      surah: {
+        select: {
+          totalAyah: true,
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
+    },
+  });
+
+  return {
+    para,
+    totalAyahs: ayahs.length,
+    ayahs,
+  };
+};
+
 // Service to update an Ayah
 const updateAyah = async (
   id: string,
@@ -227,6 +271,7 @@ export const ayahServices = {
   createAyah,
   getAllAyahs,
   getAyahById,
+  getAyahsByParaId,
   updateAyah,
   deleteAyah,
 };
