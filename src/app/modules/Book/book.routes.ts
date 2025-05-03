@@ -24,6 +24,9 @@ router.get("/:bookId", bookControllers.getBookById);
 // Route to get a specific Book by slug
 router.get("/slug/:slug", bookControllers.getBookBySlug);
 
+// Route to get all Books by Category ID
+router.get("/category/:categoryId", bookControllers.getBooksByCategoryId);
+
 // Route to update a specific Book
 router.put(
   "/:bookId",

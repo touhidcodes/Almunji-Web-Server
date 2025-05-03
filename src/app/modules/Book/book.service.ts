@@ -212,6 +212,33 @@ const getBookBySlug = async (slug: string) => {
   return result;
 };
 
+// Service to get all Books by Category ID
+const getBooksByCategoryId = async (categoryId: string) => {
+  const books = await prisma.book.findMany({
+    where: {
+      categoryId,
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      cover: true,
+      isFeatured: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
+
+  return books;
+};
+
 // Service to update a book
 const updateBook = async (id: string, bookData: Partial<Book>) => {
   // Block updates to name and slug
@@ -302,6 +329,7 @@ export const bookServices = {
   getAllBooks,
   getBookById,
   getBookBySlug,
+  getBooksByCategoryId,
   updateBook,
   deleteBook,
   deleteBookByAdmin,
