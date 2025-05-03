@@ -15,14 +15,22 @@ const createAyah = async (data: Ayah) => {
   });
 
   if (!surah) {
-    throw new APIError(httpStatus.NOT_FOUND, "Surah not found");
+    throw new APIError(httpStatus.NOT_FOUND, "Surah not found!");
+  }
+
+  const para = await prisma.para.findUnique({
+    where: { id: data.paraId },
+  });
+
+  if (!para) {
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found!");
   }
 
   // Validate ayahNumber does not exceed totalAyah
   if (data.number > surah.totalAyah) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
-      `Ayah number exceeds the total number of ayahs (${surah.totalAyah}) in this Surah`
+      `Ayah number exceeds the total number of ayahs (${surah.totalAyah}) in this Surah!`
     );
   }
 
