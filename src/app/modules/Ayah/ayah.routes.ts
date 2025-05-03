@@ -24,6 +24,9 @@ router.get("/:ayahId", ayahControllers.getAyahById);
 // Route to get Ayah by Para ID
 router.get("/para/:paraId", ayahControllers.getAyahsByParaId);
 
+// Route to get Ayah by Surah ID
+router.get("/surah/:surahId", ayahControllers.getAyahsBySurahId);
+
 // Route to update an existing Ayah by ID
 router.put(
   "/:ayahId",

@@ -51,7 +51,19 @@ const getAyahsByParaId = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Ayahs fetched successfully!",
+    message: "Para wise ayahs fetched successfully!",
+    data: result,
+  });
+});
+
+// Controller to get all Ayah by Surah ID
+const getAyahsBySurahId = catchAsync(async (req, res) => {
+  const { surahId } = req.params;
+  const result = await ayahServices.getAyahsBySurahId(surahId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Surah wise ayahs fetched successfully!",
     data: result,
   });
 });
@@ -85,6 +97,7 @@ export const ayahControllers = {
   getAllAyahs,
   getAyahById,
   getAyahsByParaId,
+  getAyahsBySurahId,
   updateAyah,
   deleteAyah,
 };

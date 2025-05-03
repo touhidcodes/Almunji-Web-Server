@@ -190,7 +190,7 @@ const getAyahsByParaId = async (paraId: string) => {
   });
 
   if (!para) {
-    throw new APIError(httpStatus.NOT_FOUND, "Para not found");
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found!");
   }
 
   const ayahs = await prisma.ayah.findMany({
@@ -220,6 +220,43 @@ const getAyahsByParaId = async (paraId: string) => {
   };
 };
 
+// Service to get all Ayahs by Surah ID
+const getAyahsBySurahId = async (surahId: string) => {
+  const surah = await prisma.surah.findUnique({
+    where: { id: surahId },
+    select: {
+      id: true,
+      totalAyah: true,
+      arabic: true,
+      bangla: true,
+      english: true,
+    },
+  });
+
+  if (!surah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Surah not found!");
+  }
+
+  const ayahs = await prisma.ayah.findMany({
+    where: { surahId },
+    orderBy: { number: "asc" },
+    select: {
+      id: true,
+      arabic: true,
+      transliteration: true,
+      english: true,
+      bangla: true,
+      number: true,
+    },
+  });
+
+  return {
+    surah,
+    totalAyahs: ayahs.length,
+    ayahs,
+  };
+};
+
 // Service to update an Ayah
 const updateAyah = async (
   id: string,
@@ -229,14 +266,14 @@ const updateAyah = async (
   const existingAyah = await prisma.ayah.findUniqueOrThrow({ where: { id } });
 
   if (!existingAyah) {
-    throw new APIError(httpStatus.NOT_FOUND, "Ayah not found");
+    throw new APIError(httpStatus.NOT_FOUND, "Ayah not found!");
   }
 
   // Ensure surahId and ayahNumber are not modified
   if ("number" in data || "surahId" in data || "paraId" in data) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
-      "Modification of surahId and ayahNumber is not allowed"
+      "Modification of surahId and ayahNumber is not allowed!"
     );
   }
 
@@ -280,6 +317,7 @@ export const ayahServices = {
   getAllAyahs,
   getAyahById,
   getAyahsByParaId,
+  getAyahsBySurahId,
   updateAyah,
   deleteAyah,
 };
