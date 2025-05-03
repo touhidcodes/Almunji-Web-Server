@@ -1,30 +1,8 @@
-// import { Dictionary, Prisma } from "@prisma/client";
-// import prisma from "../../utils/prisma";
-// import APIError from "../../errors/APIError";
-// import httpStatus from "http-status";
-// import { TPaginationOptions } from "../../interfaces/pagination";
-// import { paginationHelper } from "../../utils/paginationHelpers";
-
-// // Service to retrieve all dictionary words
-// const getAllWords = async () => {
-//   const result = await prisma.dictionary.findMany({
-//     where: { isDeleted: false },
-//     select: {
-//       id: true,
-//       word: true,
-//       description: true,
-//       pronunciation: true,
-//       createdAt: true,
-//       updatedAt: true,
-//     },
-//   });
-// };
-// export const uploadServices = { getAllWords };
-
 import { Dictionary } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import { CreatedWord } from "./upload.constants";
 
 // Service to upload dictionary words from a JSON file
 const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
@@ -32,14 +10,15 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
     throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format");
   }
 
-  const createdWords: Dictionary[] = [];
+  const createdWords: CreatedWord[] = [];
   const existingWords: string[] = [];
 
   for (const wordData of data) {
-    const { word, definition = "", pronunciation = "" } = wordData;
+    const { word, definition = "-", pronunciation = "-" } = wordData;
 
-    if (!word) {
-      throw new APIError(httpStatus.BAD_REQUEST, "Word is required");
+    // Skip if word is not provided
+    if (!word || typeof word !== "string" || word.trim() === "") {
+      continue;
     }
 
     // Check if word already exists
@@ -60,9 +39,6 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
         word: true,
         definition: true,
         pronunciation: true,
-        isDeleted: true,
-        createdAt: true,
-        updatedAt: true,
       },
     });
     createdWords.push(newWord);
