@@ -257,6 +257,57 @@ const getAyahsBySurahId = async (surahId: string) => {
   };
 };
 
+// Service to retrieve Ayahs and their Tafsir by Surah ID
+const getAyahsAndTafsirBySurahId = async (surahId: string) => {
+  const surah = await prisma.surah.findUnique({
+    where: { id: surahId },
+    select: {
+      id: true,
+      chapter: true,
+      totalAyah: true,
+      arabic: true,
+      bangla: true,
+      english: true,
+    },
+  });
+
+  if (!surah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Surah not found!");
+  }
+
+  const ayahs = await prisma.ayah.findMany({
+    where: { surahId },
+    orderBy: { number: "asc" },
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      english: true,
+      bangla: true,
+      tafsir: {
+        select: {
+          id: true,
+          heading: true,
+          summaryBn: true,
+          summaryEn: true,
+          detailBn: true,
+          detailEn: true,
+          scholar: true,
+          reference: true,
+          tags: true,
+        },
+      },
+    },
+  });
+
+  return {
+    surah,
+    totalAyahs: ayahs.length,
+    ayahs,
+  };
+};
+
 // Service to update an Ayah
 const updateAyah = async (
   id: string,
@@ -318,6 +369,7 @@ export const ayahServices = {
   getAyahById,
   getAyahsByParaId,
   getAyahsBySurahId,
+  getAyahsAndTafsirBySurahId,
   updateAyah,
   deleteAyah,
 };

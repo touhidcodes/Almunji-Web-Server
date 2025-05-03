@@ -68,6 +68,18 @@ const getAyahsBySurahId = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get Ayahs and their Tafsir by Surah ID
+const getAyahsAndTafsirBySurahId = catchAsync(async (req, res) => {
+  const { surahId } = req.params;
+  const result = await ayahServices.getAyahsAndTafsirBySurahId(surahId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Surah wise ayahs fetched successfully!",
+    data: result,
+  });
+});
+
 // Controller to update an Ayah by ID
 const updateAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
@@ -98,6 +110,7 @@ export const ayahControllers = {
   getAyahById,
   getAyahsByParaId,
   getAyahsBySurahId,
+  getAyahsAndTafsirBySurahId,
   updateAyah,
   deleteAyah,
 };
