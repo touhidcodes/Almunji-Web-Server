@@ -20,6 +20,7 @@ const createAyah = catchAsync(async (req, res) => {
 const getAllAyahs = catchAsync(async (req, res) => {
   const options = queryPickers(req.query, ayahFilterableFields);
   const pagination = queryPickers(req.query, ayahPaginationFields);
+  console.log(req.query);
 
   const result = await ayahServices.getAllAyahs(options, pagination);
 
