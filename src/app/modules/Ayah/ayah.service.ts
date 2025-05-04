@@ -358,7 +358,7 @@ const updateAyah = async (
   return result;
 };
 
-// Service to delete an Ayah (Soft Delete)
+// Service to delete an Ayah (soft delete)
 const deleteAyah = async (id: string) => {
   const result = await prisma.ayah.update({
     where: { id },
@@ -377,6 +377,14 @@ const deleteAyah = async (id: string) => {
 
 // Service to delete a Ayah (hard delete) only by Admin
 const deleteAyahByAdmin = async (id: string) => {
+  const existingAyah = await prisma.ayah.findUnique({
+    where: { id },
+  });
+
+  if (!existingAyah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Ayah not found!");
+  }
+
   const result = await prisma.ayah.delete({
     where: { id },
     select: {

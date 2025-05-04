@@ -92,7 +92,7 @@ const updateAyah = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete an Ayah by ID (Soft Delete)
+// Controller to delete an Ayah (soft delete)
 const deleteAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
   const result = await ayahServices.deleteAyah(ayahId);
@@ -104,7 +104,7 @@ const deleteAyah = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete an Ayah by ID (Hard Delete) only by Admin
+// Controller to delete an Ayah (hard delete) only by Admin
 const deleteAyahByAdmin = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
   const result = await ayahServices.deleteAyahByAdmin(ayahId);

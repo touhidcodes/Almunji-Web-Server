@@ -38,11 +38,18 @@ router.put(
   ayahControllers.updateAyah
 );
 
-// Route to delete an Ayah by ID
+// Route to delete an Ayah (Soft Delete)
 router.delete(
   "/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   ayahControllers.deleteAyah
+);
+
+// Route to delete an Ayah (Hard Delete) only by Admin
+router.delete(
+  "/admin/:ayahId",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  ayahControllers.deleteAyahByAdmin
 );
 
 export const ayahRoutes = router;
