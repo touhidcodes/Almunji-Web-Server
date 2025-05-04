@@ -54,9 +54,10 @@ const createAyah = async (data: Ayah) => {
   const result = await prisma.ayah.create({
     data,
     select: {
+      id: true,
+      number: true,
       surahId: true,
       paraId: true,
-      number: true,
       arabic: true,
       transliteration: true,
       bangla: true,
@@ -205,10 +206,11 @@ const getAyahsByParaId = async (paraId: string) => {
   }
 
   const ayahs = await prisma.ayah.findMany({
-    where: { paraId },
+    where: { paraId, isDeleted: false },
     orderBy: { number: "asc" },
     select: {
       id: true,
+      number: true,
       arabic: true,
       transliteration: true,
       english: true,
@@ -249,15 +251,15 @@ const getAyahsBySurahId = async (surahId: string) => {
   }
 
   const ayahs = await prisma.ayah.findMany({
-    where: { surahId },
+    where: { surahId, isDeleted: false },
     orderBy: { number: "asc" },
     select: {
       id: true,
+      number: true,
       arabic: true,
       transliteration: true,
       english: true,
       bangla: true,
-      number: true,
     },
   });
 
@@ -287,7 +289,7 @@ const getAyahsAndTafsirBySurahId = async (surahId: string) => {
   }
 
   const ayahs = await prisma.ayah.findMany({
-    where: { surahId },
+    where: { surahId, isDeleted: false },
     orderBy: { number: "asc" },
     select: {
       id: true,
@@ -325,7 +327,9 @@ const updateAyah = async (
   data: Omit<Partial<Ayah>, "number" | "surahId" | "ayahNumber">
 ) => {
   // Fetch the existing Ayah
-  const existingAyah = await prisma.ayah.findUniqueOrThrow({ where: { id } });
+  const existingAyah = await prisma.ayah.findUnique({
+    where: { id, isDeleted: false },
+  });
 
   if (!existingAyah) {
     throw new APIError(httpStatus.NOT_FOUND, "Ayah not found!");
@@ -345,9 +349,9 @@ const updateAyah = async (
     data,
     select: {
       id: true,
+      number: true,
       surahId: true,
       paraId: true,
-      number: true,
       arabic: true,
       transliteration: true,
       bangla: true,
