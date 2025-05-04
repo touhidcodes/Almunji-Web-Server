@@ -31,7 +31,7 @@ router.put(
 
 // Route to delete a Surah by ID
 router.delete(
-  "/:surahId",
+  "/admin/:surahId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   surahControllers.deleteSurah
 );

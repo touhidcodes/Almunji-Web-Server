@@ -24,14 +24,14 @@ router.get("/:paraId", paraControllers.getParaById);
 // Route to update an existing Para by ID
 router.put(
   "/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   validateRequest(paraValidationSchema.updateParaSchema),
   paraControllers.updatePara
 );
 
 // Route to delete a Para by ID
 router.delete(
-  "/:paraId",
+  "/admin/:paraId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   paraControllers.deletePara
 );

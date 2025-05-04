@@ -249,6 +249,14 @@ const deleteTafsir = async (id: string) => {
 
 // Service to delete a Tafsir (hard delete) only by Admin
 const deleteTafsirByAdmin = async (id: string) => {
+  const existingTafsir = await prisma.tafsir.findUnique({
+    where: { id },
+  });
+
+  if (!existingTafsir) {
+    throw new APIError(httpStatus.NOT_FOUND, "Tafsir not found!");
+  }
+
   const result = await prisma.tafsir.delete({
     where: { id },
     select: {

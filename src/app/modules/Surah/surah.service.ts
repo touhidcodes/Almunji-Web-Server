@@ -152,15 +152,23 @@ const updateSurah = async (id: string, data: Partial<Surah>) => {
 
 // Service to delete a Surah
 const deleteSurah = async (id: string) => {
+  const existingSurah = await prisma.surah.findUnique({
+    where: { id },
+  });
+
+  if (!existingSurah) {
+    throw new APIError(httpStatus.NOT_FOUND, "Surah not found!");
+  }
+
   return await prisma.$transaction(async (tx) => {
-    // Delete related ayahs
+    // delete related ayahs
     await tx.ayah.deleteMany({
       where: {
         surahId: id,
       },
     });
 
-    // Then delete surah
+    // then delete surah
     const result = await tx.surah.delete({
       where: { id },
       select: {

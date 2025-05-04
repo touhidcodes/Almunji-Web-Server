@@ -148,15 +148,23 @@ const updatePara = async (
 
 // Service to delete a Para
 const deletePara = async (id: string) => {
+  const existingPara = await prisma.para.findUnique({
+    where: { id },
+  });
+
+  if (!existingPara) {
+    throw new APIError(httpStatus.NOT_FOUND, "Para not found!");
+  }
+
   return await prisma.$transaction(async (tx) => {
-    // Delete related ayahs
+    // delete related ayahs
     await tx.ayah.deleteMany({
       where: {
         paraId: id,
       },
     });
 
-    // Then delete para
+    // then delete para
     const result = await tx.para.delete({
       where: { id },
       select: {
