@@ -252,6 +252,14 @@ const deleteWord = async (id: string) => {
 
 // Service to delete a dictionary word (hard delete) only by admin
 const deleteWordByAdmin = async (id: string) => {
+  const existingWord = await prisma.dictionary.findUnique({
+    where: { id },
+  });
+
+  if (!existingWord) {
+    throw new APIError(httpStatus.NOT_FOUND, "Word not found!");
+  }
+
   const result = await prisma.dictionary.delete({
     where: { id },
     select: {

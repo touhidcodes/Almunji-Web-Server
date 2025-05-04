@@ -277,6 +277,14 @@ const deleteBookContent = async (id: string) => {
 
 // Service for delete book content (Hard Delete) only by Admin
 const deleteBookContentByAdmin = async (id: string) => {
+  const existingBookContent = await prisma.bookContent.findUnique({
+    where: { id },
+  });
+
+  if (!existingBookContent) {
+    throw new APIError(httpStatus.NOT_FOUND, "Book content not found!");
+  }
+
   const result = await prisma.bookContent.delete({
     where: { id },
     select: {

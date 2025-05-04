@@ -174,6 +174,14 @@ const deleteDua = async (duaId: string) => {
 
 // Service to delete a dua (hard delete) only by admin
 const deleteDuaByAdmin = async (id: string) => {
+  const existingDua = await prisma.dua.findUnique({
+    where: { id },
+  });
+
+  if (!existingDua) {
+    throw new APIError(httpStatus.NOT_FOUND, "Dua not found!");
+  }
+
   const result = await prisma.dua.delete({
     where: { id },
     select: {

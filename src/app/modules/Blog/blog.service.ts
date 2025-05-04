@@ -210,6 +210,14 @@ const deleteBlog = async (id: string) => {
 
 // Service to delete a Blog (hard delete) only by Admin
 const deleteBlogByAdmin = async (id: string) => {
+  const existingBlog = await prisma.blog.findUnique({
+    where: { id },
+  });
+
+  if (!existingBlog) {
+    throw new APIError(httpStatus.NOT_FOUND, "Blog not found!");
+  }
+
   const result = await prisma.blog.delete({
     where: { id },
     select: {
