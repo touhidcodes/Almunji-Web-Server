@@ -170,6 +170,7 @@ model Ayah {
   transliteration String?
   bangla          String?
   english         String?
+  isDeleted       Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   tafsir          Tafsir?
