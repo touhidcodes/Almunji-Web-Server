@@ -69,11 +69,22 @@ const createAyah = async (data: Ayah) => {
 
 // Service to retrieve Ayahs with filtering & pagination
 const getAllAyahs = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, number, ...filterData } = options;
+  const { searchTerm, number, isDeleted, ...filterData } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.AyahWhereInput[] = [];
+
+  // Convert query param to boolean if present, otherwise default to false
+  const isDeletedQuery =
+    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+
+  // Search by only non-deleted tafsir
+  if (isDeletedQuery !== undefined) {
+    andConditions.push({
+      isDeleted: isDeletedQuery,
+    });
+  }
 
   // Search by number
   if (number) {
@@ -146,7 +157,7 @@ const getAllAyahs = async (options: any, pagination: TPaginationOptions) => {
 // Service to retrieve an Ayah by ID
 const getAyahById = async (id: string) => {
   const result = await prisma.ayah.findUniqueOrThrow({
-    where: { id },
+    where: { id, isDeleted: false },
     select: {
       id: true,
       number: true,
@@ -347,8 +358,25 @@ const updateAyah = async (
   return result;
 };
 
-// Service to delete an Ayah
+// Service to delete an Ayah (Soft Delete)
 const deleteAyah = async (id: string) => {
+  const result = await prisma.ayah.update({
+    where: { id },
+    data: { isDeleted: true },
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      bangla: true,
+      english: true,
+    },
+  });
+
+  return result;
+};
+
+// Service to delete a Ayah (hard delete) only by Admin
+const deleteAyahByAdmin = async (id: string) => {
   const result = await prisma.ayah.delete({
     where: { id },
     select: {
@@ -372,4 +400,5 @@ export const ayahServices = {
   getAyahsAndTafsirBySurahId,
   updateAyah,
   deleteAyah,
+  deleteAyahByAdmin,
 };

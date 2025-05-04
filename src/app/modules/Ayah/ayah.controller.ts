@@ -92,10 +92,22 @@ const updateAyah = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to delete an Ayah by ID
+// Controller to delete an Ayah by ID (Soft Delete)
 const deleteAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
   const result = await ayahServices.deleteAyah(ayahId);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Ayah removed successfully!",
+    data: result,
+  });
+});
+
+// Controller to delete an Ayah by ID (Hard Delete) only by Admin
+const deleteAyahByAdmin = catchAsync(async (req, res) => {
+  const { ayahId } = req.params;
+  const result = await ayahServices.deleteAyahByAdmin(ayahId);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -113,4 +125,5 @@ export const ayahControllers = {
   getAyahsAndTafsirBySurahId,
   updateAyah,
   deleteAyah,
+  deleteAyahByAdmin,
 };

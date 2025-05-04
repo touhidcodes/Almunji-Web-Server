@@ -1,5 +1,9 @@
 // For filter
-export const ayahFilterableFields: string[] = ["searchTerm", "number"];
+export const ayahFilterableFields: string[] = [
+  "searchTerm",
+  "number",
+  "isDeleted",
+];
 
 // For pagination
 export const ayahPaginationFields: string[] = ["limit", "page"];
