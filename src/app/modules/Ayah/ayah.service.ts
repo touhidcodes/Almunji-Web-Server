@@ -76,15 +76,9 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
 
   const andConditions: Prisma.AyahWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
+  // Default to false unless explicitly set to "true" isDeleted filter
   const isDeletedQuery = filters?.isDeleted === "true";
-
-  // Search by only non-deleted tafsir
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by number
   if (filters?.number) {
@@ -122,7 +116,6 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
     where: whereConditions,
     select: {
       id: true,
-      isDeleted: true,
       number: true,
       arabic: true,
       transliteration: true,
