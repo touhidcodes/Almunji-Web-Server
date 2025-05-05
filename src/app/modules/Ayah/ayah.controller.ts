@@ -26,7 +26,7 @@ const getAllAyahs = catchAsync(async (req, res) => {
   // const pagination = queryPickers(req.query, ayahPaginationFields);
   // console.log(req.query);
 
-  console.log(options);
+  // console.log(options);
 
   const result = await ayahServices.getAllAyahs(options);
 

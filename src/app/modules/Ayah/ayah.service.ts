@@ -71,9 +71,22 @@ const createAyah = async (data: Ayah) => {
 
 // Service to retrieve Ayahs with filtering & pagination
 const getAllAyahs = async (options: TAyahQueryOptions) => {
+  // console.log(options);
+
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
+
+  console.log(
+    filters,
+    pagination,
+    additional,
+    page,
+    limit,
+    skip,
+    sortBy,
+    sortOrder
+  );
 
   const andConditions: Prisma.AyahWhereInput[] = [];
 

@@ -16,30 +16,26 @@ const queryPickers = <T extends Record<string, unknown>, k extends keyof T>(
 
 export default queryPickers;
 
-export function queryFilters<
-  T extends Record<string, any>,
-  K extends keyof T,
-  P extends keyof T
->(
-  query: T,
-  knownKeys: readonly K[],
-  paginationKeys: readonly P[]
-): {
-  filters: Pick<T, K>;
-  pagination: Pick<T, P>;
-  additional: Omit<T, K | P>;
-} {
-  const filters = {} as Pick<T, K>;
-  const pagination = {} as Pick<T, P>;
-  const additional = {} as Omit<T, K | P>;
+/**
+ * Filters query parameters into three categories: filters, pagination, and additional fields
+ */
+export function queryFilters(
+  query: Record<string, any>,
+  knownKeys: string[],
+  paginationKeys: string[]
+) {
+  const filters: Record<string, any> = {};
+  const pagination: Record<string, any> = {};
+  const additional: Record<string, any> = {};
 
+  // Process each key in the query
   Object.keys(query).forEach((key) => {
-    if (paginationKeys.includes(key as any)) {
-      (pagination as any)[key] = query[key];
-    } else if (knownKeys.includes(key as any)) {
-      (filters as any)[key] = query[key];
+    if (paginationKeys.includes(key)) {
+      pagination[key] = query[key];
+    } else if (knownKeys.includes(key)) {
+      filters[key] = query[key];
     } else {
-      (additional as any)[key] = query[key];
+      additional[key] = query[key];
     }
   });
 
