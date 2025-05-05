@@ -16,7 +16,7 @@ const queryPickers = <T extends Record<string, unknown>, k extends keyof T>(
 
 export default queryPickers;
 
-export function extractFilters<
+export function queryFilters<
   T extends Record<string, any>,
   K extends keyof T,
   P extends keyof T
