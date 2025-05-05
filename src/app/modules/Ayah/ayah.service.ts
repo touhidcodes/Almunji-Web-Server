@@ -70,21 +70,14 @@ const createAyah = async (data: Ayah) => {
 
 // Service to retrieve Ayahs with filtering & pagination
 const getAllAyahs = async (options: TAyahQueryOptions) => {
-  // console.log(options);
-
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.AyahWhereInput[] = [];
 
-  console.log(filters);
-
   // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof filters?.isDeleted !== "undefined"
-      ? filters?.isDeleted === "true"
-      : undefined;
+  const isDeletedQuery = filters?.isDeleted === "true";
 
   // Search by only non-deleted tafsir
   if (isDeletedQuery !== undefined) {
@@ -98,7 +91,6 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
     andConditions.push({
       number: { equals: Number(filters?.number) },
     });
-    console.log("hit");
   }
 
   // Search by ayah
@@ -130,6 +122,7 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
     where: whereConditions,
     select: {
       id: true,
+      isDeleted: true,
       number: true,
       arabic: true,
       transliteration: true,

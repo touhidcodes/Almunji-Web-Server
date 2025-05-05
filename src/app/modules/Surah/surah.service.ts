@@ -73,8 +73,6 @@ const getAllSurahs = async (options: any, pagination: TPaginationOptions) => {
   const whereConditions: Prisma.SurahWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  console.log(whereConditions);
-
   const result = await prisma.surah.findMany({
     where: whereConditions,
     select: {

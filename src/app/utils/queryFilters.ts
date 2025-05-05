@@ -1,29 +1,31 @@
-// export function queryFilters<
-//   T extends Record<string, any>,
-//   K extends keyof T & string,
-//   P extends keyof T & string
-// >(
-//   query: T,
-//   knownKeys: readonly K[],
-//   paginationKeys: readonly P[]
-// ): {
-//   filters: Pick<T, K>;
-//   pagination: Pick<T, P>;
-//   additional: Omit<T, K | P>;
-// } {
-//   const filters = {} as Pick<T, K>;
-//   const pagination = {} as Pick<T, P>;
-//   const additional = {} as Omit<T, K | P>;
+const queryFilters = (
+  query: Record<string, any>,
+  knownKeys: string[],
+  paginationKeys: string[]
+) => {
+  const filters: Record<string, any> = {};
+  const pagination: Record<string, any> = {};
+  const additional: Record<string, any> = {};
 
-//   for (const key in query) {
-//     if (paginationKeys.includes(key as P)) {
-//       (pagination as Record<string, any>)[key] = query[key];
-//     } else if (knownKeys.includes(key as K)) {
-//       (filters as Record<string, any>)[key] = query[key];
-//     } else {
-//       (additional as Record<string, any>)[key] = query[key];
-//     }
-//   }
+  // Process each key in the query
+  Object.keys(query).forEach((key) => {
+    const value = query[key];
 
-//   return { filters, pagination, additional };
-// }
+    // Skip empty values (empty strings, null, undefined)
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
+
+    if (paginationKeys.includes(key)) {
+      pagination[key] = value;
+    } else if (knownKeys.includes(key)) {
+      filters[key] = value;
+    } else {
+      additional[key] = value;
+    }
+  });
+
+  return { filters, pagination, additional };
+};
+
+export default queryFilters;
