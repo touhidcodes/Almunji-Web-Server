@@ -7,8 +7,8 @@ export const ayahFilterableFields: string[] = [
 
 // For pagination
 export const ayahPaginationFields: string[] = [
-  // "limit",
-  // "page",
+  "limit",
+  "page",
   "sortBy",
   "sortOrder",
 ];

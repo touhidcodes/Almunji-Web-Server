@@ -9,6 +9,6 @@ export type TPaginationResult = {
   page: number;
   limit: number;
   skip: number;
-  sortBy: string;
-  sortOrder: string;
+  sortBy?: string;
+  sortOrder?: string;
 };

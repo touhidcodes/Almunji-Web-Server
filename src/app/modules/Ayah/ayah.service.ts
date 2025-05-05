@@ -2,10 +2,9 @@ import { Ayah, Prisma } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { ayahQueryFields } from "./ayah.constants";
-import { TAyahQueryOptions, TAyahsOptions } from "./ayah.interface";
+import { TAyahQueryOptions } from "./ayah.interface";
 
 // Service to create a new Ayah
 const createAyah = async (data: Ayah) => {
@@ -77,22 +76,15 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
-  console.log(
-    filters,
-    pagination,
-    additional,
-    page,
-    limit,
-    skip,
-    sortBy,
-    sortOrder
-  );
-
   const andConditions: Prisma.AyahWhereInput[] = [];
+
+  console.log(filters);
 
   // Convert query param to boolean if present, otherwise default to false
   const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+    typeof filters?.isDeleted !== "undefined"
+      ? filters?.isDeleted === "true"
+      : undefined;
 
   // Search by only non-deleted tafsir
   if (isDeletedQuery !== undefined) {
@@ -102,29 +94,30 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
   }
 
   // Search by number
-  if (number) {
+  if (filters?.number) {
     andConditions.push({
-      number: { equals: Number(number) } as any,
+      number: { equals: Number(filters?.number) },
     });
+    console.log("hit");
   }
 
   // Search by ayah
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: ayahQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          contains: additional[key],
         },
       })),
     });
@@ -161,7 +154,12 @@ const getAllAyahs = async (options: TAyahQueryOptions) => {
     },
     skip,
     take: limit,
-    orderBy: { number: "asc" },
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { number: "asc" },
   });
 
   const total = await prisma.ayah.count({ where: whereConditions });

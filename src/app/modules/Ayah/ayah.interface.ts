@@ -1,11 +1,11 @@
-// Known filter fields
+//  filter fields
 type TAyahFilters = {
   number?: string;
   searchTerm?: string;
   isDeleted?: string;
 };
 
-// Known pagination fields
+//  pagination fields
 type TAyahPagination = {
   page?: string;
   limit?: string;
@@ -13,7 +13,7 @@ type TAyahPagination = {
   sortOrder?: string;
 };
 
-// Unknown but valid additional filters
+//  additional filters
 type TDynamicAyahFilters = Record<string, string>;
 
 // Common combined query options type
