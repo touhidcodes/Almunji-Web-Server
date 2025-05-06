@@ -2,7 +2,6 @@ import { tafsirServices } from "./tafsir.service";
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
-import queryPickers from "../../utils/queryPickers";
 import {
   tafsirFilterableFields,
   tafsirPaginationFields,

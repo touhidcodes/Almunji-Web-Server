@@ -42,8 +42,8 @@ const createWord = async (data: Dictionary) => {
 };
 
 // Service to suggestion dictionary words
-const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, word, ...filterData } = options;
+const getSuggestion = async (options: TWordQueryFilter) => {
+  const { filters, pagination } = options;
   const { page, limit, skip } =
     paginationHelper.calculatePagination(pagination);
 
@@ -54,23 +54,23 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
     isDeleted: false,
   });
 
-  // Search by word suggestion
-  if (word) {
-    andConditions.push({
-      word: {
-        contains: word.toLowerCase(),
-      },
-    });
-  }
-
   // Search by word or description
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: wordQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm.toLowerCase(),
+          contains: filters?.searchTerm,
         },
       })),
+    });
+  }
+
+  // Search by word suggestion
+  if (filters?.word) {
+    andConditions.push({
+      word: {
+        contains: filters?.word.toLowerCase(),
+      },
     });
   }
 
@@ -79,7 +79,7 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
 
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
-    select: { word: true, definition: true, pronunciation: true },
+    select: { id: true, word: true },
     skip,
     take: limit,
     orderBy: { word: "asc" },

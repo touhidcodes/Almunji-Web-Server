@@ -2,7 +2,6 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { paraServices } from "./para.service";
-import queryPickers from "../../utils/queryPickers";
 import { paraFilterableFields, paraPaginationFields } from "./para.constants";
 import queryFilters from "../../utils/queryFilters";
 

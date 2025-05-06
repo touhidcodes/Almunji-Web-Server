@@ -2,7 +2,6 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { dictionaryServices } from "./dictionary.service";
-import queryPickers from "../../utils/queryPickers";
 import {
   wordFilterableFields,
   wordPaginationFields,
@@ -23,10 +22,13 @@ const createWord = catchAsync(async (req, res) => {
 
 // Controller to get dictionary words
 const getSuggestion = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, wordSuggestionFilterableFields);
-  const pagination = queryPickers(req.query, wordPaginationFields);
+  const options = queryFilters(
+    req.query,
+    wordSuggestionFilterableFields,
+    wordPaginationFields
+  );
 
-  const result = await dictionaryServices.getSuggestion(options, pagination);
+  const result = await dictionaryServices.getSuggestion(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
