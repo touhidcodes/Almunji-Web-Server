@@ -8,6 +8,7 @@ import {
   wordPaginationFields,
   wordSuggestionFilterableFields,
 } from "./dictionary.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new dictionary word
 const createWord = catchAsync(async (req, res) => {
@@ -38,10 +39,13 @@ const getSuggestion = catchAsync(async (req, res) => {
 
 // Controller to get all dictionary words
 const getAllWords = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, wordFilterableFields);
-  const pagination = queryPickers(req.query, wordPaginationFields);
+  const options = queryFilters(
+    req.query,
+    wordFilterableFields,
+    wordPaginationFields
+  );
 
-  const result = await dictionaryServices.getAllWords(options, pagination);
+  const result = await dictionaryServices.getAllWords(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

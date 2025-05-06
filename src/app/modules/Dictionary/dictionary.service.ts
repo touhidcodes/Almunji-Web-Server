@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { wordFilterableFields, wordQueryFields } from "./dictionary.constants";
+import { TWordQueryFilter } from "./dictionary.interface";
 
 // Service to create a new dictionary word
 const createWord = async (data: Dictionary) => {
@@ -99,51 +100,43 @@ const getSuggestion = async (options: any, pagination: TPaginationOptions) => {
 };
 
 // Service to retrieve all dictionary words with optional isDeleted filter
-const getAllWords = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, word, sortBy, isDeleted, sortOrder, ...filterData } =
-    options;
-  const { page, limit, skip } =
+const getAllWords = async (options: TWordQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-
-  // Search by only non-deleted words
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
-
-  // Search by word suggestion
-  if (word) {
-    andConditions.push({
-      word: {
-        contains: word.toLowerCase(),
-      },
-    });
-  }
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by word or description
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: wordQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm.toLowerCase(),
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
-  // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  // Search by word suggestion
+  if (filters?.word) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      word: {
+        contains: filters?.word.toLowerCase(),
+      },
+    });
+  }
+
+  // Add additional filters
+  if (Object.keys(additional).length > 0) {
+    andConditions.push({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: additional[key],
         },
       })),
     });
@@ -171,7 +164,7 @@ const getAllWords = async (options: any, pagination: TPaginationOptions) => {
   });
 
   const total = await prisma.dictionary.count({
-    where: { isDeleted: isDeletedQuery },
+    where: whereConditions,
   });
 
   return {

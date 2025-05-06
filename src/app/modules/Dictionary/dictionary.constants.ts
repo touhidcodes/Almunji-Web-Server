@@ -3,19 +3,17 @@ export const wordFilterableFields: string[] = [
   "searchTerm",
   "word",
   "isDeleted",
-  "sortBy",
-  "sortOrder",
 ];
 // For filter from suggestion words
-export const wordSuggestionFilterableFields: string[] = [
-  "searchTerm",
-  "word",
+export const wordSuggestionFilterableFields: string[] = ["searchTerm", "word"];
+
+// For pagination
+export const wordPaginationFields: string[] = [
+  "limit",
+  "page",
   "sortBy",
   "sortOrder",
 ];
-
-// For pagination
-export const wordPaginationFields: string[] = ["limit", "page"];
 
 // For query
 export const wordQueryFields: string[] = ["word", "definition"];
