@@ -7,6 +7,7 @@ import {
   tafsirFilterableFields,
   tafsirPaginationFields,
 } from "./tafsir.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Tafsir
 const createTafsir = catchAsync(async (req, res) => {
@@ -22,10 +23,13 @@ const createTafsir = catchAsync(async (req, res) => {
 
 // Controller to get all Tafsir
 const getAllTafsir = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, tafsirFilterableFields);
-  const pagination = queryPickers(req.query, tafsirPaginationFields);
+  const options = queryFilters(
+    req.query,
+    tafsirFilterableFields,
+    tafsirPaginationFields
+  );
 
-  const result = await tafsirServices.getAllTafsir(options, pagination);
+  const result = await tafsirServices.getAllTafsir(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

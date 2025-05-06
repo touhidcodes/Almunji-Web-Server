@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { tafsirQueryFields } from "./tafsir.constants";
+import { TTafsirQueryFilter } from "./tafsir.interface";
 
 // Service to create a new Tafsir
 const createTafsir = async (data: Tafsir) => {
@@ -83,51 +84,43 @@ const getTafsirByAyah = async (ayahId: string) => {
 };
 
 // Service to retrieve all Tafsir
-const getAllTafsir = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, isDeleted, tags, sortBy, sortOrder, ...filterData } =
-    options;
-  const { page, limit, skip } =
+const getAllTafsir = async (options: TTafsirQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.TafsirWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-
-  // Search by only non-deleted tafsir
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by tafsir heading and text
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: tafsirQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Search by tafsir tags
-  if (tags) {
+  if (filters?.tags) {
     andConditions.push({
       tags: {
-        contains: tags,
+        contains: filters?.tags,
       },
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: additional[key],
         },
       })),
     });

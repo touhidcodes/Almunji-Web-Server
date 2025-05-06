@@ -1,14 +1,17 @@
 // For filter
 export const tafsirFilterableFields: string[] = [
   "searchTerm",
-  "isDeleted",
   "tags",
-  "sortBy",
-  "sortOrder",
+  "isDeleted",
 ];
 
 // For pagination
-export const tafsirPaginationFields: string[] = ["limit", "page"];
+export const tafsirPaginationFields: string[] = [
+  "limit",
+  "page",
+  "sortBy",
+  "sortOrder",
+];
 
 // For query
 export const tafsirQueryFields: string[] = [
