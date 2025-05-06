@@ -2,11 +2,11 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { surahServices } from "./surah.service";
-import queryPickers from "../../utils/queryPickers";
 import {
   surahFilterableFields,
   surahPaginationFields,
 } from "./surah.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Surah
 const createSurah = catchAsync(async (req, res) => {
@@ -21,10 +21,13 @@ const createSurah = catchAsync(async (req, res) => {
 
 // Controller to get all Surahs with filtering & pagination
 const getAllSurahs = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, surahFilterableFields);
-  const pagination = queryPickers(req.query, surahPaginationFields);
+  const options = queryFilters(
+    req.query,
+    surahFilterableFields,
+    surahPaginationFields
+  );
 
-  const result = await surahServices.getAllSurahs(options, pagination);
+  const result = await surahServices.getAllSurahs(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

@@ -4,7 +4,7 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { ayahQueryFields } from "./ayah.constants";
-import { TAyahQueryOptions } from "./ayah.interface";
+import { TAyahQueryFilter } from "./ayah.interface";
 
 // Service to create a new Ayah
 const createAyah = async (data: Ayah) => {
@@ -69,7 +69,7 @@ const createAyah = async (data: Ayah) => {
 };
 
 // Service to retrieve Ayahs with filtering & pagination
-const getAllAyahs = async (options: TAyahQueryOptions) => {
+const getAllAyahs = async (options: TAyahQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);

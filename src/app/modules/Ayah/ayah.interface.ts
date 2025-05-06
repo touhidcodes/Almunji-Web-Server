@@ -17,7 +17,7 @@ type TAyahPagination = {
 type TDynamicAyahFilters = Record<string, string>;
 
 // Common combined query options type
-export type TAyahQueryOptions = {
+export type TAyahQueryFilter = {
   filters: TAyahFilters;
   pagination: TAyahPagination;
   additional: TDynamicAyahFilters;
