@@ -4,6 +4,7 @@ import catchAsync from "../../utils/catchAsync";
 import { paraServices } from "./para.service";
 import queryPickers from "../../utils/queryPickers";
 import { paraFilterableFields, paraPaginationFields } from "./para.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Para
 const createPara = catchAsync(async (req, res) => {
@@ -19,10 +20,13 @@ const createPara = catchAsync(async (req, res) => {
 
 // Controller to get all Paras
 const getAllParas = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, paraFilterableFields);
-  const pagination = queryPickers(req.query, paraPaginationFields);
+  const options = queryFilters(
+    req.query,
+    paraFilterableFields,
+    paraPaginationFields
+  );
 
-  const result = await paraServices.getAllParas(options, pagination);
+  const result = await paraServices.getAllParas(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

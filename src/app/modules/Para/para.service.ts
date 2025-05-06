@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { paraQueryFields } from "./para.constants";
 import { TPaginationOptions } from "../../interfaces/pagination";
+import { TParaQueryFilter } from "./para.interface";
 
 // Service to create a new Para
 const createPara = async (data: Para) => {
@@ -33,37 +34,37 @@ const createPara = async (data: Para) => {
 };
 
 // Service to retrieve all Paras
-const getAllParas = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, number, sortBy, sortOrder, ...filterData } = options;
-  const { page, limit, skip } =
+const getAllParas = async (options: TParaQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.ParaWhereInput[] = [];
 
   // Search by number
-  if (number) {
+  if (filters?.number) {
     andConditions.push({
-      number: { equals: Number(number) } as any,
+      number: { equals: Number(filters?.number) },
     });
   }
 
   // Search by surah name
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: paraQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          contains: additional[key],
         },
       })),
     });

@@ -1,7 +1,7 @@
 //  filter fields
 type TAyahFilters = {
-  number?: string;
   searchTerm?: string;
+  number?: string;
   isDeleted?: string;
 };
 
