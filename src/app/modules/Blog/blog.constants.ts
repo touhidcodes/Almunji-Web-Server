@@ -4,9 +4,12 @@ export const blogFilterableFields: string[] = [
   "isFeatured",
   "isPublished",
   "isDeleted",
-  "sortBy",
-  "sortOrder",
 ];
 
 // For pagination
-export const blogPaginationFields: string[] = ["limit", "page"];
+export const blogPaginationFields: string[] = [
+  "limit",
+  "page",
+  "sortBy",
+  "sortOrder",
+];

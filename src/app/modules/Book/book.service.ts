@@ -72,6 +72,7 @@ const getAllBooks = async (options: TBookQueryFilter) => {
   if (typeof isFeaturedQuery === "boolean") {
     andConditions.push({ isFeatured: isFeaturedQuery });
   }
+
   // Search by book name and description
   if (filters?.searchTerm) {
     andConditions.push({

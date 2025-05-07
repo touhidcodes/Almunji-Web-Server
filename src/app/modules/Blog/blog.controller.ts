@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import queryPickers from "../../utils/queryPickers";
 import { blogServices } from "./blog.service";
 import { blogFilterableFields, blogPaginationFields } from "./blog.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Blog
 const createBlog = catchAsync(async (req, res) => {
@@ -18,10 +18,13 @@ const createBlog = catchAsync(async (req, res) => {
 
 // Controller to get all Blog
 const getAllBlogs = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, blogFilterableFields);
-  const pagination = queryPickers(req.query, blogPaginationFields);
+  const options = queryFilters(
+    req.query,
+    blogFilterableFields,
+    blogPaginationFields
+  );
 
-  const result = await blogServices.getAllBlogs(options, pagination);
+  const result = await blogServices.getAllBlogs(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

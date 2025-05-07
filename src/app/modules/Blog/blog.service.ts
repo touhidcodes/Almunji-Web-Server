@@ -5,6 +5,7 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 import httpStatus from "http-status";
 import slugify from "slugify";
 import APIError from "../../errors/APIError";
+import { TBlogQueryFilter } from "./blog.interface";
 
 // Service to create a new Blog
 const createBlog = async (blogData: Omit<Blog, "slug">) => {
@@ -40,44 +41,46 @@ const createBlog = async (blogData: Omit<Blog, "slug">) => {
 };
 
 // Service to retrieve all Blog
-const getAllBlogs = async (options: any, pagination: TPaginationOptions) => {
-  const { page, limit, skip } =
+const getAllBlogs = async (options: TBlogQueryFilter) => {
+  const { filters, pagination } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
-  const { slug, isPublished, isFeatured, isDeleted, sortBy, sortOrder } =
-    options;
 
   const andConditions: Prisma.BlogWhereInput[] = [];
 
-  // Convert query params to boolean if present
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-  const isFeaturedQuery =
-    isFeatured === "true" ? true : isFeatured === "false" ? false : undefined;
-  const isPublishedQuery =
-    isPublished === "true" ? true : isPublished === "false" ? false : undefined;
-
-  // Search by published blog
-  if (typeof isPublishedQuery === "boolean") {
-    andConditions.push({ isPublished: isPublishedQuery });
-  }
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by featured blog
+  const isFeaturedQuery =
+    filters?.isFeatured === "true"
+      ? true
+      : filters?.isFeatured === "false"
+      ? false
+      : undefined;
+
   if (typeof isFeaturedQuery === "boolean") {
     andConditions.push({ isFeatured: isFeaturedQuery });
   }
 
-  // Search by non-deleted blog
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
+  // Search by published blog
+  const isPublishedQuery =
+    filters?.isPublished === "true"
+      ? true
+      : filters?.isPublished === "false"
+      ? false
+      : undefined;
+
+  if (typeof isPublishedQuery === "boolean") {
+    andConditions.push({ isPublished: isPublishedQuery });
   }
 
   // Search by blog slug
-  if (slug) {
+  if (filters?.slug) {
     andConditions.push({
       slug: {
-        equals: slug,
+        equals: filters?.slug,
       },
     });
   }
