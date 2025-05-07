@@ -3,7 +3,6 @@ import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookQueryFields } from "./book.constants";
 import slugify from "slugify";
 import { TBookQueryFilter } from "./book.interface";
@@ -109,7 +108,7 @@ const getAllBooks = async (options: TBookQueryFilter) => {
     andConditions.push({
       AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: additional[key],
+          contains: additional[key],
         },
       })),
     });

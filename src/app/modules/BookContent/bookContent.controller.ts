@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
-import queryPickers from "../../utils/queryPickers";
 import { bookContentServices } from "./bookContent.service";
 import {
   bookContentFilterableFields,
   bookContentPaginationFields,
 } from "./BookContent.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Create a Book Content
 const createBookContent = catchAsync(async (req, res) => {
@@ -21,12 +21,13 @@ const createBookContent = catchAsync(async (req, res) => {
 
 // Get all Book Contents
 const getAllBookContent = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, bookContentFilterableFields);
-  const pagination = queryPickers(req.query, bookContentPaginationFields);
-  const result = await bookContentServices.getAllBookContents(
-    options,
-    pagination
+  const options = queryFilters(
+    req.query,
+    bookContentFilterableFields,
+    bookContentPaginationFields
   );
+
+  const result = await bookContentServices.getAllBookContents(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

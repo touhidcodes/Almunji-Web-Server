@@ -3,7 +3,6 @@ import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { tafsirQueryFields } from "./tafsir.constants";
 import { TTafsirQueryFilter } from "./tafsir.interface";
 

@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookContentQueryFields } from "./BookContent.constants";
+import { TBookContentQueryFilter } from "./BookContent.interface";
 
 // Service for create Book Content
 const createBookContent = async (contentData: BookContent) => {
@@ -35,44 +36,34 @@ const createBookContent = async (contentData: BookContent) => {
 };
 
 // Service for get all Book Contents
-const getAllBookContents = async (
-  options: any,
-  pagination: TPaginationOptions
-) => {
-  const { searchTerm, isDeleted, sortBy, sortOrder, ...filterData } = options;
-  const { page, limit, skip } =
+const getAllBookContents = async (options: TBookContentQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.BookContentWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-
-  // Search by only non-deleted book content
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by book content title and text
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: bookContentQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          contains: additional[key],
         },
       })),
     });
