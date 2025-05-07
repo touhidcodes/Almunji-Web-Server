@@ -1,14 +1,17 @@
 // For filter
 export const duaFilterableFields: string[] = [
   "searchTerm",
-  "isDeleted",
   "tags",
-  "sortBy",
-  "sortOrder",
+  "isDeleted",
 ];
 
 // For pagination
-export const duaPaginationFields: string[] = ["limit", "page"];
+export const duaPaginationFields: string[] = [
+  "limit",
+  "page",
+  "sortBy",
+  "sortOrder",
+];
 
 // For query
 export const duaQueryFields: string[] = [

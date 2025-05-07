@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import queryPickers from "../../utils/queryPickers";
 import { duaServices } from "./dua.service";
 import { duaFilterableFields, duaPaginationFields } from "./dua.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new dua
 const createDua = catchAsync(async (req, res) => {
@@ -18,9 +18,13 @@ const createDua = catchAsync(async (req, res) => {
 
 // Controller to get all dua
 const getAllDua = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, duaFilterableFields);
-  const pagination = queryPickers(req.query, duaPaginationFields);
-  const result = await duaServices.getAllDua(options, pagination);
+  const options = queryFilters(
+    req.query,
+    duaFilterableFields,
+    duaPaginationFields
+  );
+
+  const result = await duaServices.getAllDua(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

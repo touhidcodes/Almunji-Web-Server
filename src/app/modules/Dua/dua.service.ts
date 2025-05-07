@@ -5,6 +5,7 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 import { duaQueryFields } from "./dua.constants";
 import httpStatus from "http-status";
 import APIError from "../../errors/APIError";
+import { TDuaQueryFilter } from "./dua.interface";
 
 // Service to create a new dua
 const createDua = async (duaData: Dua) => {
@@ -23,51 +24,43 @@ const createDua = async (duaData: Dua) => {
   });
 };
 
-const getAllDua = async (options: any, pagination: TPaginationOptions) => {
-  const { searchTerm, isDeleted, tags, sortBy, sortOrder, ...filterData } =
-    options;
-  const { page, limit, skip } =
+const getAllDua = async (options: TDuaQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.DuaWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
-
-  // Search by only non-deleted words
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
 
   // Search by dua heading and text
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: duaQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Search by dua tags
-  if (tags) {
+  if (filters?.tags) {
     andConditions.push({
       tags: {
-        contains: tags,
+        contains: filters?.tags,
       },
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          contains: additional[key],
         },
       })),
     });
