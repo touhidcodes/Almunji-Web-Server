@@ -2,8 +2,8 @@ import httpStatus from "http-status";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { bookServices } from "./book.service";
-import queryPickers from "../../utils/queryPickers";
 import { bookFilterableFields, bookPaginationFields } from "./book.constants";
+import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a Book
 const createBook = catchAsync(async (req, res) => {
@@ -18,10 +18,13 @@ const createBook = catchAsync(async (req, res) => {
 
 // Controller to get all Books
 const getAllBooks = catchAsync(async (req, res) => {
-  const options = queryPickers(req.query, bookFilterableFields);
-  const pagination = queryPickers(req.query, bookPaginationFields);
+  const options = queryFilters(
+    req.query,
+    bookFilterableFields,
+    bookPaginationFields
+  );
 
-  const result = await bookServices.getAllBooks(options, pagination);
+  const result = await bookServices.getAllBooks(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

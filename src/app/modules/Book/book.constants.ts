@@ -2,15 +2,18 @@
 export const bookFilterableFields = [
   "searchTerm",
   "slug",
+  "category",
   "isFeatured",
   "isDeleted",
-  "category",
-  "sortBy",
-  "sortOrder",
 ];
 
 // For pagination
-export const bookPaginationFields: string[] = ["limit", "page"];
+export const bookPaginationFields: string[] = [
+  "limit",
+  "page",
+  "sortBy",
+  "sortOrder",
+];
 
 // For all searching
 export const bookQueryFields = ["name", "description"];

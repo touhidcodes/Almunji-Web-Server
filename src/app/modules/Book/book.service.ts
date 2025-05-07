@@ -6,6 +6,7 @@ import { paginationHelper } from "../../utils/paginationHelpers";
 import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookQueryFields } from "./book.constants";
 import slugify from "slugify";
+import { TBookQueryFilter } from "./book.interface";
 
 // Service to create a Book
 const createBook = async (bookData: Omit<Book, "slug">) => {
@@ -50,77 +51,65 @@ const createBook = async (bookData: Omit<Book, "slug">) => {
 };
 
 // Service to get all Books
-const getAllBooks = async (options: any, pagination: TPaginationOptions) => {
-  const {
-    searchTerm,
-    slug,
-    isFeatured,
-    isDeleted,
-    category,
-    sortBy,
-    sortOrder,
-    ...filterData
-  } = options;
-  const { page, limit, skip } =
+const getAllBooks = async (options: TBookQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.BookWhereInput[] = [];
 
-  // Convert query param to boolean if present, otherwise default to false
-  const isDeletedQuery =
-    typeof isDeleted !== "undefined" ? isDeleted === "true" : undefined;
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
+
+  // Handle isFeatured only if explicitly passed as "true" or "false"
   const isFeaturedQuery =
-    isFeatured === "true" ? true : isFeatured === "false" ? false : undefined;
+    filters?.isFeatured === "true"
+      ? true
+      : filters?.isFeatured === "false"
+      ? false
+      : undefined;
 
-  // Search by only non-deleted tafsir
-  if (isDeletedQuery !== undefined) {
-    andConditions.push({
-      isDeleted: isDeletedQuery,
-    });
-  }
-
-  // Search by featured blog
   if (typeof isFeaturedQuery === "boolean") {
     andConditions.push({ isFeatured: isFeaturedQuery });
   }
-
   // Search by book name and description
-  if (searchTerm) {
+  if (filters?.searchTerm) {
     andConditions.push({
       OR: bookQueryFields.map((field) => ({
         [field]: {
-          contains: searchTerm,
+          contains: filters?.searchTerm,
         },
       })),
     });
   }
 
   // Search by book slug
-  if (slug) {
+  if (filters?.slug) {
     andConditions.push({
       slug: {
-        equals: slug,
+        equals: filters?.slug,
       },
     });
   }
 
   // Search by book category name
-  if (category) {
+  if (filters?.category) {
     andConditions.push({
       category: {
         name: {
-          equals: category,
+          contains: filters?.category,
         },
       },
     });
   }
 
   // Add additional filters
-  if (Object.keys(filterData).length > 0) {
+  if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
+      AND: Object.keys(additional).map((key) => ({
         [key]: {
-          equals: (filterData as any)[key],
+          equals: additional[key],
         },
       })),
     });
