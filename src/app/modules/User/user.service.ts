@@ -1,5 +1,5 @@
 import prisma from "../../utils/prisma";
-import { Prisma, UserProfile } from "@prisma/client";
+import { User, UserProfile } from "@prisma/client";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import config from "../../config/config";
@@ -8,7 +8,7 @@ import config from "../../config/config";
 const getUser = async (id: string) => {
   const result = await prisma.user.findUniqueOrThrow({
     where: {
-      id: id,
+      id,
     },
     select: {
       id: true,
@@ -89,7 +89,7 @@ const updateUser = async (
       },
     });
     if (existingUsername) {
-      throw new APIError(httpStatus.CONFLICT, "Username is already taken");
+      throw new APIError(httpStatus.CONFLICT, "Username is already taken!");
     }
   }
 
@@ -100,7 +100,7 @@ const updateUser = async (
       },
     });
     if (existingEmail) {
-      throw new APIError(httpStatus.CONFLICT, "Email is already taken");
+      throw new APIError(httpStatus.CONFLICT, "Email is already taken!");
     }
   }
 
@@ -137,10 +137,7 @@ const updateUser = async (
 };
 
 // Service to update user status
-const updateUserStatus = async (
-  userId: string,
-  updatedData: Partial<Prisma.UserUpdateInput>
-) => {
+const updateUserStatus = async (userId: string, updatedData: Partial<User>) => {
   const result = await prisma.user.update({
     where: { id: userId },
     data: updatedData,

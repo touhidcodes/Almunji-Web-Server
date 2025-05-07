@@ -19,15 +19,27 @@ const createSurah = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get all Surahs with filtering & pagination
+// Controller to get all Surahs
 const getAllSurahs = catchAsync(async (req, res) => {
+  const result = await surahServices.getAllSurahs();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Surahs retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get all Surahs with filtering & pagination
+const getAllSurahsByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     surahFilterableFields,
     surahPaginationFields
   );
 
-  const result = await surahServices.getAllSurahs(options);
+  const result = await surahServices.getAllSurahsByAdmin(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -77,6 +89,7 @@ const deleteSurah = catchAsync(async (req, res) => {
 export const surahControllers = {
   createSurah,
   getAllSurahs,
+  getAllSurahsByAdmin,
   getSurahById,
   updateSurah,
   deleteSurah,

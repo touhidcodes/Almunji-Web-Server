@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Application Routes
-app.use("/api", router);
+app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Server is running... !");

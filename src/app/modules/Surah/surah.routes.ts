@@ -18,6 +18,13 @@ router.post(
 // Route to get all Surahs
 router.get("/all", surahControllers.getAllSurahs);
 
+// Route to get all Surahs by Admin
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  surahControllers.getAllSurahsByAdmin
+);
+
 // Route to get a specific Surah by ID
 router.get("/:surahId", surahControllers.getSurahById);
 
