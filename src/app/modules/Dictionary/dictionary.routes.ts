@@ -19,7 +19,11 @@ router.post(
 router.get("/suggestion", dictionaryControllers.getSuggestion);
 
 // Route to get all dictionary words
-router.get("/words", dictionaryControllers.getAllWords);
+router.get(
+  "/admin/words",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  dictionaryControllers.getAllWordsByAdmin
+);
 
 // Route to get a specific dictionary word by id
 router.get("/:wordId", dictionaryControllers.getWordById);

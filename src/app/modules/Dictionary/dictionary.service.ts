@@ -99,7 +99,7 @@ const getSuggestion = async (options: TWordQueryFilter) => {
 };
 
 // Service to retrieve all dictionary words with optional isDeleted filter
-const getAllWords = async (options: TWordQueryFilter) => {
+const getAllWordsByAdmin = async (options: TWordQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -266,7 +266,7 @@ const deleteWordByAdmin = async (id: string) => {
 export const dictionaryServices = {
   createWord,
   getSuggestion,
-  getAllWords,
+  getAllWordsByAdmin,
   getWordById,
   updateWord,
   deleteWord,

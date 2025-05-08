@@ -18,6 +18,13 @@ router.post(
 // Route to get all dua
 router.get("/all", duaControllers.getAllDua);
 
+// Route to get all dua
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  duaControllers.getAllDuaByAdmin
+);
+
 // Route to get dua by id
 router.get("/:duaId", duaControllers.getDuaById);
 

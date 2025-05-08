@@ -1,13 +1,12 @@
 import { Dua, Prisma } from "@prisma/client";
 import prisma from "../../utils/prisma";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { duaQueryFields } from "./dua.constants";
 import httpStatus from "http-status";
 import APIError from "../../errors/APIError";
 import { TDuaQueryFilter } from "./dua.interface";
 
-// Service to create a new dua
+// Service to create a new Dua
 const createDua = async (duaData: Dua) => {
   return await prisma.dua.create({
     data: duaData,
@@ -24,7 +23,28 @@ const createDua = async (duaData: Dua) => {
   });
 };
 
-const getAllDua = async (options: TDuaQueryFilter) => {
+// Service to get all Dua
+const getAllDua = async () => {
+  const result = await prisma.dua.findMany({
+    where: { isDeleted: false },
+    select: {
+      id: true,
+      name: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      reference: true,
+      tags: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return result;
+};
+
+// Service to get all Dua by admins
+const getAllDuaByAdmin = async (options: TDuaQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -105,8 +125,9 @@ const getAllDua = async (options: TDuaQueryFilter) => {
   };
 };
 
+// Service to get specific Dua by ID
 const getDuaById = async (duaId: string) => {
-  return await prisma.dua.findUnique({
+  return await prisma.dua.findUniqueOrThrow({
     where: {
       id: duaId,
     },
@@ -123,6 +144,7 @@ const getDuaById = async (duaId: string) => {
   });
 };
 
+// Service to update Dua by ID
 const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   const existingDua = await prisma.dua.findUnique({
     where: { id: duaId },
@@ -149,7 +171,7 @@ const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   });
 };
 
-// Service to delete a dua (soft delete)
+// Service to delete a Dua (soft delete)
 const deleteDua = async (duaId: string) => {
   return await prisma.dua.update({
     where: {
@@ -165,7 +187,7 @@ const deleteDua = async (duaId: string) => {
   });
 };
 
-// Service to delete a dua (hard delete) only by admin
+// Service to delete a Dua (hard delete) only by admin
 const deleteDuaByAdmin = async (id: string) => {
   const existingDua = await prisma.dua.findUnique({
     where: { id },
@@ -189,6 +211,7 @@ const deleteDuaByAdmin = async (id: string) => {
 export const duaServices = {
   createDua,
   getAllDua,
+  getAllDuaByAdmin,
   getDuaById,
   updateDua,
   deleteDua,

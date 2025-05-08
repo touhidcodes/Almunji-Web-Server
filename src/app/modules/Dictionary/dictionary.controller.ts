@@ -40,14 +40,14 @@ const getSuggestion = catchAsync(async (req, res) => {
 });
 
 // Controller to get all dictionary words
-const getAllWords = catchAsync(async (req, res) => {
+const getAllWordsByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     wordFilterableFields,
     wordPaginationFields
   );
 
-  const result = await dictionaryServices.getAllWords(options);
+  const result = await dictionaryServices.getAllWordsByAdmin(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -107,7 +107,7 @@ const deleteWordByAdmin = catchAsync(async (req, res) => {
 export const dictionaryControllers = {
   createWord,
   getSuggestion,
-  getAllWords,
+  getAllWordsByAdmin,
   getWordById,
   updateWord,
   deleteWord,

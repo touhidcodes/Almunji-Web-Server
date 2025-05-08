@@ -18,13 +18,24 @@ const createDua = catchAsync(async (req, res) => {
 
 // Controller to get all dua
 const getAllDua = catchAsync(async (req, res) => {
+  const result = await duaServices.getAllDua();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Dua retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get all dua
+const getAllDuaByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     duaFilterableFields,
     duaPaginationFields
   );
 
-  const result = await duaServices.getAllDua(options);
+  const result = await duaServices.getAllDuaByAdmin(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -82,9 +93,10 @@ const deleteDuaByAdmin = catchAsync(async (req, res) => {
 });
 
 export const duaControllers = {
-  getAllDua,
-  getDuaById,
   createDua,
+  getAllDua,
+  getAllDuaByAdmin,
+  getDuaById,
   updateDua,
   deleteDua,
   deleteDuaByAdmin,
