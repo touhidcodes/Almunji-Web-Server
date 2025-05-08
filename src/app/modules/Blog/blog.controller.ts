@@ -18,13 +18,24 @@ const createBlog = catchAsync(async (req, res) => {
 
 // Controller to get all Blog
 const getAllBlogs = catchAsync(async (req, res) => {
+  const result = await blogServices.getAllBlogs();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Blogs retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get all Blog by admins
+const getAllBlogsByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     blogFilterableFields,
     blogPaginationFields
   );
 
-  const result = await blogServices.getAllBlogs(options);
+  const result = await blogServices.getAllBlogsByAdmin(options);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -101,6 +112,7 @@ const deleteBlogByAdmin = catchAsync(async (req, res) => {
 export const blogControllers = {
   createBlog,
   getAllBlogs,
+  getAllBlogsByAdmin,
   getBlogById,
   getBlogBySlug,
   updateBlog,

@@ -18,6 +18,13 @@ router.post(
 // Route to get all Bog
 router.get("/all", blogControllers.getAllBlogs);
 
+// Route to get all Bog by admin
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  blogControllers.getAllBlogsByAdmin
+);
+
 // Route to get a specific Blog by ID
 router.get("/:blogId", blogControllers.getBlogById);
 

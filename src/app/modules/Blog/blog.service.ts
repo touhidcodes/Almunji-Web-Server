@@ -41,7 +41,27 @@ const createBlog = async (blogData: Omit<Blog, "slug">) => {
 };
 
 // Service to retrieve all Blog
-const getAllBlogs = async (options: TBlogQueryFilter) => {
+const getAllBlogs = async () => {
+  const result = await prisma.blog.findMany({
+    where: { isDeleted: false, isPublished: true },
+    select: {
+      id: true,
+      slug: true,
+      thumbnail: true,
+      title: true,
+      summary: true,
+      content: true,
+      isPublished: true,
+      isFeatured: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return result;
+};
+
+// Service to retrieve all Blog
+const getAllBlogsByAdmin = async (options: TBlogQueryFilter) => {
   const { filters, pagination } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -235,6 +255,7 @@ const deleteBlogByAdmin = async (id: string) => {
 export const blogServices = {
   createBlog,
   getAllBlogs,
+  getAllBlogsByAdmin,
   getBlogById,
   getBlogBySlug,
   updateBlog,
