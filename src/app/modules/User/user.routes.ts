@@ -7,46 +7,39 @@ import { UserRole } from "@prisma/client";
 
 const router = express.Router();
 
-// Routes to get user
+// Routes to get session user
+router.get(
+  "/",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  userControllers.getUser
+);
+
+// Routes to get session user profile
 router.get(
   "/profile",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
   userControllers.getUserProfile
 );
 
 // Routes to get all user
 router.get(
-  "/users/all",
+  "/all",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   userControllers.getAllUser
 );
 
-// Routes to get user
-router.get(
-  "/user",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
-  userControllers.getUser
-);
-
-// Routes to get user with profile
-router.get(
-  "/user/profile",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
-  userControllers.getUserWithProfile
-);
-
-// Routes to update user
+// Routes to update user profile
 router.put(
-  "/user/profile",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
+  "/profile",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
   validateRequest(userValidationSchema.updateUserSchema),
-  userControllers.updateUser
+  userControllers.updateUserProfile
 );
 
 // Routes to update user status
 router.put(
   "/status/:userId",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   validateRequest(userValidationSchema.updateUserSchema),
   userControllers.updateUserStatus
 );

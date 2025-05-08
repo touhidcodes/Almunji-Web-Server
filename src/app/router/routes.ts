@@ -18,11 +18,11 @@ const router = express.Router();
 const moduleRoutes = [
   {
     path: "/",
-    route: userRoutes,
+    route: authRoutes,
   },
   {
-    path: "/",
-    route: authRoutes,
+    path: "/user",
+    route: userRoutes,
   },
   {
     path: "/category",

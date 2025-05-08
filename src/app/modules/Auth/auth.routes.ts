@@ -24,7 +24,7 @@ router.post("/refresh-token", authControllers.refreshToken);
 router.post(
   "/change-password",
   validateRequest(authValidationSchema.changePasswordZodSchema),
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
   authControllers.changePassword
 );
 

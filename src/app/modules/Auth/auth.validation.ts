@@ -3,11 +3,11 @@ import { z } from "zod";
 //  Schema to create user
 const createUserSchema = z.object({
   body: z.object({
-    username: z.string({ required_error: "Username is required" }),
-    email: z.string({ required_error: "Email is required" }),
+    username: z.string({ required_error: "Username is required!" }),
+    email: z.string({ required_error: "Email is required!" }),
     password: z
-      .string({ required_error: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters long" }),
+      .string({ required_error: "Password is required!" })
+      .min(8, { message: "Password must be at least 8 characters long!" }),
   }),
 });
 
@@ -27,7 +27,7 @@ const loginUserSchema = z.object({
 const refreshTokenZodSchema = z.object({
   cookies: z.object({
     refreshToken: z.string({
-      required_error: "Refresh Token is required",
+      required_error: "Refresh Token is required!",
     }),
   }),
 });
@@ -36,10 +36,10 @@ const refreshTokenZodSchema = z.object({
 const changePasswordZodSchema = z.object({
   body: z.object({
     oldPassword: z.string({
-      required_error: "Old password  is required",
+      required_error: "Old password  is required!",
     }),
     newPassword: z.string({
-      required_error: "New password  is required",
+      required_error: "New password  is required!",
     }),
   }),
 });

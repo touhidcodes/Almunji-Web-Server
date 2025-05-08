@@ -34,8 +34,8 @@ const getAllUser = async (currentUserEmail: string) => {
   return result;
 };
 
-//  Service to get user with profile
-const getUserWithProfile = async (id: string) => {
+//  Service to get user profile
+const getUserProfile = async (id: string) => {
   const user = await prisma.user.findUniqueOrThrow({
     where: {
       id: id,
@@ -52,6 +52,15 @@ const getUserWithProfile = async (id: string) => {
     where: {
       userId: user.id,
     },
+    select: {
+      id: true,
+      userId: true,
+      name: true,
+      image: true,
+      bio: true,
+      profession: true,
+      address: true,
+    },
   });
   return {
     ...user,
@@ -59,26 +68,27 @@ const getUserWithProfile = async (id: string) => {
   };
 };
 
-//  Service to get user profile
-const getUserProfile = async (id: string) => {
-  const result = await prisma.userProfile.findUniqueOrThrow({
-    where: {
-      userId: id,
-    },
-  });
-  return result;
-};
-
-//  Service to update user
-const updateUser = async (
+//  Service to update user profile
+const updateUserProfile = async (
   id: string,
-  userData: Partial<UserProfile> & { username?: string; email?: string }
+  userData: Partial<UserProfile> & {
+    username?: string;
+    email?: string;
+    role?: never;
+  }
 ) => {
-  const { email, username, ...profileData } = userData;
+  const { email, username, role, ...profileData } = userData;
+
+  if (role !== undefined) {
+    throw new APIError(
+      httpStatus.FORBIDDEN,
+      "Updating user role is not allowed!"
+    );
+  }
 
   const existingUser = await prisma.user.findUniqueOrThrow({
     where: {
-      id: id,
+      id,
     },
   });
 
@@ -106,7 +116,7 @@ const updateUser = async (
 
   const result = await prisma.user.update({
     where: {
-      id: id,
+      id,
     },
     data: {
       username: username || existingUser.username,
@@ -117,8 +127,6 @@ const updateUser = async (
       username: true,
       email: true,
       role: true,
-      createdAt: true,
-      updatedAt: true,
     },
   });
 
@@ -148,8 +156,7 @@ const updateUserStatus = async (userId: string, updatedData: Partial<User>) => {
 export const userServices = {
   getUser,
   getUserProfile,
-  updateUser,
-  getUserWithProfile,
+  updateUserProfile,
   getAllUser,
   updateUserStatus,
 };
