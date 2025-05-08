@@ -3,7 +3,6 @@ import prisma from "../../utils/prisma";
 import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { bookContentQueryFields } from "./BookContent.constants";
 import { TBookContentQueryFilter } from "./BookContent.interface";
 
@@ -15,6 +14,22 @@ const createBookContent = async (contentData: BookContent) => {
 
   if (!book) {
     throw new APIError(httpStatus.NOT_FOUND, "Book not found!");
+  }
+
+  const existingContent = await prisma.bookContent.findUnique({
+    where: {
+      bookId_order: {
+        bookId: contentData?.bookId,
+        order: contentData?.order,
+      },
+    },
+  });
+
+  if (existingContent) {
+    throw new APIError(
+      httpStatus.CONFLICT,
+      "Book content with this order already exists for this book!"
+    );
   }
 
   const result = await prisma.bookContent.create({
@@ -35,8 +50,8 @@ const createBookContent = async (contentData: BookContent) => {
   return result;
 };
 
-// Service for get all Book Contents
-const getAllBookContents = async (options: TBookContentQueryFilter) => {
+// Service for get all Book Contents by admins
+const getAllBookContentByAdmin = async (options: TBookContentQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -294,7 +309,7 @@ const deleteBookContentByAdmin = async (id: string) => {
 
 export const bookContentServices = {
   createBookContent,
-  getAllBookContents,
+  getAllBookContentByAdmin,
   getBookContentById,
   getBookIndexByBookId,
   getContentsByBookId,

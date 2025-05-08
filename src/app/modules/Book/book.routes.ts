@@ -18,6 +18,13 @@ router.post(
 // Route to get all Book
 router.get("/all", bookControllers.getAllBooks);
 
+// Route to get all Book
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  bookControllers.getAllBooksByAdmin
+);
+
 // Route to get a specific Book by ID
 router.get("/:bookId", bookControllers.getBookById);
 

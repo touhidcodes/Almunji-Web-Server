@@ -19,15 +19,15 @@ const createBookContent = catchAsync(async (req, res) => {
   });
 });
 
-// Get all Book Contents
-const getAllBookContent = catchAsync(async (req, res) => {
+// Get all Book Contents by admins
+const getAllBookContentByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     bookContentFilterableFields,
     bookContentPaginationFields
   );
 
-  const result = await bookContentServices.getAllBookContents(options);
+  const result = await bookContentServices.getAllBookContentByAdmin(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -121,7 +121,7 @@ const deleteBookContentByAdmin = catchAsync(async (req, res) => {
 
 export const bookContentControllers = {
   createBookContent,
-  getAllBookContent,
+  getAllBookContentByAdmin,
   getBookContentById,
   getBookIndexByBookId,
   getContentsByBookId,

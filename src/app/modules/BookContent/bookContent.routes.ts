@@ -16,7 +16,11 @@ router.post(
 );
 
 // Route to get all Book Content
-router.get("/all", bookContentControllers.getAllBookContent);
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  bookContentControllers.getAllBookContentByAdmin
+);
 
 // Route to get a specific Book Content by ID
 router.get("/:contentId", bookContentControllers.getBookContentById);

@@ -50,7 +50,30 @@ const createBook = async (bookData: Omit<Book, "slug">) => {
 };
 
 // Service to get all Books
-const getAllBooks = async (options: TBookQueryFilter) => {
+const getAllBooks = async () => {
+  const result = await prisma.book.findMany({
+    where: { isDeleted: false },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      cover: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      isFeatured: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return result;
+};
+
+// Service to get all Books by admin
+const getAllBooksByAdmin = async (options: TBookQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -316,6 +339,7 @@ const deleteBookByAdmin = async (id: string) => {
 export const bookServices = {
   createBook,
   getAllBooks,
+  getAllBooksByAdmin,
   getBookById,
   getBookBySlug,
   getBooksByCategoryId,
