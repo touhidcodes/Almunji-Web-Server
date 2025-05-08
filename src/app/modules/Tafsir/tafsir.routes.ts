@@ -15,8 +15,12 @@ router.post(
   tafsirControllers.createTafsir
 );
 
-// Route to get all Tafsir
-router.get("/all", tafsirControllers.getAllTafsir);
+// Route to get all Tafsir by admins
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  tafsirControllers.getAllTafsirByAdmin
+);
 
 // Route to get all Tafsir of a specific Ayah
 router.get("/ayah/:ayahId", tafsirControllers.getTafsirByAyah);

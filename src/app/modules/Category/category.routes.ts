@@ -17,7 +17,11 @@ router.post(
 );
 
 // Route to get all Categories
-router.get("/all", categoryControllers.getAllCategories);
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  categoryControllers.getAllCategoriesByAdmin
+);
 
 // Route to update specific Categories
 router.put(

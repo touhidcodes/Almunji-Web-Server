@@ -15,8 +15,8 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 // Controller to get all Category
-const getAllCategories = catchAsync(async (req, res) => {
-  const result = await categoryServices.getAllCategories();
+const getAllCategoriesByAdmin = catchAsync(async (req, res) => {
+  const result = await categoryServices.getAllCategoriesByAdmin();
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -66,7 +66,7 @@ const deleteCategoryByAdmin = catchAsync(async (req, res) => {
 
 export const categoryControllers = {
   createCategory,
-  getAllCategories,
+  getAllCategoriesByAdmin,
   updateCategory,
   deleteCategory,
   deleteCategoryByAdmin,

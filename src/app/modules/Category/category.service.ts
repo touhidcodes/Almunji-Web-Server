@@ -30,7 +30,7 @@ const createCategory = async (data: { name: string; description?: string }) => {
 };
 
 // Service to get all Categories
-const getAllCategories = async () => {
+const getAllCategoriesByAdmin = async () => {
   const result = await prisma.category.findMany({
     where: {
       isDeleted: false,
@@ -80,6 +80,16 @@ const updateCategory = async (id: string, data: { name: string }) => {
 
 // Service to delete a  specific Category (Soft Delete)
 const deleteCategory = async (id: string) => {
+  const existingCategory = await prisma.category.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!existingCategory) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Category doesn't exist!");
+  }
+
   const result = await prisma.category.update({
     where: { id },
     data: {
@@ -96,6 +106,16 @@ const deleteCategory = async (id: string) => {
 
 // Service to delete a  specific Category (Hard Delete) only by Admin
 const deleteCategoryByAdmin = async (id: string) => {
+  const existingCategory = await prisma.category.findFirst({
+    where: {
+      id,
+    },
+  });
+
+  if (!existingCategory) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Category doesn't exist!");
+  }
+
   const hasBooks = await prisma.book.findFirst({
     where: {
       categoryId: id,
@@ -105,7 +125,7 @@ const deleteCategoryByAdmin = async (id: string) => {
   if (hasBooks) {
     throw new APIError(
       httpStatus.BAD_REQUEST,
-      "Cannot delete category. Books exist under this category."
+      "Cannot delete category. Books exist under this category!"
     );
   }
 
@@ -122,7 +142,7 @@ const deleteCategoryByAdmin = async (id: string) => {
 
 export const categoryServices = {
   createCategory,
-  getAllCategories,
+  getAllCategoriesByAdmin,
   updateCategory,
   deleteCategory,
   deleteCategoryByAdmin,

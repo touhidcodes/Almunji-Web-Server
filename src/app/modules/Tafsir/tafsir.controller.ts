@@ -20,15 +20,15 @@ const createTafsir = catchAsync(async (req, res) => {
   });
 });
 
-// Controller to get all Tafsir
-const getAllTafsir = catchAsync(async (req, res) => {
+// Controller to get all Tafsir by admins
+const getAllTafsirByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     tafsirFilterableFields,
     tafsirPaginationFields
   );
 
-  const result = await tafsirServices.getAllTafsir(options);
+  const result = await tafsirServices.getAllTafsirByAdmin(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -105,7 +105,7 @@ const deleteTafsirByAdmin = catchAsync(async (req, res) => {
 
 export const tafsirControllers = {
   createTafsir,
-  getAllTafsir,
+  getAllTafsirByAdmin,
   getTafsirByAyah,
   getTafsirById,
   updateTafsir,

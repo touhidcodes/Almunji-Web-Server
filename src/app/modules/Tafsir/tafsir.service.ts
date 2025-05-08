@@ -55,35 +55,8 @@ const createTafsir = async (data: Tafsir) => {
   return result;
 };
 
-// Service to retrieve all Tafsir of a specific Ayah
-const getTafsirByAyah = async (ayahId: string) => {
-  const result = await prisma.tafsir.findMany({
-    where: { ayahId },
-    select: {
-      id: true,
-      ayah: {
-        select: {
-          arabic: true,
-          bangla: true,
-          english: true,
-        },
-      },
-      heading: true,
-      summaryBn: true,
-      summaryEn: true,
-      detailBn: true,
-      detailEn: true,
-      scholar: true,
-      reference: true,
-      tags: true,
-    },
-  });
-
-  return result;
-};
-
 // Service to retrieve all Tafsir
-const getAllTafsir = async (options: TTafsirQueryFilter) => {
+const getAllTafsirByAdmin = async (options: TTafsirQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -161,6 +134,33 @@ const getAllTafsir = async (options: TTafsirQueryFilter) => {
   const total = await prisma.tafsir.count({ where: whereConditions });
 
   return { meta: { page, limit, total }, data: result };
+};
+
+// Service to retrieve all Tafsir of a specific Ayah
+const getTafsirByAyah = async (ayahId: string) => {
+  const result = await prisma.tafsir.findMany({
+    where: { ayahId },
+    select: {
+      id: true,
+      ayah: {
+        select: {
+          arabic: true,
+          bangla: true,
+          english: true,
+        },
+      },
+      heading: true,
+      summaryBn: true,
+      summaryEn: true,
+      detailBn: true,
+      detailEn: true,
+      scholar: true,
+      reference: true,
+      tags: true,
+    },
+  });
+
+  return result;
 };
 
 // Service to retrieve a specific Tafsir by ID
@@ -262,7 +262,7 @@ const deleteTafsirByAdmin = async (id: string) => {
 
 export const tafsirServices = {
   createTafsir,
-  getAllTafsir,
+  getAllTafsirByAdmin,
   getTafsirByAyah,
   getTafsirById,
   updateTafsir,
