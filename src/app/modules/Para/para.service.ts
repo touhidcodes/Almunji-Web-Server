@@ -34,7 +34,26 @@ const createPara = async (data: Para) => {
 };
 
 // Service to retrieve all Paras
-const getAllParas = async (options: TParaQueryFilter) => {
+const getAllParas = async () => {
+  const result = await prisma.para.findMany({
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      english: true,
+      bangla: true,
+      startAyahRef: true,
+      endAyahRef: true,
+    },
+
+    orderBy: { number: "asc" },
+  });
+
+  return result;
+};
+
+// Service to retrieve all Paras by admins
+const getAllParasByAdmin = async (options: TParaQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
@@ -184,6 +203,7 @@ const deletePara = async (id: string) => {
 export const paraServices = {
   createPara,
   getAllParas,
+  getAllParasByAdmin,
   getParaById,
   updatePara,
   deletePara,

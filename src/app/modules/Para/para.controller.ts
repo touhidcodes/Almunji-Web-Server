@@ -19,13 +19,25 @@ const createPara = catchAsync(async (req, res) => {
 
 // Controller to get all Paras
 const getAllParas = catchAsync(async (req, res) => {
+  const result = await paraServices.getAllParas();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Paras retrieved successfully!",
+    data: result,
+  });
+});
+
+// Controller to get all Paras by admins
+const getAllParasByAdmin = catchAsync(async (req, res) => {
   const options = queryFilters(
     req.query,
     paraFilterableFields,
     paraPaginationFields
   );
 
-  const result = await paraServices.getAllParas(options);
+  const result = await paraServices.getAllParasByAdmin(options);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -78,6 +90,7 @@ const deletePara = catchAsync(async (req, res) => {
 export const paraControllers = {
   createPara,
   getAllParas,
+  getAllParasByAdmin,
   getParaById,
   updatePara,
   deletePara,

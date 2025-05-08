@@ -16,7 +16,14 @@ router.post(
 );
 
 // Route to get all Paras
-router.get("/", paraControllers.getAllParas);
+router.get("/all", paraControllers.getAllParas);
+
+// Route to get all Paras by admins
+router.get(
+  "/admin/all",
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  paraControllers.getAllParasByAdmin
+);
 
 // Route to get a specific Para by ID
 router.get("/:paraId", paraControllers.getParaById);
