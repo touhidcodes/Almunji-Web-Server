@@ -1,1 +1,3 @@
 Postman Documentation: https://documenter.getpostman.com/view/39058010/2sB2j979Eu
+Server Link: https://server.almunji.com/
+API Example: https://server.almunji.com/api/v1/dictionary/suggestion
