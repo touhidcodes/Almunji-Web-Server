@@ -10,10 +10,9 @@ const router = express.Router();
 // Route to create a new dictionary word
 router.post(
   "/dictionary",
-  //   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
   FileUpload.upload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
-    // req.body = UserValidation.createDoctor.parse(JSON.parse(req.body.data));
     return uploadController.uploadDictionaryData(req, res, next);
   }
 );

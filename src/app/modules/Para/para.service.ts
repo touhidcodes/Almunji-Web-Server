@@ -4,7 +4,6 @@ import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import { paginationHelper } from "../../utils/paginationHelpers";
 import { paraQueryFields } from "./para.constants";
-import { TPaginationOptions } from "../../interfaces/pagination";
 import { TParaQueryFilter } from "./para.interface";
 
 // Service to create a new Para

@@ -24,7 +24,7 @@ const uploadDictionaryData = catchAsync(
       sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "JSON file uploaded and processed successfully",
+        message: "JSON file uploaded and processed successfully!",
         data: result,
       });
     } catch (error) {

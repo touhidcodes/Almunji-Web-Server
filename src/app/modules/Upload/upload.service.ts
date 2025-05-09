@@ -7,7 +7,7 @@ import { CreatedWord } from "./upload.constants";
 // Service to upload dictionary words from a JSON file
 const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
   if (!Array.isArray(data)) {
-    throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format");
+    throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
   }
 
   const createdWords: CreatedWord[] = [];
