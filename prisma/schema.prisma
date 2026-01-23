@@ -68,7 +68,7 @@ model Dictionary {
   persianWord     String   @unique
   transliteration String?
   banglaMeaning   String
-  englishMeaning  String
+  englishMeaning  String?
   exampleFA       String?
   exampleEN       String?
   exampleBN       String?
