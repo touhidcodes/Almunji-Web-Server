@@ -41,6 +41,28 @@ model UserProfile {
   @@map("user_profiles")
 }
 
+model Permission {
+  id        String   @id @default(uuid())
+  resource  Resource
+  action    Action
+  createdAt DateTime @default(now())
+
+  roles RolePermission[]
+
+  @@unique([resource, action])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  role         UserRole
+  permissionId String
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([role, permissionId])
+  @@map("role_permissions")
+}
+
 model Dictionary {
   id            String   @id @default(uuid())
   word          String   @unique
@@ -214,4 +236,22 @@ enum UserRole {
 enum UserStatus {
   ACTIVE
   BLOCKED
+}
+
+enum Resource {
+  SURAH
+  AYAH
+  TAFSIR
+  DICTIONARY
+  BOOK
+  BLOG
+  DUA
+  USER
+}
+
+enum Action {
+  READ
+  CREATE
+  UPDATE
+  DELETE
 }

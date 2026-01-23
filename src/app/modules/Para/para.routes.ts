@@ -1,46 +1,77 @@
-import express from "express";
-import validateRequest from "../../middlewares/validateRequest";
-import { UserRole } from "@prisma/client";
-import auth from "../../middlewares/auth";
-import { paraValidationSchema } from "./para.validation";
-import { paraControllers } from "./para.controller";
+import { tagTypes } from "../tags";
+import { baseServerApi } from "./baseApi";
 
-const router = express.Router();
+export const paraApi = baseServerApi.injectEndpoints({
+  endpoints: (build) => ({
+    // --------------------
+    // QUERIES
+    // --------------------
 
-// Route to create a new Para
-router.post(
-  "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
-  validateRequest(paraValidationSchema.createParaSchema),
-  paraControllers.createPara
-);
+    // Get all paras (public)
+    getAllParas: build.query({
+      query: () => ({
+        url: "/para/all",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.para],
+    }),
 
-// Route to get all Paras
-router.get("/all", paraControllers.getAllParas);
+    // Get all paras (admin)
+    getAllParasByAdmin: build.query({
+      query: () => ({
+        url: "/para/admin/all",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.para],
+    }),
 
-// Route to get all Paras by admins
-router.get(
-  "/admin/all",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
-  paraControllers.getAllParasByAdmin
-);
+    // Get single para by ID
+    getParaById: build.query({
+      query: (paraId: string) => ({
+        url: `/para/${paraId}`,
+        method: "GET",
+      }),
+      providesTags: [tagTypes.para],
+    }),
 
-// Route to get a specific Para by ID
-router.get("/:paraId", paraControllers.getParaById);
+    // Create para
+    createPara: build.mutation({
+      query: (payload) => ({
+        url: "/para",
+        method: "POST",
+        body: payload,
+      }),
+      invalidatesTags: [tagTypes.para],
+    }),
 
-// Route to update an existing Para by ID
-router.put(
-  "/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
-  validateRequest(paraValidationSchema.updateParaSchema),
-  paraControllers.updatePara
-);
+    // Update para
+    updatePara: build.mutation({
+      query: ({ paraId, payload }) => ({
+        url: `/para/${paraId}`,
+        method: "PUT",
+        body: payload,
+      }),
+      invalidatesTags: (_result, _error, { paraId }) => [
+        { type: tagTypes.para, id: paraId },
+      ],
+    }),
 
-// Route to delete a Para by ID
-router.delete(
-  "/admin/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
-  paraControllers.deletePara
-);
+    // Delete para (admin only)
+    deletePara: build.mutation({
+      query: (paraId: string) => ({
+        url: `/para/admin/${paraId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [tagTypes.para],
+    }),
+  }),
+});
 
-export const paraRoutes = router;
+export const {
+  useGetAllParasQuery,
+  useGetAllParasByAdminQuery,
+  useGetParaByIdQuery,
+  useCreateParaMutation,
+  useUpdateParaMutation,
+  useDeleteParaMutation,
+} = paraApi;
