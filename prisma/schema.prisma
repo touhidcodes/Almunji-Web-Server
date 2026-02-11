@@ -12,15 +12,16 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  username    String       @unique
-  email       String       @unique
-  role        UserRole
-  password    String
-  status      UserStatus   @default(ACTIVE)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  UserProfile UserProfile?
+  id        String     @id @default(uuid())
+  username  String     @unique
+  email     String     @unique
+  password  String
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  profile     UserProfile?
+  permissions UserPermission[]
 
   @@map("users")
 }
@@ -47,20 +48,24 @@ model Permission {
   action    Action
   createdAt DateTime @default(now())
 
-  roles RolePermission[]
+  users UserPermission[]
 
   @@unique([resource, action])
   @@map("permissions")
 }
 
-model RolePermission {
-  id           String     @id @default(uuid())
-  role         UserRole
+model UserPermission {
+  id           String   @id @default(uuid())
+  userId       String
   permissionId String
-  permission   Permission @relation(fields: [permissionId], references: [id])
+  assignedBy   String?
+  assignedAt   DateTime @default(now())
 
-  @@unique([role, permissionId])
-  @@map("role_permissions")
+  user       User       @relation(fields: [userId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
 }
 
 model Dictionary {
@@ -112,14 +117,14 @@ model BookContent {
   id        String   @id @default(uuid())
   bookId    String
   book      Book     @relation(fields: [bookId], references: [id])
-  title     String
-  order     Int
+  section   String
+  index     Int
   text      String   @db.LongText
   isDeleted Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([bookId, order])
+  @@unique([bookId, index])
   @@map("book_contents")
 }
 
