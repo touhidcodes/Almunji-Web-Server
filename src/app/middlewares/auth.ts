@@ -1,10 +1,9 @@
-import { NextFunction, RequestHandler } from "express";
 import httpStatus from "http-status";
-import { jwtHelpers } from "../utils/jwtHelpers";
-import config from "../config/config";
 import { Secret } from "jsonwebtoken";
+import config from "../config/config";
 import APIError from "../errors/APIError";
 import catchAsync from "../utils/catchAsync";
+import { jwtHelpers } from "../utils/jwtHelpers";
 import prisma from "../utils/prisma";
 
 const auth = (...roles: string[]) => {
