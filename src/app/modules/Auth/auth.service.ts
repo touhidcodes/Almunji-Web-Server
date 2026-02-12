@@ -1,63 +1,77 @@
-import { Secret } from "jsonwebtoken";
-import { jwtHelpers } from "../../utils/jwtHelpers";
-import prisma from "../../utils/prisma";
+import { UserRole, UserStatus } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import httpStatus from "http-status";
+import { Secret } from "jsonwebtoken";
+
 import config from "../../config/config";
 import APIError from "../../errors/APIError";
-import httpStatus from "http-status";
-import { UserRole, UserStatus } from "@prisma/client";
-import { IChangePassword } from "./auth.interface";
+import { jwtHelpers } from "../../utils/jwtHelpers";
+import prisma from "../../utils/prisma";
+
 import { comparePasswords } from "../../utils/comparePassword";
 import { hashedPassword } from "../../utils/hashedPassword";
 import { TUserData } from "../User/user.interface";
+import { IChangePassword } from "./auth.interface";
 
-//  Service to create user
+// Get user permissions
+
+const getUserPermissions = async (userId: string): Promise<string[]> => {
+  const permissions = await prisma.userPermission.findMany({
+    where: { userId },
+    include: {
+      permission: true,
+    },
+  });
+
+  return permissions.map(
+    (p) => `${p.permission.resource}:${p.permission.action}`
+  );
+};
+
+//Create User
+
 const createUser = async (data: TUserData) => {
   const existingUser = await prisma.user.findUnique({
-    where: {
-      username: data.username,
-    },
+    where: { username: data.username },
   });
 
   if (existingUser) {
     throw new APIError(httpStatus.CONFLICT, "Username is already taken");
   }
 
-  const hashedPassword: string = await bcrypt.hash(data.password, 12);
+  const passwordHash = await bcrypt.hash(data.password, 12);
 
-  const userData = {
-    username: data.username,
-    email: data.email,
-    role: UserRole.USER,
-    password: hashedPassword,
-  };
-
-  const result = await prisma.$transaction(async (transactionClient) => {
-    const createdUserData = await transactionClient.user.create({
-      data: userData,
+  const result = await prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        username: data.username,
+        email: data.email,
+        password: passwordHash,
+        role: UserRole.USER,
+      },
       select: {
         id: true,
         username: true,
         email: true,
+        role: true,
         createdAt: true,
         updatedAt: true,
       },
     });
 
-    const userId = createdUserData.id;
-
-    await transactionClient.userProfile.create({
-      data: {
-        userId: userId,
-      },
+    await tx.userProfile.create({
+      data: { userId: user.id },
     });
+
+    const permissions = await getUserPermissions(user.id);
 
     const accessToken = jwtHelpers.generateToken(
       {
-        email: userData.email,
-        username: userData.username,
-        userId: userId,
-        role: UserRole.USER,
+        userId: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        permissions,
       },
       config.jwt.access_token_secret as Secret,
       config.jwt.access_token_expires_in as string
@@ -65,10 +79,8 @@ const createUser = async (data: TUserData) => {
 
     const refreshToken = jwtHelpers.generateToken(
       {
-        email: userData.email,
-        username: userData.username,
-        userId: userId,
-        role: UserRole.USER,
+        userId: user.id,
+        email: user.email,
       },
       config.jwt.refresh_token_secret as Secret,
       config.jwt.refresh_token_expires_in as string
@@ -77,56 +89,51 @@ const createUser = async (data: TUserData) => {
     return {
       accessToken,
       refreshToken,
-      createdUserData,
+      user,
     };
   });
 
   return result;
 };
 
-//  Service to login user
+// Login User
+
 const loginUser = async (payload: { identifier: string; password: string }) => {
-  const { identifier } = payload;
+  const { identifier, password } = payload;
 
   if (!identifier) {
-    throw new APIError(httpStatus.NOT_FOUND, "Email or Username is required");
+    throw new APIError(httpStatus.BAD_REQUEST, "Email or Username is required");
   }
 
-  let userData = await prisma.user.findUnique({
-    where: {
-      email: identifier,
-      status: UserStatus.ACTIVE,
-    },
+  let user = await prisma.user.findUnique({
+    where: { email: identifier, status: UserStatus.ACTIVE },
   });
 
-  if (!userData) {
-    userData = await prisma.user.findUnique({
-      where: {
-        username: identifier,
-        status: UserStatus.ACTIVE,
-      },
+  if (!user) {
+    user = await prisma.user.findUnique({
+      where: { username: identifier, status: UserStatus.ACTIVE },
     });
   }
 
-  if (!userData) {
-    throw new APIError(httpStatus.NOT_FOUND, "User not found!");
+  if (!user) {
+    throw new APIError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  const isCorrectPassword: boolean = await bcrypt.compare(
-    payload.password,
-    userData.password
-  );
+  const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-  if (!isCorrectPassword) {
-    throw new Error("Password incorrect!");
+  if (!isPasswordCorrect) {
+    throw new APIError(httpStatus.UNAUTHORIZED, "Password incorrect");
   }
+
+  const permissions = await getUserPermissions(user.id);
 
   const accessToken = jwtHelpers.generateToken(
     {
-      email: userData.email,
-      username: userData.username,
-      userId: userData.id,
-      role: userData.role,
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      permissions,
     },
     config.jwt.access_token_secret as Secret,
     config.jwt.access_token_expires_in as string
@@ -134,9 +141,8 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
 
   const refreshToken = jwtHelpers.generateToken(
     {
-      email: userData.email,
-      username: userData.username,
-      userId: userData.id,
+      userId: user.id,
+      email: user.email,
     },
     config.jwt.refresh_token_secret as Secret,
     config.jwt.refresh_token_expires_in as string
@@ -145,74 +151,80 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
   return {
     accessToken,
     refreshToken,
-    userData,
+    user,
   };
 };
 
-//  Service to get refresh token
+// Refresh Token
+
 const refreshToken = async (token: string) => {
-  let decodedData;
+  let decoded;
+
   try {
-    decodedData = jwtHelpers.verifyToken(
+    decoded = jwtHelpers.verifyToken(
       token,
       config.jwt.refresh_token_secret as Secret
     );
-  } catch (err) {
-    throw new Error("You are not authorized!");
+  } catch {
+    throw new APIError(httpStatus.UNAUTHORIZED, "Invalid refresh token");
   }
 
-  const userData = await prisma.user.findUniqueOrThrow({
+  const user = await prisma.user.findUnique({
     where: {
-      email: decodedData.email,
+      id: decoded.userId,
+      email: decoded.email,
+      status: UserStatus.ACTIVE,
     },
   });
 
+  if (!user) {
+    throw new APIError(httpStatus.UNAUTHORIZED, "User not found");
+  }
+
+  const permissions = await getUserPermissions(user.id);
+
   const accessToken = jwtHelpers.generateToken(
     {
-      email: userData.email,
-      role: userData.role,
+      userId: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      permissions,
     },
     config.jwt.access_token_secret as Secret,
     config.jwt.access_token_expires_in as string
   );
 
-  return {
-    accessToken,
-  };
+  return { accessToken };
 };
 
-//  Service to change password
+// Change Password
+
 const changePassword = async (userId: string, payload: IChangePassword) => {
   const { oldPassword, newPassword } = payload;
 
-  const isUserExist = await prisma.user.findUnique({
-    where: {
-      id: userId,
-      status: UserStatus.ACTIVE,
-    },
+  const user = await prisma.user.findUnique({
+    where: { id: userId, status: UserStatus.ACTIVE },
   });
 
-  if (!isUserExist) {
+  if (!user) {
     throw new APIError(httpStatus.NOT_FOUND, "User does not exist");
   }
 
-  // checking old password
-  if (
-    isUserExist.password &&
-    !(await comparePasswords(oldPassword, isUserExist.password))
-  ) {
-    throw new APIError(httpStatus.UNAUTHORIZED, "Old Password is incorrect");
+  const isOldPasswordCorrect = await comparePasswords(
+    oldPassword,
+    user.password
+  );
+
+  if (!isOldPasswordCorrect) {
+    throw new APIError(httpStatus.UNAUTHORIZED, "Old password is incorrect");
   }
 
-  const hashPassword = await hashedPassword(newPassword);
+  const newHashedPassword = await hashedPassword(newPassword);
 
   await prisma.user.update({
-    where: {
-      id: isUserExist.id,
-    },
-    data: {
-      password: hashPassword,
-    },
+    where: { id: user.id },
+    data: { password: newHashedPassword },
   });
 };
 
