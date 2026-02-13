@@ -59,7 +59,7 @@ const getUserPermissions = catchAsync(async (req, res) => {
 
 // Remove Permission from User
 const removeUserPermission = catchAsync(async (req, res) => {
-  const result = await permissionServices.removeUserPermission(req.body);
+  await permissionServices.removeUserPermission(req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
