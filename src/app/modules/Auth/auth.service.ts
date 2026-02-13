@@ -14,7 +14,6 @@ import { TUserData } from "../User/user.interface";
 import { IChangePassword } from "./auth.interface";
 
 // Get user permissions
-
 const getUserPermissions = async (userId: string): Promise<string[]> => {
   const permissions = await prisma.userPermission.findMany({
     where: { userId },
@@ -28,8 +27,7 @@ const getUserPermissions = async (userId: string): Promise<string[]> => {
   );
 };
 
-//Create User
-
+// Create User
 const createUser = async (data: TUserData) => {
   const existingUser = await prisma.user.findUnique({
     where: { username: data.username },
@@ -97,7 +95,6 @@ const createUser = async (data: TUserData) => {
 };
 
 // Login User
-
 const loginUser = async (payload: { identifier: string; password: string }) => {
   const { identifier, password } = payload;
 
@@ -156,7 +153,6 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
 };
 
 // Refresh Token
-
 const refreshToken = async (token: string) => {
   let decoded;
 

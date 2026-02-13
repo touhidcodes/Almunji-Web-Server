@@ -4,7 +4,6 @@ import sendResponse from "../../utils/sendResponse";
 import { authServices } from "./auth.service";
 
 // Create User
-
 const createUser = catchAsync(async (req, res) => {
   const result = await authServices.createUser(req.body);
 
@@ -22,7 +21,6 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 // Login User
-
 const loginUser = catchAsync(async (req, res) => {
   const result = await authServices.loginUser(req.body);
 
@@ -46,7 +44,6 @@ const loginUser = catchAsync(async (req, res) => {
 });
 
 // Refresh Token
-
 const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
 
