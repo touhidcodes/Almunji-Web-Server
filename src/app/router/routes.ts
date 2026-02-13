@@ -1,17 +1,18 @@
 import express from "express";
-import { userRoutes } from "../modules/User/user.routes";
 import { authRoutes } from "../modules/Auth/auth.routes";
-import { categoryRoutes } from "../modules/Category/category.routes";
+import { ayahRoutes } from "../modules/Ayah/ayah.routes";
+import { blogRoutes } from "../modules/Blog/blog.routes";
 import { bookRoutes } from "../modules/Book/book.routes";
 import { bookContentRoutes } from "../modules/BookContent/bookContent.routes";
+import { categoryRoutes } from "../modules/Category/category.routes";
 import { dictionaryRoutes } from "../modules/Dictionary/dictionary.routes";
-import { uploadRoutes } from "../modules/Upload/upload.routes";
-import { blogRoutes } from "../modules/Blog/blog.routes";
 import { duaRoutes } from "../modules/Dua/dua.routes";
-import { surahRoutes } from "../modules/Surah/surah.routes";
-import { ayahRoutes } from "../modules/Ayah/ayah.routes";
-import { tafsirRoutes } from "../modules/Tafsir/tafsir.routes";
 import { paraRoutes } from "../modules/Para/para.routes";
+import { permissionRoutes } from "../modules/Permission/permission.routes";
+import { surahRoutes } from "../modules/Surah/surah.routes";
+import { tafsirRoutes } from "../modules/Tafsir/tafsir.routes";
+import { uploadRoutes } from "../modules/Upload/upload.routes";
+import { userRoutes } from "../modules/User/user.routes";
 
 const router = express.Router();
 
@@ -23,6 +24,10 @@ const moduleRoutes = [
   {
     path: "/user",
     route: userRoutes,
+  },
+  {
+    path: "/permission",
+    route: permissionRoutes,
   },
   {
     path: "/category",

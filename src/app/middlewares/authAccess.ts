@@ -1,19 +1,14 @@
-import { Action, Resource, UserRole } from "@prisma/client";
+import { UserRole } from "@prisma/client";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import config from "../config/config";
 import APIError from "../errors/APIError";
+import { TAuthOptions } from "../interfaces/auth";
 import catchAsync from "../utils/catchAsync";
 import { jwtHelpers } from "../utils/jwtHelpers";
 import prisma from "../utils/prisma";
 
-type AuthOptions = {
-  roles?: UserRole[];
-  resource?: Resource;
-  action?: Action;
-};
-
-const accessControl = ({ roles, resource, action }: AuthOptions = {}) =>
+const accessControl = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {
     const token = req.headers.authorization;
 
@@ -27,7 +22,6 @@ const accessControl = ({ roles, resource, action }: AuthOptions = {}) =>
       config.jwt.access_token_secret as Secret
     );
 
-    // Fetch user with permissions
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.userId,
@@ -50,22 +44,27 @@ const accessControl = ({ roles, resource, action }: AuthOptions = {}) =>
       throw new APIError(httpStatus.FORBIDDEN, "User is blocked");
     }
 
-    // Token expiry safety check
-    if (!decoded.exp) {
-      throw new APIError(httpStatus.UNAUTHORIZED, "Invalid token");
-    }
-
-    const tokenExpirationDate = new Date(decoded.exp * 1000);
-    if (tokenExpirationDate < new Date()) {
+    // Token expiry check
+    if (!decoded.exp || new Date(decoded.exp * 1000) < new Date()) {
       throw new APIError(httpStatus.UNAUTHORIZED, "Token expired");
     }
 
-    // Role-based gate (coarse)
+    if (user.role === UserRole.SUPERADMIN) {
+      req.user = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+      return next();
+    }
+
+    // Role-based access (coarse)
+
     if (roles && !roles.includes(user.role)) {
       throw new APIError(httpStatus.FORBIDDEN, "Role forbidden");
     }
 
-    // User-permission gate
+    // Permission-based access
     if (resource && action) {
       const hasPermission = user.permissions.some(
         (up) =>

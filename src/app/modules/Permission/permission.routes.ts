@@ -12,7 +12,7 @@ router.post(
   permissionControllers.createPermission
 );
 
-// Get all permissions (admin panel)
+// Get all permissions
 router.get(
   "/",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN),
