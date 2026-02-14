@@ -23,6 +23,7 @@ model User {
 
   profile     UserProfile?
   permissions UserPermission[]
+  Bookmark    Bookmark[]
 
   @@map("users")
 }
@@ -231,10 +232,17 @@ model Tafsir {
   @@map("tafsirs")
 }
 
-enum Status {
-  PENDING
-  BOOKED
-  REJECTED
+model Bookmark {
+  id        String       @id @default(uuid())
+  userId    String
+  itemId    String
+  itemType  BookmarkType
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, itemId, itemType])
+  @@map("bookmarks")
 }
 
 enum UserRole {
@@ -265,4 +273,9 @@ enum Action {
   CREATE
   UPDATE
   DELETE
+}
+
+enum BookmarkType {
+  DUA
+  AYAH
 }
