@@ -5,7 +5,7 @@ import { bookmarkServices } from "./bookmark.service";
 
 // Create a bookmark
 const createBookmark = catchAsync(async (req, res) => {
-  const userId = req.user.id; // from auth middleware
+  const userId = req.user.id;
 
   const result = await bookmarkServices.createBookmark({
     userId,
@@ -34,7 +34,7 @@ const getMyBookmarks = catchAsync(async (req, res) => {
   });
 });
 
-// Get single bookmark by ID (user scoped)
+// Get single bookmark by ID
 const getSingleBookmark = catchAsync(async (req, res) => {
   const { bookmarkId } = req.params;
   const userId = req.user.id;
