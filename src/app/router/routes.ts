@@ -4,6 +4,7 @@ import { ayahRoutes } from "../modules/Ayah/ayah.routes";
 import { blogRoutes } from "../modules/Blog/blog.routes";
 import { bookRoutes } from "../modules/Book/book.routes";
 import { bookContentRoutes } from "../modules/BookContent/bookContent.routes";
+import { bookmarkRoutes } from "../modules/Bookmark/bookmark.routes";
 import { categoryRoutes } from "../modules/Category/category.routes";
 import { dictionaryRoutes } from "../modules/Dictionary/dictionary.routes";
 import { duaRoutes } from "../modules/Dua/dua.routes";
@@ -68,6 +69,10 @@ const moduleRoutes = [
   {
     path: "/tafsir",
     route: tafsirRoutes,
+  },
+  {
+    path: "/bookmark",
+    route: bookmarkRoutes,
   },
   {
     path: "/upload",

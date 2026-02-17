@@ -34,9 +34,7 @@ router.delete(
   "/:bookmarkId",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
   bookmarkControllers.deleteBookmark
-);
-
-// Admin routes
+)
 
 // Get all bookmarks (admin only)
 router.get(
