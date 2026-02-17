@@ -1,46 +1,49 @@
 import { Dictionary, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
 import { wordQueryFields } from "./dictionary.constants";
 import { TWordQueryFilter } from "./dictionary.interface";
 
-// Service to create a new dictionary word
+// Create Word
 const createWord = async (data: Dictionary) => {
   const existingWord = await prisma.dictionary.findUnique({
     where: {
-      word: data.word,
+      persianWord: data.persianWord,
     },
   });
 
   if (existingWord) {
     throw new APIError(
       httpStatus.CONFLICT,
-      "Word already exists in the dictionary"
+      "Persian word already exists in the dictionary"
     );
   }
 
-  const wordData = {
-    word: data.word,
-    definition: data.definition,
-    pronunciation: data.pronunciation,
-  };
-
   const result = await prisma.dictionary.create({
-    data: wordData,
+    data: {
+      persianWord: data.persianWord,
+      transliteration: data.transliteration,
+      banglaMeaning: data.banglaMeaning,
+      englishMeaning: data.englishMeaning,
+      exampleFA: data.exampleFA,
+      exampleEN: data.exampleEN,
+      exampleBN: data.exampleBN,
+    },
     select: {
       id: true,
-      word: true,
-      definition: true,
-      pronunciation: true,
+      persianWord: true,
+      transliteration: true,
+      banglaMeaning: true,
+      englishMeaning: true,
     },
   });
 
   return result;
 };
 
-// Service to suggestion dictionary words
+// Word Suggestions
 const getSuggestion = async (options: TWordQueryFilter) => {
   const { filters, pagination } = options;
   const { page, limit, skip } =
@@ -48,57 +51,53 @@ const getSuggestion = async (options: TWordQueryFilter) => {
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
-  // Search by only non-deleted words
-  andConditions.push({
-    isDeleted: false,
-  });
+  andConditions.push({ isDeleted: false });
 
-  // Search by word or description
   if (filters?.searchTerm) {
     andConditions.push({
       OR: wordQueryFields.map((field) => ({
         [field]: {
-          contains: filters?.searchTerm,
+          contains: filters.searchTerm,
+          mode: "insensitive",
         },
       })),
     });
   }
 
-  // Search by word suggestion
-  if (filters?.word) {
+  if (filters?.persianWord) {
     andConditions.push({
-      word: {
-        contains: filters?.word.toLowerCase(),
+      persianWord: {
+        contains: filters.persianWord,
+        // mode: "insensitive",
       },
     });
   }
 
-  const whereConditions: Prisma.DictionaryWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.DictionaryWhereInput = andConditions.length
+    ? { AND: andConditions }
+    : {};
 
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
-    select: { id: true, word: true },
+    select: {
+      id: true,
+      persianWord: true,
+      transliteration: true,
+    },
     skip,
     take: limit,
-    orderBy: { word: "asc" },
+    orderBy: { persianWord: "asc" },
   });
 
-  const total = await prisma.dictionary.count({
-    where: whereConditions,
-  });
+  const total = await prisma.dictionary.count({ where: whereConditions });
 
   return {
-    meta: {
-      page,
-      limit,
-      total,
-    },
+    meta: { page, limit, total },
     data: result,
   };
 };
 
-// Service to retrieve all dictionary words with optional isDeleted filter
+//  Get All Words (Admin)
 const getAllWordsByAdmin = async (options: TWordQueryFilter) => {
   const { filters, pagination, additional } = options;
   const { page, limit, skip, sortBy, sortOrder } =
@@ -106,106 +105,97 @@ const getAllWordsByAdmin = async (options: TWordQueryFilter) => {
 
   const andConditions: Prisma.DictionaryWhereInput[] = [];
 
-  // Default to false unless explicitly set to "true" isDeleted filter
   const isDeletedQuery = filters?.isDeleted === "true";
   andConditions.push({ isDeleted: isDeletedQuery });
 
-  // Search by word or description
   if (filters?.searchTerm) {
     andConditions.push({
       OR: wordQueryFields.map((field) => ({
         [field]: {
-          contains: filters?.searchTerm,
+          contains: filters.searchTerm,
+          mode: "insensitive",
         },
       })),
     });
   }
 
-  // Search by word suggestion
-  if (filters?.word) {
-    andConditions.push({
-      word: {
-        contains: filters?.word.toLowerCase(),
-      },
-    });
-  }
-
-  // Add additional filters
   if (Object.keys(additional).length > 0) {
     andConditions.push({
-      AND: Object.keys(additional).map((key) => ({
-        [key]: {
-          equals: additional[key],
-        },
+      AND: Object.entries(additional).map(([key, value]) => ({
+        [key]: { equals: value },
       })),
     });
   }
 
-  const whereConditions: Prisma.DictionaryWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.DictionaryWhereInput = andConditions.length
+    ? { AND: andConditions }
+    : {};
 
   const result = await prisma.dictionary.findMany({
     where: whereConditions,
     select: {
       id: true,
-      word: true,
-      definition: true,
-      pronunciation: true,
+      persianWord: true,
+      transliteration: true,
+      banglaMeaning: true,
+      englishMeaning: true,
+      exampleFA: true,
+      exampleEN: true,
+      exampleBN: true,
+      isDeleted: true,
     },
     orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : { word: "asc" },
+      sortBy && sortOrder ? { [sortBy]: sortOrder } : { persianWord: "asc" },
     skip,
     take: limit,
   });
 
-  const total = await prisma.dictionary.count({
-    where: whereConditions,
-  });
+  const total = await prisma.dictionary.count({ where: whereConditions });
 
   return {
-    meta: {
-      page,
-      limit,
-      total,
-    },
+    meta: { page, limit, total },
     data: result,
   };
 };
 
-// Service to retrieve a specific word by ID
+// Get Word by ID
 const getWordById = async (id: string) => {
   const result = await prisma.dictionary.findUniqueOrThrow({
-    where: { id, isDeleted: false },
+    where: { id },
     select: {
       id: true,
-      word: true,
-      definition: true,
-      pronunciation: true,
+      persianWord: true,
+      transliteration: true,
+      banglaMeaning: true,
+      englishMeaning: true,
+      exampleFA: true,
+      exampleEN: true,
+      exampleBN: true,
     },
   });
+
+  if (result && (result as any).isDeleted) {
+    throw new APIError(httpStatus.NOT_FOUND, "Word not found");
+  }
 
   return result;
 };
 
-// Service to update a dictionary word
+// Update Word
 const updateWord = async (id: string, data: Partial<Dictionary>) => {
   const existingWord = await prisma.dictionary.findUniqueOrThrow({
     where: { id },
   });
 
-  if (data.word && data.word !== existingWord.word) {
-    const wordConflict = await prisma.dictionary.findUnique({
-      where: { word: data.word },
+  if (data.persianWord && data.persianWord !== existingWord.persianWord) {
+    const conflict = await prisma.dictionary.findUnique({
+      where: { persianWord: data.persianWord },
     });
 
-    if (wordConflict) {
+    if (conflict) {
       throw new APIError(
         httpStatus.CONFLICT,
-        "Word already exists in the dictionary"
+        "Persian word already exists in the dictionary"
       );
     }
   }
@@ -213,54 +203,52 @@ const updateWord = async (id: string, data: Partial<Dictionary>) => {
   const result = await prisma.dictionary.update({
     where: { id },
     data: {
-      word: data.word || existingWord.word,
-      definition: data.definition || existingWord.definition,
-      pronunciation: data.pronunciation || existingWord.pronunciation,
+      persianWord: data.persianWord,
+      transliteration: data.transliteration,
+      banglaMeaning: data.banglaMeaning,
+      englishMeaning: data.englishMeaning,
+      exampleFA: data.exampleFA,
+      exampleEN: data.exampleEN,
+      exampleBN: data.exampleBN,
     },
     select: {
       id: true,
-      word: true,
-      definition: true,
-      pronunciation: true,
+      persianWord: true,
+      banglaMeaning: true,
+      englishMeaning: true,
     },
   });
 
   return result;
 };
 
-// Service to delete a dictionary word (soft delete)
+// Soft Delete Word
 const deleteWord = async (id: string) => {
-  const result = await prisma.dictionary.update({
+  return prisma.dictionary.update({
     where: { id },
     data: { isDeleted: true },
     select: {
       id: true,
-      word: true,
+      persianWord: true,
     },
   });
-
-  return result;
 };
 
-// Service to delete a dictionary word (hard delete) only by admin
+// Hard Delete (Admin)
 const deleteWordByAdmin = async (id: string) => {
-  const existingWord = await prisma.dictionary.findUnique({
-    where: { id },
-  });
+  const existingWord = await prisma.dictionary.findUnique({ where: { id } });
 
   if (!existingWord) {
     throw new APIError(httpStatus.NOT_FOUND, "Word not found!");
   }
 
-  const result = await prisma.dictionary.delete({
+  return prisma.dictionary.delete({
     where: { id },
     select: {
       id: true,
-      word: true,
+      persianWord: true,
     },
   });
-
-  return result;
 };
 
 export const dictionaryServices = {

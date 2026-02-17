@@ -3,6 +3,7 @@ type TWordFilters = {
   searchTerm?: string;
   word?: string;
   isDeleted?: string;
+  persianWord?: string;
 };
 
 //  pagination fields
