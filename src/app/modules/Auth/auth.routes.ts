@@ -1,8 +1,8 @@
-import express from "express";
-import { authControllers } from "./auth.controller";
 import { UserRole } from "@prisma/client";
+import express from "express";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import auth from "../../middlewares/auth";
+import { authControllers } from "./auth.controller";
 import { authValidationSchema } from "./auth.validation";
 
 const router = express.Router();
@@ -24,7 +24,9 @@ router.post("/refresh-token", authControllers.refreshToken);
 router.post(
   "/change-password",
   validateRequest(authValidationSchema.changePasswordZodSchema),
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+  }),
   authControllers.changePassword
 );
 
