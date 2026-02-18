@@ -266,6 +266,7 @@ enum Resource {
   BLOG
   DUA
   USER
+  PERMISSION
 }
 
 enum Action {

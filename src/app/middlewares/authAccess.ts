@@ -8,7 +8,7 @@ import catchAsync from "../utils/catchAsync";
 import { jwtHelpers } from "../utils/jwtHelpers";
 import prisma from "../utils/prisma";
 
-const accessControl = ({ roles, resource, action }: TAuthOptions = {}) =>
+const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {
     const token = req.headers.authorization;
 
@@ -86,4 +86,4 @@ const accessControl = ({ roles, resource, action }: TAuthOptions = {}) =>
     next();
   });
 
-export default accessControl;
+export default authAccess;
