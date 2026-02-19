@@ -1,6 +1,6 @@
-import { UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import auth from "../../middlewares/auth";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
 import { bookmarkControllers } from "./bookmark.controller";
 import { bookmarkValidationSchema } from "./bookmark.validation";
@@ -10,43 +10,67 @@ const router = express.Router();
 // Create a bookmark
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
-  validateRequest(bookmarkValidationSchema.createBookmarkSchema), // optional
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    resource: Resource.BOOKMARK,
+    action: Action.CREATE,
+  }),
+  validateRequest(bookmarkValidationSchema.createBookmarkSchema),
   bookmarkControllers.createBookmark
 );
 
 // Get all bookmarks of logged-in user
 router.get(
   "/me",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    resource: Resource.BOOKMARK,
+    action: Action.READ,
+  }),
   bookmarkControllers.getMyBookmarks
 );
 
 // Get single bookmark of logged-in user
 router.get(
   "/:bookmarkId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    resource: Resource.BOOKMARK,
+    action: Action.READ,
+  }),
   bookmarkControllers.getSingleBookmark
 );
 
 // Delete bookmark by user
 router.delete(
   "/:bookmarkId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER],
+    resource: Resource.BOOKMARK,
+    action: Action.DELETE,
+  }),
   bookmarkControllers.deleteBookmark
-)
+);
 
-// Get all bookmarks (admin only)
+// Get all bookmarks
 router.get(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.BOOKMARK,
+    action: Action.READ,
+  }),
   bookmarkControllers.getAllBookmarksByAdmin
 );
 
-// Hard delete a bookmark (admin only)
+// Hard delete a bookmark
 router.delete(
   "/admin/:bookmarkId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.BOOKMARK,
+    action: Action.DELETE,
+  }),
   bookmarkControllers.deleteBookmarkByAdmin
 );
 

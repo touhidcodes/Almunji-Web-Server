@@ -267,6 +267,7 @@ enum Resource {
   DUA
   USER
   PERMISSION
+  BOOKMARK
 }
 
 enum Action {
