@@ -1,16 +1,20 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import { dictionaryValidationSchema } from "./dictionary.validation";
 import { dictionaryControllers } from "./dictionary.controller";
-import { UserRole } from "@prisma/client";
-import auth from "../../middlewares/auth";
+import { dictionaryValidationSchema } from "./dictionary.validation";
 
 const router = express.Router();
 
 // Route to create a new dictionary word
 router.post(
   "/word",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DICTIONARY,
+    action: Action.CREATE,
+  }),
   validateRequest(dictionaryValidationSchema.createWordSchema),
   dictionaryControllers.createWord
 );
@@ -21,7 +25,11 @@ router.get("/suggestion", dictionaryControllers.getSuggestion);
 // Route to get all dictionary words
 router.get(
   "/admin/words",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DICTIONARY,
+    action: Action.READ,
+  }),
   dictionaryControllers.getAllWordsByAdmin
 );
 
@@ -31,7 +39,11 @@ router.get("/:wordId", dictionaryControllers.getWordById);
 // Route to update an existing dictionary word by id
 router.put(
   "/:wordId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DICTIONARY,
+    action: Action.UPDATE,
+  }),
   validateRequest(dictionaryValidationSchema.updateWordSchema),
   dictionaryControllers.updateWord
 );
@@ -39,14 +51,22 @@ router.put(
 // Route to delete (soft) a dictionary word by id
 router.delete(
   "/:wordId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DICTIONARY,
+    action: Action.DELETE,
+  }),
   dictionaryControllers.deleteWord
 );
 
 // Route to delete (hard) a dictionary word by id only by admins
 router.delete(
   "/admin/:wordId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.DICTIONARY,
+    action: Action.DELETE,
+  }),
   dictionaryControllers.deleteWordByAdmin
 );
 
