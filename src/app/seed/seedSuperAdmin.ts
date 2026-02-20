@@ -29,9 +29,9 @@ export const seedSuperAdmin = async () => {
         username: config.superAdmin.super_admin_username as string,
       },
     });
+
+    console.log("Super admin seeded successfully!");
   } catch (err) {
-    console.error(err);
-  } finally {
-    await prisma.$disconnect();
+    throw err;
   }
 };
