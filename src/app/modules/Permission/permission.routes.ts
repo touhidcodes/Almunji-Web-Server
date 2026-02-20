@@ -5,13 +5,11 @@ import { permissionControllers } from "./permission.controller";
 
 const router = express.Router();
 
-// Create a new permission
+// Create a new permission (only super admin)
 router.post(
   "/",
   authAccess({
-    roles: [UserRole.ADMIN],
-    resource: Resource.PERMISSION,
-    action: Action.CREATE,
+    roles: [UserRole.SUPERADMIN],
   }),
   permissionControllers.createPermission
 );

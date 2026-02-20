@@ -20,6 +20,8 @@ const auth = (...roles: string[]) => {
         config.jwt.access_token_secret as Secret
       );
 
+      console.log(decodedUser);
+
       // Check if the user exists in the database
       const user = await prisma.user.findUnique({
         where: { id: decodedUser.userId, email: decodedUser.email },

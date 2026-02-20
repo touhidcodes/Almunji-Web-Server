@@ -10,7 +10,7 @@ import prisma from "../utils/prisma";
 
 const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {
-    const token = req.headers.authorization;
+    const token = req.headers.authorization as string;
 
     if (!token) {
       throw new APIError(httpStatus.UNAUTHORIZED, "Unauthorized access");
@@ -21,7 +21,8 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       token,
       config.jwt.access_token_secret as Secret
     );
-
+    console.log(token);
+    console.log(decoded);
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.userId,
@@ -59,7 +60,6 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
     }
 
     // Role-based access (coarse)
-
     if (roles && !roles.includes(user.role)) {
       throw new APIError(httpStatus.FORBIDDEN, "Role forbidden");
     }
