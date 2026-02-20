@@ -1,20 +1,14 @@
-import prisma from "../../utils/prisma";
 import { User, UserProfile } from "@prisma/client";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
 import config from "../../config/config";
+import APIError from "../../errors/APIError";
+import prisma from "../../utils/prisma";
 
 //  Service to get user
 const getUser = async (id: string) => {
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       id,
-    },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-      username: true,
     },
   });
 
@@ -28,6 +22,14 @@ const getAllUser = async (currentUserEmail: string) => {
       email: {
         notIn: [config.superAdmin.super_admin_email, currentUserEmail],
       },
+    },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      username: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
