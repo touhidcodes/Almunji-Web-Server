@@ -16,7 +16,7 @@ const createPermission = catchAsync(async (req, res) => {
 });
 
 // Get All Permissions
-const getAllPermissions = catchAsync(async (_req, res) => {
+const getAllPermissions = catchAsync(async (req, res) => {
   const result = await permissionServices.getAllPermissions();
 
   sendResponse(res, {
@@ -29,7 +29,7 @@ const getAllPermissions = catchAsync(async (_req, res) => {
 
 // Assign Permission to User
 const assignPermissionToUser = catchAsync(async (req, res) => {
-  const assignedBy = req.user.id; // from auth middleware
+  const assignedBy = req.user.id;
   const result = await permissionServices.assignPermissionToUser(
     req.body,
     assignedBy
