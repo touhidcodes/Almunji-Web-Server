@@ -32,7 +32,7 @@ export async function seedPermissions() {
         },
       });
     }
-    console.log("Permissions seeded successfully!");
+    console.log(`${permissions.length} Permissions seeded successfully!`);
   } catch (err) {
     throw err;
   }

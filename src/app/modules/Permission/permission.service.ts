@@ -1,12 +1,29 @@
+import { Action, Resource } from "@prisma/client";
 import httpStatus from "http-status";
 import APIError from "../../errors/APIError";
 import prisma from "../../utils/prisma";
 
 // Create Permission
 const createPermission = async (payload: {
-  resource: string;
-  action: string;
+  resource: Resource;
+  action: Action;
 }) => {
+  const { resource, action } = payload;
+
+  // Check if permission already exists
+  const existing = await prisma.permission.findUnique({
+    where: {
+      resource_action: {
+        resource,
+        action,
+      },
+    },
+  });
+
+  if (existing) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Permission already exists!");
+  }
+
   const permission = await prisma.permission.create({
     data: {
       resource: payload.resource as any,

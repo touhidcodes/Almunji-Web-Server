@@ -21,8 +21,7 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       token,
       config.jwt.access_token_secret as Secret
     );
-    console.log(token);
-    console.log(decoded);
+
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.userId,

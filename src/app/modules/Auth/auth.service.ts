@@ -69,7 +69,6 @@ const createUser = async (data: TUserData) => {
         email: user.email,
         username: user.username,
         role: user.role,
-        permissions,
       },
       config.jwt.access_token_secret as Secret,
       config.jwt.access_token_expires_in as string
@@ -88,6 +87,7 @@ const createUser = async (data: TUserData) => {
       accessToken,
       refreshToken,
       user,
+      permissions,
     };
   });
 
@@ -130,7 +130,6 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
       email: user.email,
       username: user.username,
       role: user.role,
-      permissions,
     },
     config.jwt.access_token_secret as Secret,
     config.jwt.access_token_expires_in as string
@@ -149,6 +148,7 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
     accessToken,
     refreshToken,
     user,
+    permissions,
   };
 };
 
