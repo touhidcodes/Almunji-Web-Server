@@ -1,10 +1,10 @@
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
+import prisma from "../../utils/prisma";
 
 // Service to create a Category
 const createCategory = async (data: { name: string; description?: string }) => {
-  const existingCategory = await prisma.category.findUnique({
+  const existingCategory = await prisma.bookCategories.findUnique({
     where: {
       name: data.name,
     },
@@ -18,7 +18,7 @@ const createCategory = async (data: { name: string; description?: string }) => {
     name: data.name,
   };
 
-  const result = await prisma.category.create({
+  const result = await prisma.bookCategories.create({
     data: categoryData,
     select: {
       id: true,
@@ -31,7 +31,7 @@ const createCategory = async (data: { name: string; description?: string }) => {
 
 // Service to get all Categories
 const getAllCategoriesByAdmin = async () => {
-  const result = await prisma.category.findMany({
+  const result = await prisma.bookCategories.findMany({
     where: {
       isDeleted: false,
     },
@@ -51,12 +51,12 @@ const getAllCategoriesByAdmin = async () => {
 const updateCategory = async (id: string, data: { name: string }) => {
   const { name } = data;
 
-  const existingCategory = await prisma.category.findUniqueOrThrow({
+  const existingCategory = await prisma.bookCategories.findUniqueOrThrow({
     where: { id },
   });
 
   if (name && name !== existingCategory.name) {
-    const existingName = await prisma.category.findUnique({
+    const existingName = await prisma.bookCategories.findUnique({
       where: { name: name },
     });
     if (existingName) {
@@ -64,7 +64,7 @@ const updateCategory = async (id: string, data: { name: string }) => {
     }
   }
 
-  const result = await prisma.category.update({
+  const result = await prisma.bookCategories.update({
     where: { id: id },
     data: {
       name: name || existingCategory.name,
@@ -80,7 +80,7 @@ const updateCategory = async (id: string, data: { name: string }) => {
 
 // Service to delete a  specific Category (Soft Delete)
 const deleteCategory = async (id: string) => {
-  const existingCategory = await prisma.category.findFirst({
+  const existingCategory = await prisma.bookCategories.findFirst({
     where: {
       id,
     },
@@ -90,7 +90,7 @@ const deleteCategory = async (id: string) => {
     throw new APIError(httpStatus.BAD_REQUEST, "Category doesn't exist!");
   }
 
-  const result = await prisma.category.update({
+  const result = await prisma.bookCategories.update({
     where: { id },
     data: {
       isDeleted: true,
@@ -106,7 +106,7 @@ const deleteCategory = async (id: string) => {
 
 // Service to delete a  specific Category (Hard Delete) only by Admin
 const deleteCategoryByAdmin = async (id: string) => {
-  const existingCategory = await prisma.category.findFirst({
+  const existingCategory = await prisma.bookCategories.findFirst({
     where: {
       id,
     },
@@ -129,7 +129,7 @@ const deleteCategoryByAdmin = async (id: string) => {
     );
   }
 
-  const result = await prisma.category.delete({
+  const result = await prisma.bookCategories.delete({
     where: { id },
     select: {
       id: true,
