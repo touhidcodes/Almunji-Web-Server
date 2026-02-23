@@ -1,7 +1,8 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
 import auth from "../../middlewares/auth";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import { UserRole } from "@prisma/client";
 import { bookControllers } from "./book.controller";
 import { bookValidationSchema } from "./book.validation";
 
@@ -10,7 +11,11 @@ const router = express.Router();
 // Route to create a Book
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.CREATE,
+  }),
   validateRequest(bookValidationSchema.createBookSchema),
   bookControllers.createBook
 );
@@ -22,6 +27,9 @@ router.get("/all", bookControllers.getAllBooks);
 router.get(
   "/admin/all",
   auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+  }),
   bookControllers.getAllBooksByAdmin
 );
 
@@ -37,7 +45,11 @@ router.get("/category/:categoryId", bookControllers.getBooksByCategoryId);
 // Route to update a specific Book
 router.put(
   "/:bookId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.UPDATE,
+  }),
   validateRequest(bookValidationSchema.updateBookSchema),
   bookControllers.updateBook
 );
@@ -45,14 +57,22 @@ router.put(
 // Route to delete a Book (Soft Delete)
 router.delete(
   "/:bookId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.DELETE,
+  }),
   bookControllers.deleteBook
 );
 
 // Route to delete a Book (Hard Delete) by Admin
 router.delete(
   "/admin/:bookId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.BOOK,
+    action: Action.DELETE,
+  }),
   bookControllers.deleteBookByAdmin
 );
 

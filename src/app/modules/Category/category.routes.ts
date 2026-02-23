@@ -24,8 +24,6 @@ router.get(
   "/admin/all",
   authAccess({
     roles: [UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.BOOKCATEGORY,
-    action: Action.READ,
   }),
   categoryControllers.getAllCategoriesByAdmin
 );
