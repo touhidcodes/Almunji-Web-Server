@@ -263,6 +263,7 @@ enum Resource {
   TAFSIR
   DICTIONARY
   BOOK
+  BOOKCATEGORY
   BLOG
   DUA
   USER
