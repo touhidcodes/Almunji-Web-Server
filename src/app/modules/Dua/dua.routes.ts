@@ -1,6 +1,5 @@
 import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import auth from "../../middlewares/auth";
 import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
 import { duaControllers } from "./dua.conteoller";
@@ -63,7 +62,11 @@ router.delete(
 // Route to delete (hard) a tafsir by id only by admins
 router.delete(
   "/admin/:duaId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.DUA,
+    action: Action.DELETE,
+  }),
   duaControllers.deleteDuaByAdmin
 );
 
