@@ -1,7 +1,8 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import validateRequest from "../../middlewares/validateRequest";
 import auth from "../../middlewares/auth";
-import { UserRole } from "@prisma/client";
+import authAccess from "../../middlewares/authAccess";
+import validateRequest from "../../middlewares/validateRequest";
 import { duaControllers } from "./dua.conteoller";
 import { duaValidationSchemas } from "./dua.validation";
 
@@ -10,7 +11,11 @@ const router = express.Router();
 // Route to create dua
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DUA,
+    action: Action.CREATE,
+  }),
   validateRequest(duaValidationSchemas.createDuaSchema),
   duaControllers.createDua
 );
@@ -21,7 +26,11 @@ router.get("/all", duaControllers.getAllDua);
 // Route to get all dua
 router.get(
   "/admin/all",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DUA,
+    action: Action.READ,
+  }),
   duaControllers.getAllDuaByAdmin
 );
 
@@ -31,7 +40,11 @@ router.get("/:duaId", duaControllers.getDuaById);
 // Route to update dua
 router.put(
   "/:duaId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DUA,
+    action: Action.UPDATE,
+  }),
   validateRequest(duaValidationSchemas.updateDuaSchema),
   duaControllers.updateDua
 );
@@ -39,7 +52,11 @@ router.put(
 // Route to delete (soft) a tafsir by id
 router.delete(
   "/:duaId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.DUA,
+    action: Action.DELETE,
+  }),
   duaControllers.deleteDua
 );
 
