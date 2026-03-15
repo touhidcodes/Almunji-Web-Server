@@ -35,12 +35,12 @@ const moduleRoutes = [
     route: categoryRoutes,
   },
   {
-    path: "/book",
-    route: bookRoutes,
-  },
-  {
     path: "/book/content",
     route: bookContentRoutes,
+  },
+  {
+    path: "/book",
+    route: bookRoutes,
   },
   {
     path: "/dictionary",

@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole, UserStatus } from "@prisma/client";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import config from "../config/config";
@@ -25,7 +25,6 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
     const user = await prisma.user.findUnique({
       where: {
         id: decoded.userId,
-        email: decoded.email,
       },
       include: {
         permissions: {
@@ -36,11 +35,11 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       },
     });
 
-    if (!user) {
+    if (!user || user.email !== decoded.email) {
       throw new APIError(httpStatus.UNAUTHORIZED, "Unauthorized access");
     }
 
-    if (user.status === "BLOCKED") {
+    if (user.status === UserStatus.BLOCKED) {
       throw new APIError(httpStatus.FORBIDDEN, "User is blocked");
     }
 

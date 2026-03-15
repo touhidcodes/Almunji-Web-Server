@@ -1,8 +1,8 @@
 import { BookContent, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
 import { bookContentQueryFields } from "./BookContent.constants";
 import { TBookContentQueryFilter } from "./BookContent.interface";
 
@@ -18,9 +18,9 @@ const createBookContent = async (contentData: BookContent) => {
 
   const existingContent = await prisma.bookContent.findUnique({
     where: {
-      bookId_order: {
+      bookId_index: {
         bookId: contentData?.bookId,
-        order: contentData?.order,
+        index: contentData?.index,
       },
     },
   });
@@ -28,7 +28,7 @@ const createBookContent = async (contentData: BookContent) => {
   if (existingContent) {
     throw new APIError(
       httpStatus.CONFLICT,
-      "Book content with this order already exists for this book!"
+      "Book content with this index already exists for this book!"
     );
   }
 
@@ -41,9 +41,9 @@ const createBookContent = async (contentData: BookContent) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
       text: true,
-      order: true,
+      index: true,
     },
   });
 
@@ -96,9 +96,9 @@ const getAllBookContentByAdmin = async (options: TBookContentQueryFilter) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
       text: true,
-      order: true,
+      index: true,
     },
     skip,
     take: limit,
@@ -133,9 +133,9 @@ const getBookContentById = async (id: string) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
       text: true,
-      order: true,
+      index: true,
     },
   });
 
@@ -159,12 +159,12 @@ const getBookIndexByBookId = async (bookId: string) => {
       isDeleted: false,
     },
     orderBy: {
-      order: "asc",
+      index: "asc",
     },
     select: {
       id: true,
-      title: true,
-      order: true,
+      section: true,
+      index: true,
     },
   });
 
@@ -190,13 +190,13 @@ const getContentsByBookId = async (bookId: string) => {
   const result = await prisma.bookContent.findMany({
     where: { bookId },
     orderBy: {
-      order: "asc",
+      index: "asc",
     },
     select: {
       id: true,
-      title: true,
+      section: true,
       text: true,
-      order: true,
+      index: true,
     },
   });
 
@@ -223,12 +223,12 @@ const updateBookContent = async (id: string, data: Partial<BookContent>) => {
     throw new APIError(httpStatus.NOT_FOUND, "Book content not found!");
   }
 
-  // If order is being updated, check for unique constraint violation
-  if (data.order !== undefined && data.order !== existing.order) {
+  // If index is being updated, check for unique constraint violation
+  if (data.index !== undefined && data.index !== existing.index) {
     const conflict = await prisma.bookContent.findFirst({
       where: {
         bookId: existing.bookId,
-        order: data.order,
+        index: data.index,
         NOT: { id },
       },
     });
@@ -236,7 +236,7 @@ const updateBookContent = async (id: string, data: Partial<BookContent>) => {
     if (conflict) {
       throw new APIError(
         httpStatus.CONFLICT,
-        `Content with order ${data.order} already exists for this book!`
+        `Content with index ${data.index} already exists for this book!`
       );
     }
   }
@@ -251,9 +251,9 @@ const updateBookContent = async (id: string, data: Partial<BookContent>) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
       text: true,
-      order: true,
+      index: true,
     },
   });
 
@@ -274,7 +274,7 @@ const deleteBookContent = async (id: string) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
     },
   });
 
@@ -300,7 +300,7 @@ const deleteBookContentByAdmin = async (id: string) => {
           name: true,
         },
       },
-      title: true,
+      section: true,
     },
   });
 

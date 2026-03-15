@@ -1,5 +1,4 @@
 import { UserRole, UserStatus } from "@prisma/client";
-import * as bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 
@@ -37,7 +36,7 @@ const createUser = async (data: TUserData) => {
     throw new APIError(httpStatus.CONFLICT, "Username is already taken");
   }
 
-  const passwordHash = await bcrypt.hash(data.password, 12);
+  const passwordHash = await hashedPassword(data.password);
 
   const result = await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
@@ -61,7 +60,16 @@ const createUser = async (data: TUserData) => {
       data: { userId: user.id },
     });
 
-    const permissions = await getUserPermissions(user.id);
+    const permissions = await tx.userPermission.findMany({
+      where: { userId: user.id },
+      include: {
+        permission: true,
+      },
+    });
+
+    const permissionStrings = permissions.map(
+      (p) => `${p.permission.resource}:${p.permission.action}`
+    );
 
     const accessToken = jwtHelpers.generateToken(
       {
@@ -83,12 +91,12 @@ const createUser = async (data: TUserData) => {
       config.jwt.refresh_token_expires_in as string
     );
 
-    return {
-      accessToken,
-      refreshToken,
-      user,
-      permissions,
-    };
+      return {
+        accessToken,
+        refreshToken,
+        user,
+        permissions: permissionStrings,
+      };
   });
 
   return result;
@@ -102,12 +110,12 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
     throw new APIError(httpStatus.BAD_REQUEST, "Email or Username is required");
   }
 
-  let user = await prisma.user.findUnique({
+  let user = await prisma.user.findFirst({
     where: { email: identifier, status: UserStatus.ACTIVE },
   });
 
   if (!user) {
-    user = await prisma.user.findUnique({
+    user = await prisma.user.findFirst({
       where: { username: identifier, status: UserStatus.ACTIVE },
     });
   }
@@ -116,7 +124,7 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
     throw new APIError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  const isPasswordCorrect = await comparePasswords(password, user.password);
 
   if (!isPasswordCorrect) {
     throw new APIError(httpStatus.UNAUTHORIZED, "Password incorrect");
@@ -165,7 +173,7 @@ const refreshToken = async (token: string) => {
     throw new APIError(httpStatus.UNAUTHORIZED, "Invalid refresh token");
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: {
       id: decoded.userId,
       email: decoded.email,
@@ -199,7 +207,7 @@ const refreshToken = async (token: string) => {
 const changePassword = async (userId: string, payload: IChangePassword) => {
   const { oldPassword, newPassword } = payload;
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.user.findFirst({
     where: { id: userId, status: UserStatus.ACTIVE },
   });
 

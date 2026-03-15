@@ -1,17 +1,17 @@
 import { Book, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import { bookQueryFields } from "./book.constants";
 import slugify from "slugify";
+import APIError from "../../errors/APIError";
+import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
+import { bookQueryFields } from "./book.constants";
 import { TBookQueryFilter } from "./book.interface";
 
 // Service to create a Book
 const createBook = async (bookData: Omit<Book, "slug">) => {
   const generatedSlug = slugify(bookData.name, { lower: true, strict: true });
 
-  const existingBook = await prisma.blog.findFirst({
+  const existingBook = await prisma.book.findFirst({
     where: { slug: generatedSlug },
   });
 
@@ -20,7 +20,7 @@ const createBook = async (bookData: Omit<Book, "slug">) => {
   }
 
   // Check if the category exists
-  const category = await prisma.category.findUnique({
+  const category = await prisma.bookCategories.findUnique({
     where: {
       id: bookData.categoryId,
     },

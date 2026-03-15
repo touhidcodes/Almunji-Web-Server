@@ -1,8 +1,8 @@
-import { Prisma, Para } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
+import { Para, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
 import { paraQueryFields } from "./para.constants";
 import { TParaQueryFilter } from "./para.interface";
 
@@ -176,14 +176,23 @@ const deletePara = async (id: string) => {
   }
 
   return await prisma.$transaction(async (tx) => {
-    // delete related ayahs
+    // 1. Delete all tafsirs associated with ayahs of this para
+    await tx.tafsir.deleteMany({
+      where: {
+        ayah: {
+          paraId: id,
+        },
+      },
+    });
+
+    // 2. Delete related ayahs
     await tx.ayah.deleteMany({
       where: {
         paraId: id,
       },
     });
 
-    // then delete para
+    // 3. Delete para
     const result = await tx.para.delete({
       where: { id },
       select: {

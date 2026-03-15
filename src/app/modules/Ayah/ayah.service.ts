@@ -1,8 +1,8 @@
 import { Ayah, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
 import { ayahQueryFields } from "./ayah.constants";
 import { TAyahQueryFilter } from "./ayah.interface";
 
@@ -387,15 +387,27 @@ const deleteAyahByAdmin = async (id: string) => {
     throw new APIError(httpStatus.NOT_FOUND, "Ayah not found!");
   }
 
-  const result = await prisma.ayah.delete({
-    where: { id },
-    select: {
-      id: true,
-      number: true,
-      arabic: true,
-      bangla: true,
-      english: true,
-    },
+  const result = await prisma.$transaction(async (tx) => {
+    // 1. Delete associated tafsir if it exists
+    await tx.tafsir.deleteMany({
+      where: {
+        ayahId: id,
+      },
+    });
+
+    // 2. Delete the ayah
+    const deletedAyah = await tx.ayah.delete({
+      where: { id },
+      select: {
+        id: true,
+        number: true,
+        arabic: true,
+        bangla: true,
+        english: true,
+      },
+    });
+
+    return deletedAyah;
   });
 
   return result;

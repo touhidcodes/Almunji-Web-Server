@@ -1,4 +1,5 @@
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { authServices } from "./auth.service";
@@ -48,7 +49,7 @@ const refreshToken = catchAsync(async (req, res) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    throw new Error("Refresh token not found");
+    throw new APIError(httpStatus.UNAUTHORIZED, "Refresh token not found");
   }
 
   const result = await authServices.refreshToken(refreshToken);

@@ -1,7 +1,7 @@
 import { Dictionary } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
+import prisma from "../../utils/prisma";
 import { CreatedWord } from "./upload.constants";
 
 // Service to upload dictionary words from a JSON file
@@ -14,31 +14,39 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
   const existingWords: string[] = [];
 
   for (const wordData of data) {
-    const { word, definition = "-", pronunciation = "-" } = wordData;
+    const {
+      persianWord,
+      banglaMeaning = "-",
+      transliteration = "-",
+    } = wordData;
 
     // Skip if word is not provided
-    if (!word || typeof word !== "string" || word.trim() === "") {
+    if (
+      !persianWord ||
+      typeof persianWord !== "string" ||
+      persianWord.trim() === ""
+    ) {
       continue;
     }
 
     // Check if word already exists
     const existingWord = await prisma.dictionary.findUnique({
-      where: { word },
+      where: { persianWord },
     });
 
     if (existingWord) {
-      existingWords.push(word);
+      existingWords.push(persianWord);
       continue;
     }
 
     // Create new dictionary entry
     const newWord = await prisma.dictionary.create({
-      data: { word, definition, pronunciation },
+      data: { persianWord, banglaMeaning, transliteration },
       select: {
         id: true,
-        word: true,
-        definition: true,
-        pronunciation: true,
+        persianWord: true,
+        banglaMeaning: true,
+        transliteration: true,
       },
     });
     createdWords.push(newWord);

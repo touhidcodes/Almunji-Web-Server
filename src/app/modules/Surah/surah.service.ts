@@ -1,8 +1,8 @@
-import { Surah, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
+import { Prisma, Surah } from "@prisma/client";
 import httpStatus from "http-status";
+import APIError from "../../errors/APIError";
 import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "../../utils/prisma";
 import { surahQueryFields } from "./surah.constants";
 import { TSurahQueryFilter } from "./surah.interface";
 
@@ -180,14 +180,23 @@ const deleteSurah = async (id: string) => {
   }
 
   return await prisma.$transaction(async (tx) => {
-    // delete related ayahs
+    // 1. Delete all tafsirs associated with ayahs of this surah
+    await tx.tafsir.deleteMany({
+      where: {
+        ayah: {
+          surahId: id,
+        },
+      },
+    });
+
+    // 2. Delete all related ayahs
     await tx.ayah.deleteMany({
       where: {
         surahId: id,
       },
     });
 
-    // then delete surah
+    // 3. Delete surah
     const result = await tx.surah.delete({
       where: { id },
       select: {
