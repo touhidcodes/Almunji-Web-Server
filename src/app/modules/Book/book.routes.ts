@@ -1,6 +1,5 @@
 import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import auth from "../../middlewares/auth";
 import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
 import { bookControllers } from "./book.controller";
@@ -26,9 +25,10 @@ router.get("/all", bookControllers.getAllBooks);
 // Route to get all Book
 router.get(
   "/admin/all",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
   authAccess({
-    roles: [UserRole.ADMIN, UserRole.MODERATOR],
+    roles: [UserRole.ADMIN, UserRole.MODERATOR, UserRole.SUPERADMIN],
+    resource: Resource.BOOK,
+    action: Action.READ,
   }),
   bookControllers.getAllBooksByAdmin
 );

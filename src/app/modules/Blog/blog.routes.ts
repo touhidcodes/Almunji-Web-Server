@@ -1,16 +1,20 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import { blogValidationSchemas } from "./blog.validation";
-import { blogControllers } from "./blog.controller";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import auth from "../../middlewares/auth";
-import { UserRole } from "@prisma/client";
+import { blogControllers } from "./blog.controller";
+import { blogValidationSchemas } from "./blog.validation";
 
 const router = express.Router();
 
 // Route to create a new Blog
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BLOG,
+    action: Action.CREATE,
+  }),
   validateRequest(blogValidationSchemas.createBlogSchema),
   blogControllers.createBlog
 );
@@ -21,7 +25,11 @@ router.get("/all", blogControllers.getAllBlogs);
 // Route to get all Bog by admin
 router.get(
   "/admin/all",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BLOG,
+    action: Action.READ,
+  }),
   blogControllers.getAllBlogsByAdmin
 );
 
@@ -34,7 +42,11 @@ router.get("/slug/:slug", blogControllers.getBlogBySlug);
 // Route to update an existing Blog by ID
 router.put(
   "/:blogId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BLOG,
+    action: Action.UPDATE,
+  }),
   validateRequest(blogValidationSchemas.updateBlogSchema),
   blogControllers.updateBlog
 );
@@ -42,14 +54,22 @@ router.put(
 // Route to delete (soft delete) a Blog by id
 router.delete(
   "/:blogId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BLOG,
+    action: Action.DELETE,
+  }),
   blogControllers.deleteBlog
 );
 
 // Route to delete (hard delete) a Tafsir by id only by Admins
 router.delete(
   "/admin/:blogId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+    resource: Resource.BLOG,
+    action: Action.DELETE,
+  }),
   blogControllers.deleteBlogByAdmin
 );
 

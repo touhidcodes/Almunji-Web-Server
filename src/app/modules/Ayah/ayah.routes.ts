@@ -1,16 +1,20 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import { UserRole } from "@prisma/client";
-import auth from "../../middlewares/auth";
-import { ayahValidationSchema } from "./ayah.validation";
 import { ayahControllers } from "./ayah.controller";
+import { ayahValidationSchema } from "./ayah.validation";
 
 const router = express.Router();
 
 // Route to create a new Ayah
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.CREATE,
+  }),
   validateRequest(ayahValidationSchema.createAyahSchema),
   ayahControllers.createAyah
 );
@@ -33,7 +37,11 @@ router.get("/tafsir/:surahId", ayahControllers.getAyahsAndTafsirBySurahId);
 // Route to update an existing Ayah by ID
 router.put(
   "/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.UPDATE,
+  }),
   validateRequest(ayahValidationSchema.updateAyahSchema),
   ayahControllers.updateAyah
 );
@@ -41,14 +49,22 @@ router.put(
 // Route to delete an Ayah (Soft Delete)
 router.delete(
   "/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.DELETE,
+  }),
   ayahControllers.deleteAyah
 );
 
 // Route to delete an Ayah (Hard Delete) only by Admin
 router.delete(
   "/admin/:ayahId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+    resource: Resource.AYAH,
+    action: Action.DELETE,
+  }),
   ayahControllers.deleteAyahByAdmin
 );
 

@@ -1,7 +1,7 @@
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import auth from "../../middlewares/auth";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
-import { UserRole } from "@prisma/client";
 import { bookContentControllers } from "./bookContent.controller";
 import { bookContentValidationSchema } from "./bookContent.validation";
 
@@ -10,7 +10,11 @@ const router = express.Router();
 // Route to create a Book Content
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.CREATE,
+  }),
   validateRequest(bookContentValidationSchema.createContentSchema),
   bookContentControllers.createBookContent
 );
@@ -18,7 +22,11 @@ router.post(
 // Route to get all Book Content
 router.get(
   "/admin/all",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.READ,
+  }),
   bookContentControllers.getAllBookContentByAdmin
 );
 
@@ -34,7 +42,11 @@ router.get("/index/:bookId", bookContentControllers.getBookIndexByBookId);
 // Route to update a specific Book Content
 router.put(
   "/:contentId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.UPDATE,
+  }),
   validateRequest(bookContentValidationSchema.updateContentSchema),
   bookContentControllers.updateBookContent
 );
@@ -42,14 +54,22 @@ router.put(
 // Route to delete a Book (Soft Delete)
 router.delete(
   "/:contentId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.BOOK,
+    action: Action.DELETE,
+  }),
   bookContentControllers.deleteBookContent
 );
 
 // Route to delete a Book (Hard Delete) only by Admin
 router.delete(
   "/admin/:contentId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+    resource: Resource.BOOK,
+    action: Action.DELETE,
+  }),
   bookContentControllers.deleteBookContentByAdmin
 );
 

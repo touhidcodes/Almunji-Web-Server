@@ -1,6 +1,6 @@
-import { UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import auth from "../../middlewares/auth";
+import authAccess from "../../middlewares/authAccess";
 import validateRequest from "../../middlewares/validateRequest";
 import { paraControllers } from "./para.controller";
 import { paraValidationSchema } from "./para.validation";
@@ -10,7 +10,11 @@ const router = express.Router();
 // Create a new Para
 router.post(
   "/",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH, // Para is closely related to Ayah/Surah
+    action: Action.CREATE,
+  }),
   validateRequest(paraValidationSchema.createParaSchema),
   paraControllers.createPara
 );
@@ -21,7 +25,11 @@ router.get("/", paraControllers.getAllParas);
 // Get all Paras
 router.get(
   "/admin",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.READ,
+  }),
   paraControllers.getAllParasByAdmin
 );
 
@@ -31,7 +39,11 @@ router.get("/:paraId", paraControllers.getParaById);
 // Update a Para
 router.put(
   "/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.UPDATE,
+  }),
   validateRequest(paraValidationSchema.updateParaSchema),
   paraControllers.updatePara
 );
@@ -39,7 +51,11 @@ router.put(
 // Delete a Para (soft delete)
 router.delete(
   "/:paraId",
-  auth(UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR),
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
+    resource: Resource.AYAH,
+    action: Action.DELETE,
+  }),
   paraControllers.deletePara
 );
 
