@@ -1,8 +1,0 @@
-node_modules
-dist
-prisma
-.env
-.vscode
-compile_errors.txt
-compile_errors_v2.txt
-uploads
