@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { ZodError } from "zod";
-import logger from "../utils/logger";
 
 const globalErrorHandler = (
   err: any,
@@ -15,7 +14,7 @@ const globalErrorHandler = (
   let errorSources: any[] = [];
 
   // Log the error
-  logger.error(err);
+  console.error(err);
 
   if (err instanceof ZodError) {
     statusCode = httpStatus.BAD_REQUEST;

@@ -1,7 +1,6 @@
 import { UserRole } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import config from "../config/config";
-import logger from "../utils/logger";
 import prisma from "../utils/prisma";
 
 export const seedSuperAdmin = async () => {
@@ -13,7 +12,7 @@ export const seedSuperAdmin = async () => {
     });
 
     if (isExistSuperAdmin) {
-      logger.info("Super admin is already seeded.");
+      console.log("Super admin is already seeded.");
       return;
     }
 
@@ -31,7 +30,7 @@ export const seedSuperAdmin = async () => {
       },
     });
 
-    logger.info("Super admin seeded successfully!");
+    console.log("Super admin seeded successfully!");
   } catch (err) {
     throw err;
   }

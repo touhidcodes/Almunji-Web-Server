@@ -1,5 +1,4 @@
 import { Action, Resource } from "@prisma/client";
-import logger from "../utils/logger";
 import prisma from "../utils/prisma";
 
 export async function seedPermissions() {
@@ -33,7 +32,7 @@ export async function seedPermissions() {
         },
       });
     }
-    logger.info(`${permissions.length} Permissions seeded successfully!`);
+    console.log(`${permissions.length} Permissions seeded successfully!`);
   } catch (err) {
     throw err;
   }
