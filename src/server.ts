@@ -1,6 +1,7 @@
 import { Server } from "http";
 import app from "./app";
 import config from "./app/config/config";
+import logger from "./app/utils/logger";
 import prisma from "./app/utils/prisma";
 
 let server: Server;
@@ -8,10 +9,10 @@ let server: Server;
 async function main() {
   try {
     server = app.listen(config.port, () => {
-      console.log(`Server is running on port ${config.port}`);
+      logger.info(`Server is running on port ${config.port}`);
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    logger.error("Failed to start server:", error);
   }
 }
 
@@ -19,16 +20,16 @@ main();
 
 // Handle Uncaught Exceptions
 process.on("uncaughtException", (error) => {
-  console.error("uncaughtException:", error);
+  logger.error("uncaughtException:", error);
   process.exit(1);
 });
 
 // Handle Unhandled Rejections
 process.on("unhandledRejection", (error) => {
-  console.error("unhandledRejection:", error);
+  logger.error("unhandledRejection:", error);
   if (server) {
     server.close(() => {
-      console.log("Server closed due to unhandled rejection");
+      logger.info("Server closed due to unhandled rejection");
       prisma.$disconnect().then(() => {
         process.exit(1);
       });
@@ -40,10 +41,10 @@ process.on("unhandledRejection", (error) => {
 
 // Handle SIGTERM (Graceful Shutdown)
 process.on("SIGTERM", () => {
-  console.log("SIGTERM received. Shutting down gracefully...");
+  logger.info("SIGTERM received. Shutting down gracefully...");
   if (server) {
     server.close(() => {
-      console.log("Server closed.");
+      logger.info("Server closed.");
       prisma.$disconnect();
     });
   }

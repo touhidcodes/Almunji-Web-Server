@@ -5,6 +5,7 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import httpStatus from "http-status";
+import morgan from "morgan";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import router from "./app/router/routes";
 
@@ -34,7 +35,11 @@ const limiter = rateLimit({
 app.use("/api", limiter);
 
 // Request Logging
-// Removed morgan middleware
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+} else {
+  app.use(morgan("combined"));
+}
 
 // Parser
 app.use(express.json());
