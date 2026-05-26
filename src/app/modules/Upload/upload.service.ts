@@ -1,7 +1,7 @@
-import { Dictionary } from "@prisma/client";
+import { Dictionary } from "@/generated/prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import prisma from "../../utils/prisma";
+import APIError from "@/errors/APIError";
+import prisma from "@/utils/prisma";
 import { CreatedWord } from "./upload.constants";
 
 // Service to upload dictionary words from a JSON file

@@ -1,9 +1,9 @@
-import { Book, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
 import slugify from "slugify";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import { Book, Prisma } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import prisma from "@/utils/prisma";
 import { bookQueryFields } from "./book.constants";
 import { TBookQueryFilter } from "./book.interface";
 
@@ -89,8 +89,8 @@ const getAllBooksByAdmin = async (options: TBookQueryFilter) => {
     filters?.isFeatured === "true"
       ? true
       : filters?.isFeatured === "false"
-      ? false
-      : undefined;
+        ? false
+        : undefined;
 
   if (typeof isFeaturedQuery === "boolean") {
     andConditions.push({ isFeatured: isFeaturedQuery });

@@ -1,8 +1,8 @@
-import { Para, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import { Para, Prisma } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import prisma from "@/utils/prisma";
 import { paraQueryFields } from "./para.constants";
 import { TParaQueryFilter } from "./para.interface";
 

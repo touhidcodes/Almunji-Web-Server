@@ -1,7 +1,7 @@
-import { Action, Resource, UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 import express, { NextFunction, Request, Response } from "express";
-import { FileUpload } from "../../helpers/fileUpload";
-import authAccess from "../../middlewares/authAccess";
+import { FileUpload } from "@/helpers/fileUpload";
+import authAccess from "@/middlewares/authAccess";
 import { uploadController } from "./upload.controller";
 
 const router = express.Router();

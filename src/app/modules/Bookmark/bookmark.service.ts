@@ -1,7 +1,7 @@
-import { BookmarkType } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import prisma from "../../utils/prisma";
+import { BookmarkType } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import prisma from "@/utils/prisma";
 
 // Service to create a Bookmark
 const createBookmark = async (data: {

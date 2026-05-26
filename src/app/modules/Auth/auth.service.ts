@@ -1,14 +1,12 @@
-import { UserRole, UserStatus } from "@prisma/client";
+import { UserRole, UserStatus } from "@/generated/prisma/client";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
-
-import config from "../../config/config";
-import APIError from "../../errors/APIError";
-import { jwtHelpers } from "../../utils/jwtHelpers";
-import prisma from "../../utils/prisma";
-
-import { comparePasswords } from "../../utils/comparePassword";
-import { hashedPassword } from "../../utils/hashedPassword";
+import config from "@/config/config";
+import APIError from "@/errors/APIError";
+import { jwtHelpers } from "@/utils/jwtHelpers";
+import prisma from "@/utils/prisma";
+import { comparePasswords } from "@/utils/comparePassword";
+import { hashedPassword } from "@/utils/hashedPassword";
 import { TUserData } from "../User/user.interface";
 import { IChangePassword } from "./auth.interface";
 
@@ -91,12 +89,12 @@ const createUser = async (data: TUserData) => {
       config.jwt.refresh_token_expires_in as string
     );
 
-      return {
-        accessToken,
-        refreshToken,
-        user,
-        permissions: permissionStrings,
-      };
+    return {
+      accessToken,
+      refreshToken,
+      user,
+      permissions: permissionStrings,
+    };
   });
 
   return result;

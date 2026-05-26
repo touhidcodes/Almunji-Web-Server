@@ -1,8 +1,8 @@
 import { Server } from "http";
 import app from "./app";
-import config from "./app/config/config";
-import logger from "./app/utils/logger";
-import prisma from "./app/utils/prisma";
+import config from "@/config/config";
+import logger from "@/utils/logger";
+import prisma from "@/utils/prisma";
 
 let server: Server;
 

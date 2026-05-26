@@ -1,7 +1,7 @@
-import { Action, Resource, UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 import express from "express";
-import authAccess from "../../middlewares/authAccess";
-import validateRequest from "../../middlewares/validateRequest";
+import authAccess from "@/middlewares/authAccess";
+import validateRequest from "@/middlewares/validateRequest";
 import { ayahControllers } from "./ayah.controller";
 import { ayahValidationSchema } from "./ayah.validation";
 

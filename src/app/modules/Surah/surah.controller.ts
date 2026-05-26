@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import catchAsync from "@/utils/catchAsync";
+import queryFilters from "@/utils/queryFilters";
 import { surahServices } from "./surah.service";
 import {
   surahFilterableFields,
   surahPaginationFields,
 } from "./surah.constants";
-import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Surah
 const createSurah = catchAsync(async (req, res) => {

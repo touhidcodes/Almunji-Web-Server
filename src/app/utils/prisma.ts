@@ -1,5 +1,5 @@
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "./generated/prisma/client";
+import { PrismaClient } from "@/generated/prisma/client";
 import logger from "@/utils/logger";
 
 const globalForPrisma = globalThis as unknown as {
@@ -14,9 +14,7 @@ const adapter = new PrismaMariaDb({
 });
 
 // Prisma Client (singleton)
-const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({ adapter });
+const prisma = globalForPrisma.prisma ?? new PrismaClient({ adapter });
 
 // Prevent multiple instances in dev
 if (process.env.NODE_ENV !== "production") {

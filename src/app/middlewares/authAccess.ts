@@ -1,12 +1,12 @@
-import { UserRole, UserStatus } from "@prisma/client";
+import { UserRole, UserStatus } from "@/generated/prisma/enums";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
-import config from "../config/config";
-import APIError from "../errors/APIError";
-import { TAuthOptions } from "../interfaces/auth";
-import catchAsync from "../utils/catchAsync";
-import { jwtHelpers } from "../utils/jwtHelpers";
-import prisma from "../utils/prisma";
+import config from "@/config/config";
+import APIError from "@/errors/APIError";
+import { TAuthOptions } from "@/interfaces/auth";
+import catchAsync from "@/utils/catchAsync";
+import { jwtHelpers } from "@/utils/jwtHelpers";
+import prisma from "@/utils/prisma";
 
 const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {

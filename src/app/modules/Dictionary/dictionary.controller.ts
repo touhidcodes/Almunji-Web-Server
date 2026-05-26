@@ -1,13 +1,13 @@
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import catchAsync from "@/utils/catchAsync";
+import queryFilters from "@/utils/queryFilters";
 import { dictionaryServices } from "./dictionary.service";
 import {
   wordFilterableFields,
   wordPaginationFields,
   wordSuggestionFilterableFields,
 } from "./dictionary.constants";
-import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new dictionary word
 const createWord = catchAsync(async (req, res) => {

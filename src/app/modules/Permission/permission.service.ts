@@ -1,7 +1,7 @@
-import { Action, Resource } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import prisma from "../../utils/prisma";
+import { Action, Resource } from "@/generated/prisma/enums";
+import APIError from "@/errors/APIError";
+import prisma from "@/utils/prisma";
 
 // Create Permission
 const createPermission = async (payload: {

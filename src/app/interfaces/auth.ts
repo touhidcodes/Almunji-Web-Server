@@ -1,4 +1,4 @@
-import { Action, Resource, UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 
 export interface TAuthOptions {
   roles?: UserRole[];

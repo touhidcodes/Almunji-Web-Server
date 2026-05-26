@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import catchAsync from "@/utils/catchAsync";
+import queryFilters from "@/utils/queryFilters";
 import { ayahServices } from "./ayah.service";
 import { ayahFilterableFields, ayahPaginationFields } from "./ayah.constants";
-import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a new Ayah
 const createAyah = catchAsync(async (req, res) => {

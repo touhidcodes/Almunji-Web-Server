@@ -1,10 +1,10 @@
+import fs from "fs";
 import { Request, Response, NextFunction } from "express";
 import httpStatus from "http-status";
-import catchAsync from "../../utils/catchAsync";
-import APIError from "../../errors/APIError";
-import sendResponse from "../../utils/sendResponse";
-import { IUploadFile } from "../../interfaces/file";
-import fs from "fs";
+import catchAsync from "@/utils/catchAsync";
+import APIError from "@/errors/APIError";
+import sendResponse from "@/utils/sendResponse";
+import { IUploadFile } from "@/interfaces/file";
 import { uploadServices } from "./upload.service";
 
 const uploadDictionaryData = catchAsync(

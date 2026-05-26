@@ -1,8 +1,8 @@
-import { User, UserProfile } from "@prisma/client";
+import { User, UserProfile } from "@/generated/prisma/client";
+import prisma from "@/utils/prisma";
 import httpStatus from "http-status";
-import config from "../../config/config";
-import APIError from "../../errors/APIError";
-import prisma from "../../utils/prisma";
+import config from "@/config/config";
+import APIError from "@/errors/APIError";
 
 //  Service to get user
 const getUser = async (id: string) => {

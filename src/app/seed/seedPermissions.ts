@@ -1,5 +1,5 @@
-import { Action, Resource } from "@prisma/client";
-import prisma from "../utils/prisma";
+import { Action, Resource } from "@/generated/prisma/client";
+import prisma from "@/utils/prisma";
 
 export async function seedPermissions() {
   try {

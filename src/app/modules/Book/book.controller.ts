@@ -1,9 +1,9 @@
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import queryFilters from "@/utils/queryFilters";
+import catchAsync from "@/utils/catchAsync";
 import { bookServices } from "./book.service";
 import { bookFilterableFields, bookPaginationFields } from "./book.constants";
-import queryFilters from "../../utils/queryFilters";
 
 // Controller to create a Book
 const createBook = catchAsync(async (req, res) => {

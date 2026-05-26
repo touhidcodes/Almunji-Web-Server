@@ -1,8 +1,8 @@
-import { Dictionary, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import { Dictionary, Prisma } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import prisma from "@/utils/prisma";
 import { wordQueryFields } from "./dictionary.constants";
 import { TWordQueryFilter } from "./dictionary.interface";
 

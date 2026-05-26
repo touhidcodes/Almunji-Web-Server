@@ -1,8 +1,8 @@
-import { Prisma, Tafsir } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import APIError from "../../errors/APIError";
+import { Prisma, Tafsir } from "@/generated/prisma/client";
 import httpStatus from "http-status";
-import { paginationHelper } from "../../utils/paginationHelpers";
+import prisma from "@/utils/prisma";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
 import { tafsirQueryFields } from "./tafsir.constants";
 import { TTafsirQueryFilter } from "./tafsir.interface";
 

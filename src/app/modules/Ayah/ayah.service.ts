@@ -1,8 +1,8 @@
-import { Ayah, Prisma } from "@prisma/client";
+import { Ayah, Prisma } from "@/generated/prisma/client";
+import prisma from "@/utils/prisma";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
 import { ayahQueryFields } from "./ayah.constants";
 import { TAyahQueryFilter } from "./ayah.interface";
 

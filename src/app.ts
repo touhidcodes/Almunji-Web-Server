@@ -6,8 +6,8 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import httpStatus from "http-status";
 import morgan from "morgan";
-import globalErrorHandler from "./app/middlewares/globalErrorHandler";
-import router from "./app/router/routes";
+import globalErrorHandler from "@/middlewares/globalErrorHandler";
+import router from "@/router/routes";
 
 dotenv.config();
 
@@ -17,9 +17,10 @@ const app: Application = express();
 app.use(helmet());
 
 const corsOptions = {
-  origin: process.env.NODE_ENV === "production" 
-    ? [process.env.CLIENT_URL as string] 
-    : ["http://localhost:3000", "http://localhost:3001"],
+  origin:
+    process.env.NODE_ENV === "production"
+      ? [process.env.CLIENT_URL as string]
+      : ["http://localhost:3000", "http://localhost:3001"],
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 };

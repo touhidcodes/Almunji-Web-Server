@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import catchAsync from "@/utils/catchAsync";
+import queryFilters from "@/utils/queryFilters";
 import { bookContentServices } from "./bookContent.service";
 import {
   bookContentFilterableFields,
   bookContentPaginationFields,
 } from "./BookContent.constants";
-import queryFilters from "../../utils/queryFilters";
 
 // Create a Book Content
 const createBookContent = catchAsync(async (req, res) => {

@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import prisma from "../../utils/prisma";
+import APIError from "@/errors/APIError";
+import prisma from "@/utils/prisma";
 
 // Service to create a Category
 const createCategory = async (data: { name: string; description?: string }) => {

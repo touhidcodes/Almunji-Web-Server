@@ -1,8 +1,8 @@
-import { BookContent, Prisma } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import { BookContent, Prisma } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import prisma from "@/utils/prisma";
 import { bookContentQueryFields } from "./BookContent.constants";
 import { TBookContentQueryFilter } from "./BookContent.interface";
 

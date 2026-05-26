@@ -1,7 +1,7 @@
-import { Action, Resource, UserRole } from "@prisma/client";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 import express from "express";
-import authAccess from "../../middlewares/authAccess";
-import validateRequest from "../../middlewares/validateRequest";
+import authAccess from "@/middlewares/authAccess";
+import validateRequest from "@/middlewares/validateRequest";
 import { blogControllers } from "./blog.controller";
 import { blogValidationSchemas } from "./blog.validation";
 

@@ -1,8 +1,8 @@
-import { Prisma, Surah } from "@prisma/client";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import prisma from "../../utils/prisma";
+import { Prisma, Surah } from "@/generated/prisma/client";
+import APIError from "@/errors/APIError";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import prisma from "@/utils/prisma";
 import { surahQueryFields } from "./surah.constants";
 import { TSurahQueryFilter } from "./surah.interface";
 

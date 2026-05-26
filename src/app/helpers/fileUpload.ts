@@ -1,6 +1,6 @@
 import httpStatus from "http-status";
 import multer from "multer";
-import APIError from "../errors/APIError";
+import APIError from "@/errors/APIError";
 
 // Set up multer storage configuration
 const storage = multer.diskStorage({
@@ -65,6 +65,6 @@ const csvUpload = multer({
 });
 
 export const FileUpload = {
-  upload: jsonUpload,   // kept for backward compatibility (dictionary JSON upload)
+  upload: jsonUpload, // kept for backward compatibility (dictionary JSON upload)
   csvUpload,
 };

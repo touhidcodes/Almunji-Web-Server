@@ -1,7 +1,7 @@
-import { Action, Resource, UserRole } from "@prisma/client";
 import express from "express";
-import authAccess from "../../middlewares/authAccess";
-import validateRequest from "../../middlewares/validateRequest";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
+import authAccess from "@/middlewares/authAccess";
+import validateRequest from "@/middlewares/validateRequest";
 import { duaControllers } from "./dua.conteoller";
 import { duaValidationSchemas } from "./dua.validation";
 

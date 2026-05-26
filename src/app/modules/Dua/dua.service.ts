@@ -1,9 +1,9 @@
-import { Dua, Prisma } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import { paginationHelper } from "../../utils/paginationHelpers";
-import { duaQueryFields } from "./dua.constants";
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
+import { Dua, Prisma } from "@/generated/prisma/client";
+import prisma from "@/utils/prisma";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import APIError from "@/errors/APIError";
+import { duaQueryFields } from "./dua.constants";
 import { TDuaQueryFilter } from "./dua.interface";
 
 // Service to create a new Dua

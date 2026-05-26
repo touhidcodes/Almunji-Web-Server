@@ -1,12 +1,12 @@
-import { tafsirServices } from "./tafsir.service";
 import httpStatus from "http-status";
-import sendResponse from "../../utils/sendResponse";
-import catchAsync from "../../utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
+import catchAsync from "@/utils/catchAsync";
+import queryFilters from "@/utils/queryFilters";
 import {
   tafsirFilterableFields,
   tafsirPaginationFields,
 } from "./tafsir.constants";
-import queryFilters from "../../utils/queryFilters";
+import { tafsirServices } from "./tafsir.service";
 
 // Controller to create a new Tafsir
 const createTafsir = catchAsync(async (req, res) => {

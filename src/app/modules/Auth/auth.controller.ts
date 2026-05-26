@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
-import APIError from "../../errors/APIError";
-import catchAsync from "../../utils/catchAsync";
-import sendResponse from "../../utils/sendResponse";
+import APIError from "@/errors/APIError";
+import catchAsync from "@/utils/catchAsync";
+import sendResponse from "@/utils/sendResponse";
 import { authServices } from "./auth.service";
 
 // Create User

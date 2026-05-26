@@ -15,7 +15,7 @@ const allLogs = new DailyRotateFile({
   filename: "logs/combined-%DATE%.log",
   datePattern: "YYYY-MM-DD",
   maxSize: "20m",
-  maxFiles: "14d", // keep logs for 14 days
+  maxFiles: "14d",
 });
 
 // Daily file rotation (errors only)

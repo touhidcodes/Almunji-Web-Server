@@ -1,10 +1,9 @@
-import { Prisma, Blog } from "@prisma/client";
-import prisma from "../../utils/prisma";
-import { TPaginationOptions } from "../../interfaces/pagination";
-import { paginationHelper } from "../../utils/paginationHelpers";
 import httpStatus from "http-status";
 import slugify from "slugify";
-import APIError from "../../errors/APIError";
+import { Prisma, Blog } from "@/generated/prisma/client";
+import prisma from "@/utils/prisma";
+import { paginationHelper } from "@/utils/paginationHelpers";
+import APIError from "@/errors/APIError";
 import { TBlogQueryFilter } from "./blog.interface";
 
 // Service to create a new Blog
@@ -77,8 +76,8 @@ const getAllBlogsByAdmin = async (options: TBlogQueryFilter) => {
     filters?.isFeatured === "true"
       ? true
       : filters?.isFeatured === "false"
-      ? false
-      : undefined;
+        ? false
+        : undefined;
 
   if (typeof isFeaturedQuery === "boolean") {
     andConditions.push({ isFeatured: isFeaturedQuery });
@@ -89,8 +88,8 @@ const getAllBlogsByAdmin = async (options: TBlogQueryFilter) => {
     filters?.isPublished === "true"
       ? true
       : filters?.isPublished === "false"
-      ? false
-      : undefined;
+        ? false
+        : undefined;
 
   if (typeof isPublishedQuery === "boolean") {
     andConditions.push({ isPublished: isPublishedQuery });
