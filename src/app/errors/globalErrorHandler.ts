@@ -2,6 +2,8 @@ import { Prisma } from "@/generated/prisma/client";
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import { ZodError } from "zod";
+import AuthorizationError from "./AuthorizationError";
+import config from "@/config/config";
 
 const globalErrorHandler = (
   err: any,
@@ -14,7 +16,7 @@ const globalErrorHandler = (
   let errorSources: any[] = [];
 
   // Log the error
-  console.error(err);
+  // console.error(err);
 
   if (err instanceof ZodError) {
     statusCode = httpStatus.BAD_REQUEST;
@@ -23,6 +25,10 @@ const globalErrorHandler = (
       path: issue.path[issue.path.length - 1],
       message: issue.message,
     }));
+  } else if (err?.isOperational) {
+    statusCode = err.statusCode;
+    message = err.message;
+    errorSources = err.errorSources || [];
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === "P2002") {
       statusCode = httpStatus.CONFLICT;
@@ -50,12 +56,11 @@ const globalErrorHandler = (
     statusCode = httpStatus.UNAUTHORIZED;
     message = "Invalid Token!";
   }
-
   res.status(statusCode).json({
     success: false,
     message,
     errorSources,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    stack: config.env === "development" ? err.stack : undefined,
   });
 };
 

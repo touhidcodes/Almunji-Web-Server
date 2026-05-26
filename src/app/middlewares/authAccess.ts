@@ -2,18 +2,21 @@ import { UserRole, UserStatus } from "@/generated/prisma/enums";
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import config from "@/config/config";
-import APIError from "@/errors/APIError";
 import { TAuthOptions } from "@/interfaces/auth";
 import catchAsync from "@/utils/catchAsync";
 import { jwtHelpers } from "@/utils/jwtHelpers";
 import prisma from "@/utils/prisma";
+import AuthorizationError from "@/errors/AuthorizationError";
 
 const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {
     const token = req.headers.authorization as string;
 
     if (!token) {
-      throw new APIError(httpStatus.UNAUTHORIZED, "Unauthorized access");
+      throw new AuthorizationError(
+        httpStatus.UNAUTHORIZED,
+        "Unauthorized access"
+      );
     }
 
     // Verify token (throws if expired or invalid)
@@ -36,11 +39,14 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
     });
 
     if (!user || user.email !== decoded.email) {
-      throw new APIError(httpStatus.UNAUTHORIZED, "Unauthorized access");
+      throw new AuthorizationError(
+        httpStatus.UNAUTHORIZED,
+        "Unauthorized access"
+      );
     }
 
     if (user.status === UserStatus.BLOCKED) {
-      throw new APIError(httpStatus.FORBIDDEN, "User is blocked");
+      throw new AuthorizationError(httpStatus.FORBIDDEN, "User is blocked");
     }
 
     // Attach trusted user context
@@ -57,10 +63,10 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
 
     // Role-based access (coarse-grained)
     if (roles && roles.length > 0 && !roles.includes(user.role)) {
-      throw new APIError(httpStatus.FORBIDDEN, "Role forbidden");
+      throw new AuthorizationError(httpStatus.FORBIDDEN, "Role forbidden");
     }
 
-    // Permission-based access (fine-grained) — only checked when both resource and action are provided
+    // Permission-based access (fine-grained)
     if (resource && action) {
       const hasPermission = user.permissions.some(
         (up) =>
@@ -68,7 +74,10 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       );
 
       if (!hasPermission) {
-        throw new APIError(httpStatus.FORBIDDEN, "Permission forbidden");
+        throw new AuthorizationError(
+          httpStatus.FORBIDDEN,
+          "Permission forbidden"
+        );
       }
     }
 

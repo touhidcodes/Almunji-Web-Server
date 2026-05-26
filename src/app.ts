@@ -6,7 +6,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import httpStatus from "http-status";
 import morgan from "morgan";
-import globalErrorHandler from "@/middlewares/globalErrorHandler";
+import globalErrorHandler from "@/errors/globalErrorHandler";
 import router from "@/router/routes";
 
 dotenv.config();
@@ -28,8 +28,8 @@ app.use(cors(corsOptions));
 
 // Rate Limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
 // Apply rate limiter to all api routes
