@@ -10,7 +10,9 @@ if (!fs.existsSync(logDir)) {
 
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`)
+  winston.format.printf(
+    (info) => `${info.timestamp} ${info.level}: ${info.message}`
+  )
 );
 
 const logger = winston.createLogger({
@@ -18,13 +20,13 @@ const logger = winston.createLogger({
   format: format,
   transports: [
     // Write all logs to combined.log
-    new winston.transports.File({ 
+    new winston.transports.File({
       filename: path.join(logDir, "combined.log"),
     }),
     // Write all error logs to error.log
-    new winston.transports.File({ 
-      filename: path.join(logDir, "error.log"), 
-      level: "error" 
+    new winston.transports.File({
+      filename: path.join(logDir, "error.log"),
+      level: "error",
     }),
   ],
 });
