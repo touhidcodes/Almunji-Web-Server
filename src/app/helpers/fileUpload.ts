@@ -1,22 +1,21 @@
 import httpStatus from "http-status";
 import multer from "multer";
 import APIError from "../errors/APIError";
-import { NextFunction } from "express";
 
 // Set up multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); // Set your upload directory
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Set unique filename
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
 // Filter to accept only JSON files
-const fileFilter = (req: any, file: any, cb: any) => {
+const jsonFileFilter = (req: any, file: any, cb: any) => {
   if (file.mimetype === "application/json") {
-    cb(null, true); // Accept the file
+    cb(null, true);
   } else {
     cb(
       new APIError(
@@ -24,19 +23,48 @@ const fileFilter = (req: any, file: any, cb: any) => {
         "Only JSON files are allowed"
       ),
       false
-    ); // Reject the file
+    );
   }
 };
 
-// Initialize multer with storage and file filter
-const upload = multer({
+// Filter to accept only CSV files
+const csvFileFilter = (req: any, file: any, cb: any) => {
+  if (
+    file.mimetype === "text/csv" ||
+    file.mimetype === "application/vnd.ms-excel" ||
+    file.originalname.endsWith(".csv")
+  ) {
+    cb(null, true);
+  } else {
+    cb(
+      new APIError(
+        httpStatus.UNSUPPORTED_MEDIA_TYPE,
+        "Only CSV files are allowed"
+      ),
+      false
+    );
+  }
+};
+
+// Multer instance for JSON uploads (dictionary)
+const jsonUpload = multer({
   storage,
-  fileFilter,
+  fileFilter: jsonFileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB in bytes
+    fileSize: 5 * 1024 * 1024, // 5MB
+  },
+});
+
+// Multer instance for CSV uploads (surahs, etc.)
+const csvUpload = multer({
+  storage,
+  fileFilter: csvFileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB
   },
 });
 
 export const FileUpload = {
-  upload,
+  upload: jsonUpload,   // kept for backward compatibility (dictionary JSON upload)
+  csvUpload,
 };

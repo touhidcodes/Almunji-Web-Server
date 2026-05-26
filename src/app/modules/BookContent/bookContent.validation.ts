@@ -6,11 +6,12 @@ const MAX_CONTENT_LENGTH = 65535;
 
 const createContentSchema = z.object({
   body: z.object({
-    title: z.string({ required_error: "Content title is required" }),
-    order: z
-      .number({ required_error: "Order number is required" })
+    bookId: z.string({ required_error: "Book ID is required" }),
+    section: z.string({ required_error: "Section title is required" }),
+    index: z
+      .number({ required_error: "Index number is required" })
       .int()
-      .min(1, "Order must be a positive integer"),
+      .min(1, "Index must be a positive integer"),
     text: z
       .string({ required_error: "Content text is required" })
       .min(1)
@@ -23,8 +24,8 @@ const createContentSchema = z.object({
 
 const updateContentSchema = z.object({
   body: z.object({
-    title: z.string().min(1).optional(),
-    order: z.number().int().min(1).optional(),
+    section: z.string().min(1).optional(),
+    index: z.number().int().min(1).optional(),
     text: z.string().max(MAX_CONTENT_LENGTH).optional(),
     isDeleted: z.boolean().optional(),
   }),

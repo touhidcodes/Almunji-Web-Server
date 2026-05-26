@@ -259,11 +259,13 @@ enum UserStatus {
 
 enum Resource {
   SURAH
+  PARA
   AYAH
   TAFSIR
   DICTIONARY
   BOOK
   BOOKCATEGORY
+  BOOKCONTENT
   BLOG
   DUA
   USER

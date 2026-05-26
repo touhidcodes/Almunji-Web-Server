@@ -16,7 +16,7 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       throw new APIError(httpStatus.UNAUTHORIZED, "Unauthorized access");
     }
 
-    // Verify token
+    // Verify token (throws if expired or invalid)
     const decoded = jwtHelpers.verifyToken(
       token,
       config.jwt.access_token_secret as Secret
@@ -43,26 +43,24 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       throw new APIError(httpStatus.FORBIDDEN, "User is blocked");
     }
 
-    // Token expiry check
-    if (!decoded.exp || new Date(decoded.exp * 1000) < new Date()) {
-      throw new APIError(httpStatus.UNAUTHORIZED, "Token expired");
-    }
+    // Attach trusted user context
+    req.user = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    };
 
+    // SUPERADMIN bypasses all role and permission checks
     if (user.role === UserRole.SUPERADMIN) {
-      req.user = {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      };
       return next();
     }
 
-    // Role-based access (coarse)
-    if (roles && !roles.includes(user.role)) {
+    // Role-based access (coarse-grained)
+    if (roles && roles.length > 0 && !roles.includes(user.role)) {
       throw new APIError(httpStatus.FORBIDDEN, "Role forbidden");
     }
 
-    // Permission-based access
+    // Permission-based access (fine-grained) — only checked when both resource and action are provided
     if (resource && action) {
       const hasPermission = user.permissions.some(
         (up) =>
@@ -73,13 +71,6 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
         throw new APIError(httpStatus.FORBIDDEN, "Permission forbidden");
       }
     }
-
-    // Attach trusted user context
-    req.user = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    };
 
     next();
   });

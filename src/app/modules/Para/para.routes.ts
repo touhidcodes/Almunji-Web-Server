@@ -12,7 +12,7 @@ router.post(
   "/",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.AYAH, // Para is closely related to Ayah/Surah
+    resource: Resource.PARA,
     action: Action.CREATE,
   }),
   validateRequest(paraValidationSchema.createParaSchema),
@@ -22,12 +22,12 @@ router.post(
 // Get all Paras
 router.get("/", paraControllers.getAllParas);
 
-// Get all Paras
+// Get all Paras (admin)
 router.get(
   "/admin",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.AYAH,
+    resource: Resource.PARA,
     action: Action.READ,
   }),
   paraControllers.getAllParasByAdmin
@@ -41,7 +41,7 @@ router.put(
   "/:paraId",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.AYAH,
+    resource: Resource.PARA,
     action: Action.UPDATE,
   }),
   validateRequest(paraValidationSchema.updateParaSchema),
@@ -53,7 +53,7 @@ router.delete(
   "/:paraId",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.AYAH,
+    resource: Resource.PARA,
     action: Action.DELETE,
   }),
   paraControllers.deletePara

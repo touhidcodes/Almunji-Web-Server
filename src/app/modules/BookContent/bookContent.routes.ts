@@ -12,7 +12,7 @@ router.post(
   "/",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.BOOK,
+    resource: Resource.BOOKCONTENT,
     action: Action.CREATE,
   }),
   validateRequest(bookContentValidationSchema.createContentSchema),
@@ -24,7 +24,7 @@ router.get(
   "/admin/all",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.BOOK,
+    resource: Resource.BOOKCONTENT,
     action: Action.READ,
   }),
   bookContentControllers.getAllBookContentByAdmin
@@ -44,30 +44,30 @@ router.put(
   "/:contentId",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.BOOK,
+    resource: Resource.BOOKCONTENT,
     action: Action.UPDATE,
   }),
   validateRequest(bookContentValidationSchema.updateContentSchema),
   bookContentControllers.updateBookContent
 );
 
-// Route to delete a Book (Soft Delete)
+// Route to delete a Book Content (Soft Delete)
 router.delete(
   "/:contentId",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN, UserRole.MODERATOR],
-    resource: Resource.BOOK,
+    resource: Resource.BOOKCONTENT,
     action: Action.DELETE,
   }),
   bookContentControllers.deleteBookContent
 );
 
-// Route to delete a Book (Hard Delete) only by Admin
+// Route to delete a Book Content (Hard Delete) only by Admin
 router.delete(
   "/admin/:contentId",
   authAccess({
     roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
-    resource: Resource.BOOK,
+    resource: Resource.BOOKCONTENT,
     action: Action.DELETE,
   }),
   bookContentControllers.deleteBookContentByAdmin

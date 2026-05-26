@@ -6,7 +6,7 @@ const createSurahSchema = z.object({
     chapter: z
       .number({ required_error: "Chapter number is required" })
       .min(1, { message: "Chapter must be at least 1" })
-      .max(140, { message: "Chapter cannot exceed 140" }),
+      .max(114, { message: "Chapter cannot exceed 114" }),
     totalAyah: z.number({ required_error: "Total Ayah count is required" }),
     arabic: z.string({ required_error: "Arabic name is required" }),
     english: z.string({ required_error: "English name is required" }),
@@ -22,7 +22,7 @@ const updateSurahSchema = z.object({
     chapter: z
       .number()
       .min(1, { message: "Chapter must be at least 1" })
-      .max(140, { message: "Chapter cannot exceed 140" })
+      .max(114, { message: "Chapter cannot exceed 114" })
       .optional(),
     totalAyah: z.number().optional(),
     arabic: z.string().optional(),
