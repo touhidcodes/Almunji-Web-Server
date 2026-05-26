@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "persianWord": "ī",
+    "transliteration": "-",
+    "banglaMeaning": "বি. ফারসি বর্ণমালার প্রথম অক্ষর অ’; [সং.ক.] আহ্বানসূচক চিহ্ন, যেমন: خدایا، یارا  (হে খোদা! হে বন্ধু!) এর মধ্যে শেষ অক্ষর"
+  },
+  { "id": 2, "persianWord": "آب حیات", "transliteration": "-" },
+  { "id": 3, "persianWord": "آب خالص", "transliteration": "-" },
+  { "id": 4, "persianWord": "آب خام", "transliteration": "-" },
+  { "id": 5, "persianWord": "آب خوردن", "transliteration": "-" },
+  { "id": 6, "persianWord": "آب دهان", "transliteration": "-" },
+  { "id": 7, "persianWord": "آب دیده", "transliteration": "-" },
+  { "id": 8, "persianWord": "آب راکد", "transliteration": "-" },
+  { "id": 9, "persianWord": "آب زرشک", "transliteration": "-" },
+  { "id": 11, "persianWord": "آب زیپو", "transliteration": "-" },
+  { "id": 12, "persianWord": "آب سنگین", "transliteration": "-" },
+  {
+    "id": 13,
+    "persianWord": "آب شیرین",
+    "transliteration": "-",
+    "banglaMeaning": "মিঠা পানি"
+  },
+  { "id": 14, "persianWord": "آب مضاف", "transliteration": "-" },
+  { "id": 15, "persianWord": "آب معدنی", "transliteration": "-" },
+  { "id": 16, "persianWord": "آب مقطر", "transliteration": "-" },
+  { "id": 17, "persianWord": "آب هویج", "transliteration": "-" },
+  { "id": 18, "persianWord": "آب یخ", "transliteration": "-" },
+  { "id": 19, "persianWord": "آب خوردن", "transliteration": "-" },
+  { "id": 20, "persianWord": "آب رفتن", "transliteration": "-" }
+]

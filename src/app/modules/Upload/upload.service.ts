@@ -1,8 +1,8 @@
-import { Dictionary } from "@/generated/prisma/client";
+import { Ayah, Dictionary } from "@/generated/prisma/client";
 import httpStatus from "http-status";
 import APIError from "@/errors/APIError";
 import prisma from "@/utils/prisma";
-import { CreatedWord } from "./upload.constants";
+import { TCreatedAyah, TCreatedWord } from "./upload.interface";
 
 // Service to upload dictionary words from a JSON file
 const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
@@ -10,9 +10,9 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
     throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
   }
 
-  const createdWords: CreatedWord[] = [];
+  const createdWords: TCreatedWord[] = [];
   const existingWords: string[] = [];
-
+  console.log(data);
   for (const wordData of data) {
     const {
       persianWord,
@@ -55,4 +55,75 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
   return { createdWords, existingWords };
 };
 
-export const uploadServices = { uploadWordsFromFiles };
+const uploadAyahsFromFiles = async (data: Partial<Ayah>[]) => {
+  if (!Array.isArray(data)) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
+  }
+
+  const createdAyahs: TCreatedAyah[] = [];
+  const existingAyahs: string[] = [];
+
+  for (const ayahData of data) {
+    const {
+      surahId,
+      paraId,
+      number,
+      arabic,
+      transliteration = null,
+      bangla = null,
+      english = null,
+    } = ayahData;
+
+    // validation
+    if (!surahId || !paraId || typeof number !== "number" || !arabic) {
+      continue;
+    }
+
+    // UNIQUE CHECK (matches schema)
+    const exists = await prisma.ayah.findUnique({
+      where: {
+        surahId_paraId_number: {
+          surahId,
+          paraId,
+          number,
+        },
+      },
+    });
+
+    if (exists) {
+      existingAyahs.push(`${surahId}:${paraId}:${number}`);
+      continue;
+    }
+
+    const newAyah = await prisma.ayah.create({
+      data: {
+        surahId,
+        paraId,
+        number,
+        arabic,
+        transliteration,
+        bangla,
+        english,
+      },
+      select: {
+        id: true,
+        surahId: true,
+        paraId: true,
+        number: true,
+        arabic: true,
+        transliteration: true,
+        bangla: true,
+        english: true,
+      },
+    });
+
+    createdAyahs.push(newAyah);
+  }
+
+  return {
+    createdAyahs,
+    existingAyahs,
+  };
+};
+
+export const uploadServices = { uploadWordsFromFiles, uploadAyahsFromFiles };

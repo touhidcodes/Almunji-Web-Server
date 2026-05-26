@@ -20,4 +20,18 @@ router.post(
   }
 );
 
+// Route to create ayahs for a surah
+router.post(
+  "/ayahs",
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+    resource: Resource.AYAH,
+    action: Action.CREATE,
+  }),
+  FileUpload.upload.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    return uploadController.uploadAyahData(req, res, next);
+  }
+);
+
 export const uploadRoutes = router;
