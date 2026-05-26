@@ -5,9 +5,9 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import httpStatus from "http-status";
-import morgan from "morgan";
 import globalErrorHandler from "@/errors/globalErrorHandler";
 import router from "@/router/routes";
+import logger from "@/utils/logger";
 
 dotenv.config();
 
@@ -32,15 +32,29 @@ const limiter = rateLimit({
   max: 100,
   message: "Too many requests from this IP, please try again after 15 minutes",
 });
-// Apply rate limiter to all api routes
 app.use("/api", limiter);
 
-// Request Logging
-if (process.env.NODE_ENV === "development") {
-  app.use(morgan("dev"));
-} else {
-  app.use(morgan("combined"));
-}
+// Winston HTTP request logging (replaces Morgan)
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    const level =
+      res.statusCode >= 500
+        ? "error"
+        : res.statusCode >= 400
+          ? "warn"
+          : "info";
+    logger[level](
+      `[HTTP] ${req.method} ${req.originalUrl} ${res.statusCode} — ${duration}ms`,
+      {
+        ip: req.ip,
+        userAgent: req.headers["user-agent"],
+      }
+    );
+  });
+  next();
+});
 
 // Parser
 app.use(express.json());

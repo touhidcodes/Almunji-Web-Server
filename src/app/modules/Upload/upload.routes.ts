@@ -1,12 +1,12 @@
-import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 import express, { NextFunction, Request, Response } from "express";
+import { Action, Resource, UserRole } from "@/generated/prisma/enums";
 import { FileUpload } from "@/helpers/fileUpload";
 import authAccess from "@/middlewares/authAccess";
 import { uploadController } from "./upload.controller";
 
 const router = express.Router();
 
-// Route to create a new dictionary word
+// Bulk upload dictionary words from a JSON file
 router.post(
   "/dictionary",
   authAccess({
@@ -20,7 +20,7 @@ router.post(
   }
 );
 
-// Route to create ayahs for a surah
+// Bulk upload ayahs from a JSON file
 router.post(
   "/ayahs",
   authAccess({

@@ -161,7 +161,7 @@ const getAllWordsByAdmin = async (options: TWordQueryFilter) => {
 // Get Word by ID
 const getWordById = async (id: string) => {
   const result = await prisma.dictionary.findUniqueOrThrow({
-    where: { id },
+    where: { id, isDeleted: false },
     select: {
       id: true,
       persianWord: true,
@@ -173,10 +173,6 @@ const getWordById = async (id: string) => {
       exampleBN: true,
     },
   });
-
-  if (result && (result as any).isDeleted) {
-    throw new APIError(httpStatus.NOT_FOUND, "Word not found");
-  }
 
   return result;
 };

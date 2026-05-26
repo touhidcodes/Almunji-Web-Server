@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "moduleResolution": "bundler",
-    "target": "ES2023",
+    "moduleResolution": "node",
+    "target": "ES2022",
     "strict": true,
     "esModuleInterop": true,
-    "module": "ESNext",
+    "module": "CommonJS",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "rootDir": "./",

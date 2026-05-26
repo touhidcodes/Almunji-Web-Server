@@ -3,11 +3,30 @@ import DailyRotateFile from "winston-daily-rotate-file";
 
 const { combine, timestamp, printf, colorize } = winston.format;
 
+// Custom log levels — query sits between info and debug
+const customLevels = {
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    query: 3,
+    debug: 4,
+  },
+  colors: {
+    error: "red",
+    warn: "yellow",
+    info: "green",
+    query: "cyan",
+    debug: "blue",
+  },
+};
+
+winston.addColors(customLevels.colors);
+
 // Custom log format
 const logFormat = printf(({ level, message, timestamp, ...meta }) => {
-  return `${timestamp} [${level}] : ${message} ${
-    Object.keys(meta).length ? JSON.stringify(meta) : ""
-  }`;
+  const metaStr = Object.keys(meta).length ? ` ${JSON.stringify(meta)}` : "";
+  return `${timestamp} [${level.toUpperCase()}]: ${message}${metaStr}`;
 });
 
 // Daily file rotation (all logs)
@@ -28,17 +47,20 @@ const errorLogs = new DailyRotateFile({
 });
 
 const logger = winston.createLogger({
-  level: "info",
-  format: combine(timestamp(), logFormat),
+  levels: customLevels.levels,
+  level: "query",
+  format: combine(timestamp({ format: "YYYY-MM-DD HH:mm:ss" }), logFormat),
   transports: [
     allLogs,
     errorLogs,
-
-    // Console for dev
     new winston.transports.Console({
-      format: combine(colorize(), timestamp(), logFormat),
+      format: combine(
+        colorize({ all: true }),
+        timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        logFormat
+      ),
     }),
   ],
-});
+}) as winston.Logger & { query: winston.LeveledLogMethod };
 
 export default logger;

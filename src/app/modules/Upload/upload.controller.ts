@@ -1,4 +1,5 @@
 import fs from "fs";
+import { parse } from "csv-parse/sync";
 import { Request, Response, NextFunction } from "express";
 import httpStatus from "http-status";
 import catchAsync from "@/utils/catchAsync";
@@ -7,6 +8,7 @@ import sendResponse from "@/utils/sendResponse";
 import { IUploadFile } from "@/interfaces/file";
 import { uploadServices } from "./upload.service";
 
+// Upload dictionary words controller
 const uploadDictionaryData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) {
@@ -15,7 +17,6 @@ const uploadDictionaryData = catchAsync(
     const file = req.file as IUploadFile;
 
     try {
-      // Parse JSON data from uploaded file
       const fileContent = fs.readFileSync(file.path, "utf-8");
       const jsonData = JSON.parse(fileContent);
 
@@ -24,21 +25,20 @@ const uploadDictionaryData = catchAsync(
       sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "JSON file uploaded and processed successfully!",
+        message: "Dictionary JSON uploaded and processed successfully!",
         data: result,
       });
     } catch (error) {
       return next(error);
     } finally {
       fs.unlink(file.path, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
-        }
+        if (err) console.error("Error deleting temp file:", err);
       });
     }
   }
 );
 
+// Upload ayahs controller
 const uploadAyahData = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) {
@@ -63,9 +63,7 @@ const uploadAyahData = catchAsync(
       return next(error);
     } finally {
       fs.unlink(file.path, (err) => {
-        if (err) {
-          console.error("Error deleting file:", err);
-        }
+        if (err) console.error("Error deleting temp file:", err);
       });
     }
   }

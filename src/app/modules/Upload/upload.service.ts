@@ -12,7 +12,7 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
 
   const createdWords: TCreatedWord[] = [];
   const existingWords: string[] = [];
-  console.log(data);
+
   for (const wordData of data) {
     const {
       persianWord,
@@ -55,6 +55,7 @@ const uploadWordsFromFiles = async (data: Partial<Dictionary>[]) => {
   return { createdWords, existingWords };
 };
 
+// Service for upload ayahs for a surah from json file
 const uploadAyahsFromFiles = async (data: Partial<Ayah>[]) => {
   if (!Array.isArray(data)) {
     throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
@@ -126,4 +127,7 @@ const uploadAyahsFromFiles = async (data: Partial<Ayah>[]) => {
   };
 };
 
-export const uploadServices = { uploadWordsFromFiles, uploadAyahsFromFiles };
+export const uploadServices = {
+  uploadWordsFromFiles,
+  uploadAyahsFromFiles,
+};
