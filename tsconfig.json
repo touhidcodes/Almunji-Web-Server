@@ -10,7 +10,7 @@
     "rootDir": "./",
     "outDir": "./dist",
     "ignoreDeprecations": "6.0",
-    "baseUrl": "src",
+    "baseUrl": "src/app",
     "paths": {
       "@/*": ["*"]
     }

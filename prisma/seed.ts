@@ -21,7 +21,7 @@
 
 import { seedPermissions } from "../src/app/seed/seedPermissions";
 import { seedSuperAdmin } from "../src/app/seed/seedSuperAdmin";
-import prisma from "../src/app/utils/prisma";
+import prisma from "./prisma";
 
 export const seed = async () => {
   try {

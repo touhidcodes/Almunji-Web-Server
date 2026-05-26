@@ -1,46 +1,44 @@
-import fs from "fs";
-import path from "path";
 import winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
-// Create logs directory if it doesn't exist
-const logDir = "logs";
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir);
-}
+const { combine, timestamp, printf, colorize } = winston.format;
 
-const format = winston.format.combine(
-  winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
-);
+// Custom log format
+const logFormat = printf(({ level, message, timestamp, ...meta }) => {
+  return `${timestamp} [${level}] : ${message} ${
+    Object.keys(meta).length ? JSON.stringify(meta) : ""
+  }`;
+});
+
+// Daily file rotation (all logs)
+const allLogs = new DailyRotateFile({
+  filename: "logs/combined-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
+  maxSize: "20m",
+  maxFiles: "14d", // keep logs for 14 days
+});
+
+// Daily file rotation (errors only)
+const errorLogs = new DailyRotateFile({
+  filename: "logs/error-%DATE%.log",
+  level: "error",
+  datePattern: "YYYY-MM-DD",
+  maxSize: "20m",
+  maxFiles: "30d",
+});
 
 const logger = winston.createLogger({
   level: "info",
-  format: format,
+  format: combine(timestamp(), logFormat),
   transports: [
-    // Write all logs to combined.log
-    new winston.transports.File({
-      filename: path.join(logDir, "combined.log"),
-    }),
-    // Write all error logs to error.log
-    new winston.transports.File({
-      filename: path.join(logDir, "error.log"),
-      level: "error",
+    allLogs,
+    errorLogs,
+
+    // Console for dev
+    new winston.transports.Console({
+      format: combine(colorize(), timestamp(), logFormat),
     }),
   ],
 });
-
-// If we're not in production then log to the `console`
-if (process.env.NODE_ENV !== "production") {
-  logger.add(
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    })
-  );
-}
 
 export default logger;
