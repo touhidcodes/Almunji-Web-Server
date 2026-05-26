@@ -3,8 +3,8 @@ CREATE TABLE `users` (
     `id` VARCHAR(191) NOT NULL,
     `username` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
-    `role` ENUM('SUPERADMIN', 'ADMIN', 'MODERATOR', 'USER') NOT NULL,
     `password` VARCHAR(191) NOT NULL,
+    `role` ENUM('SUPERADMIN', 'ADMIN', 'MODERATOR', 'USER') NOT NULL,
     `status` ENUM('ACTIVE', 'BLOCKED') NOT NULL DEFAULT 'ACTIVE',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -31,28 +31,56 @@ CREATE TABLE `user_profiles` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `dictionary` (
+CREATE TABLE `permissions` (
     `id` VARCHAR(191) NOT NULL,
-    `word` VARCHAR(191) NOT NULL,
-    `definition` VARCHAR(191) NOT NULL,
-    `pronunciation` VARCHAR(191) NOT NULL,
-    `isDeleted` BOOLEAN NOT NULL DEFAULT false,
+    `resource` ENUM('SURAH', 'PARA', 'AYAH', 'TAFSIR', 'DICTIONARY', 'BOOK', 'BOOKCATEGORY', 'BOOKCONTENT', 'BLOG', 'DUA', 'USER', 'PERMISSION', 'BOOKMARK') NOT NULL,
+    `action` ENUM('READ', 'CREATE', 'UPDATE', 'DELETE') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `dictionary_word_key`(`word`),
+    UNIQUE INDEX `permissions_resource_action_key`(`resource`, `action`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `categories` (
+CREATE TABLE `user_permissions` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `permissionId` VARCHAR(191) NOT NULL,
+    `assignedBy` VARCHAR(191) NULL,
+    `assignedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `user_permissions_userId_permissionId_key`(`userId`, `permissionId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `dictionary` (
+    `id` VARCHAR(191) NOT NULL,
+    `persianWord` VARCHAR(191) NOT NULL,
+    `transliteration` VARCHAR(191) NULL,
+    `banglaMeaning` VARCHAR(191) NOT NULL,
+    `englishMeaning` VARCHAR(191) NULL,
+    `exampleFA` VARCHAR(191) NULL,
+    `exampleEN` VARCHAR(191) NULL,
+    `exampleBN` VARCHAR(191) NULL,
+    `isDeleted` BOOLEAN NOT NULL DEFAULT false,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `dictionary_persianWord_key`(`persianWord`),
+    INDEX `dictionary_persianWord_idx`(`persianWord`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `book_categories` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `categories_name_key`(`name`),
+    UNIQUE INDEX `book_categories_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -60,7 +88,8 @@ CREATE TABLE `categories` (
 CREATE TABLE `books` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
+    `slug` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
     `cover` VARCHAR(191) NOT NULL,
     `categoryId` VARCHAR(191) NOT NULL,
     `isFeatured` BOOLEAN NOT NULL DEFAULT true,
@@ -69,6 +98,7 @@ CREATE TABLE `books` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `books_name_key`(`name`),
+    UNIQUE INDEX `books_slug_key`(`slug`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -76,23 +106,23 @@ CREATE TABLE `books` (
 CREATE TABLE `book_contents` (
     `id` VARCHAR(191) NOT NULL,
     `bookId` VARCHAR(191) NOT NULL,
-    `title` VARCHAR(191) NOT NULL,
-    `order` INTEGER NOT NULL,
-    `html` LONGTEXT NOT NULL,
+    `section` VARCHAR(191) NOT NULL,
+    `index` INTEGER NOT NULL,
+    `text` LONGTEXT NOT NULL,
     `isDeleted` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `book_contents_bookId_order_key`(`bookId`, `order`),
+    UNIQUE INDEX `book_contents_bookId_index_key`(`bookId`, `index`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `blogs` (
     `id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NOT NULL,
     `slug` VARCHAR(191) NOT NULL,
     `thumbnail` VARCHAR(191) NULL,
-    `title` VARCHAR(191) NOT NULL,
     `summary` VARCHAR(191) NULL,
     `content` LONGTEXT NOT NULL,
     `isPublished` BOOLEAN NOT NULL DEFAULT true,
@@ -101,6 +131,7 @@ CREATE TABLE `blogs` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `blogs_title_key`(`title`),
     UNIQUE INDEX `blogs_slug_key`(`slug`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -165,6 +196,7 @@ CREATE TABLE `ayahs` (
     `transliteration` VARCHAR(191) NULL,
     `bangla` VARCHAR(191) NULL,
     `english` VARCHAR(191) NULL,
+    `isDeleted` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -192,11 +224,29 @@ CREATE TABLE `tafsirs` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `bookmarks` (
+    `id` VARCHAR(191) NOT NULL,
+    `userId` VARCHAR(191) NOT NULL,
+    `itemId` VARCHAR(191) NOT NULL,
+    `itemType` ENUM('DUA', 'AYAH') NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `bookmarks_userId_itemId_itemType_key`(`userId`, `itemId`, `itemType`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `user_profiles` ADD CONSTRAINT `user_profiles_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `books` ADD CONSTRAINT `books_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `user_permissions` ADD CONSTRAINT `user_permissions_permissionId_fkey` FOREIGN KEY (`permissionId`) REFERENCES `permissions`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `books` ADD CONSTRAINT `books_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `book_categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `book_contents` ADD CONSTRAINT `book_contents_bookId_fkey` FOREIGN KEY (`bookId`) REFERENCES `books`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -209,3 +259,6 @@ ALTER TABLE `ayahs` ADD CONSTRAINT `ayahs_paraId_fkey` FOREIGN KEY (`paraId`) RE
 
 -- AddForeignKey
 ALTER TABLE `tafsirs` ADD CONSTRAINT `tafsirs_ayahId_fkey` FOREIGN KEY (`ayahId`) REFERENCES `ayahs`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `bookmarks` ADD CONSTRAINT `bookmarks_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -26,6 +26,11 @@ export default {
     super_admin_email: process.env.SUPER_ADMIN_EMAIL,
     super_admin_password: process.env.SUPER_ADMIN_PASSWORD,
   },
+  admin: {
+    admin_username: process.env.ADMIN_USERNAME,
+    admin_email: process.env.ADMIN_EMAIL,
+    admin_password: process.env.ADMIN_PASSWORD,
+  },
 
   //Here add your other environment variables
 };
