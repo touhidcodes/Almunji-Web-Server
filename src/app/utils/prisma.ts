@@ -56,11 +56,11 @@ const getPrismaErrorMessage = (error: any) => {
 const prisma = prismaBase.$extends({
   query: {
     $allModels: {
-      async $allOperations({ model, operation, query }) {
+      async $allOperations({ model, operation, args, query }) {
         const start = Date.now();
 
         try {
-          const result = await query({});
+          const result = await query(args);
           const duration = Date.now() - start;
 
           if (
@@ -70,12 +70,29 @@ const prisma = prismaBase.$extends({
             operation === "updateMany" ||
             operation === "delete" ||
             operation === "deleteMany" ||
-            operation === "upsert" ||
-            operation === "findUnique" ||
-            operation === "findFirst"
+            operation === "upsert"
           ) {
+            let count = 1;
+            if (
+              result &&
+              typeof result === "object" &&
+              "count" in (result as object)
+            ) {
+              count = (result as { count: number }).count;
+            }
+
+            const actionLabel: Record<string, string> = {
+              create: "CREATED",
+              createMany: "CREATED",
+              update: "UPDATED",
+              updateMany: "UPDATED",
+              delete: "DELETED",
+              deleteMany: "DELETED",
+              upsert: "UPSERTED",
+            };
+
             logger.info(
-              `[DB] ${operation.toUpperCase()} on ${model} (${duration}ms)`
+              `[DB] ${actionLabel[operation]} ${count} row(s) in [${model}] — ${duration}ms`
             );
           }
 
@@ -85,7 +102,7 @@ const prisma = prismaBase.$extends({
           const cleanMessage = getPrismaErrorMessage(error);
 
           logger.error(
-            `[DB ERROR] ${operation.toUpperCase()} on ${model} failed (${duration}ms) | ${cleanMessage}`
+            `[DB ERROR] ${operation.toUpperCase()} on [${model}] failed (${duration}ms) — ${cleanMessage}`
           );
 
           throw error;

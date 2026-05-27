@@ -123,7 +123,6 @@ const loginUser = async (payload: { identifier: string; password: string }) => {
     });
   }
 
-  console.log(user);
   if (!user || user.status !== UserStatus.ACTIVE) {
     throw new APIError(httpStatus.NOT_FOUND, "User not found");
   }

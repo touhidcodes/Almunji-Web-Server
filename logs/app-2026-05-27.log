@@ -1,0 +1,377 @@
+2026-05-27 13:39:54 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:40:02 [INFO]: [-] - - [DB] FINDFIRST on User (228ms) (IP: -)
+2026-05-27 13:40:02 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 654ms (IP: ::1)
+2026-05-27 13:41:06 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:41:09 [INFO]: [-] - - [DB] FINDFIRST on User (222ms) (IP: -)
+2026-05-27 13:41:09 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 658ms (IP: ::1)
+2026-05-27 13:41:54 [INFO]: [-] - - [DB] FINDFIRST on User (4ms) (IP: -)
+2026-05-27 13:41:54 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 347ms (IP: ::1)
+2026-05-27 13:42:19 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:42:24 [INFO]: [-] - - [DB] FINDFIRST on User (267ms) (IP: -)
+2026-05-27 13:42:24 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 692ms (IP: ::1)
+2026-05-27 13:42:35 [INFO]: [-] - - [DB] FINDFIRST on User (3ms) (IP: -)
+2026-05-27 13:42:36 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 347ms (IP: ::1)
+2026-05-27 13:42:46 [INFO]: [-] - - [DB] FINDFIRST on User (4ms) (IP: -)
+2026-05-27 13:42:46 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 358ms (IP: ::1)
+2026-05-27 13:43:13 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:43:17 [INFO]: [-] - - [DB] FINDFIRST on User (260ms) (IP: -)
+2026-05-27 13:43:17 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 657ms (IP: ::1)
+2026-05-27 13:43:57 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:44:56 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:46:07 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:46:12 [INFO]: [-] - - [DB] FINDFIRST on User (218ms) (IP: -)
+2026-05-27 13:46:12 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 671ms (IP: ::1)
+2026-05-27 13:47:09 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:47:22 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:47:23 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:32
+
+  108   throw new APIError(httpStatus.BAD_REQUEST, "Email or Username is required");
+  109 }
+  110 
+→ 111 let user = await prisma.user.findUnique({
+      + where: {
+      +   id: String,
+      +   username: String,
+      +   email: String,
+      +   AND: UserWhereInput | UserWhereInput[],
+      +   OR: UserWhereInput[],
+      +   NOT: UserWhereInput | UserWhereInput[],
+      +   password: StringFilter | String,
+      +   role: EnumUserRoleFilter | UserRole,
+      +   status: EnumUserStatusFilter | UserStatus,
+      +   createdAt: DateTimeFilter | DateTime,
+      +   updatedAt: DateTimeFilter | DateTime,
+      +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+      +   permissions: UserPermissionListRelationFilter,
+      +   Bookmark: BookmarkListRelationFilter
+      + }
+      })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 13:47:23 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (430ms) | Missing required "where" argument (IP: -)
+2026-05-27 13:47:23 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 475ms (IP: ::1)
+2026-05-27 13:49:07 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:49:28 [INFO]: [-] - - [DB] FINDFIRST on User (369ms) (IP: -)
+2026-05-27 13:49:28 [WARN]: [-] - - [HTTP] POST /api/v1/login 401 — 1016ms (IP: ::1)
+2026-05-27 13:55:03 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:55:05 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:30
+
+  108 let user;
+  109 
+  110 if (isEmail) {
+→ 111   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 13:55:05 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (220ms) | Missing required "where" argument (IP: -)
+2026-05-27 13:55:05 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 254ms (IP: ::1)
+2026-05-27 13:56:56 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 13:56:57 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:113:30
+
+  110 let user;
+  111 
+  112 if (isEmail) {
+→ 113   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 13:56:57 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (244ms) | Missing required "where" argument (IP: -)
+2026-05-27 13:56:57 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 285ms (IP: ::1)
+2026-05-27 13:57:47 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:00:18 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:30
+
+  108 let user;
+  109 
+  110 if (isEmail) {
+→ 111   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:00:18 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (737ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:00:18 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 1659ms (IP: ::1)
+2026-05-27 21:01:55 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:02:00 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:30
+
+  108 let user;
+  109 
+  110 if (isEmail) {
+→ 111   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:02:00 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (429ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:02:00 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 478ms (IP: ::1)
+2026-05-27 21:03:41 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:04:11 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:04:15 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:30
+
+  108 let user;
+  109 
+  110 if (isEmail) {
+→ 111   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:04:15 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (253ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:04:15 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 297ms (IP: ::1)
+2026-05-27 21:05:41 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:05:50 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:111:30
+
+  108 let user;
+  109 
+  110 if (isEmail) {
+→ 111   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:05:50 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (670ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:05:50 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 712ms (IP: ::1)
+2026-05-27 21:06:39 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:115:30
+
+  112     where: { email: identifier },
+  113   });
+  114 } else {
+→ 115   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:06:39 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (20ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:06:39 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 36ms (IP: ::1)
+2026-05-27 21:07:44 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:07:46 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:115:30
+
+  112     where: { email: identifier },
+  113   });
+  114 } else {
+→ 115   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:07:46 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (466ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:07:46 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 502ms (IP: ::1)
+2026-05-27 21:11:44 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:11:46 [ERROR]: [-] - - [DB ERROR] 
+Invalid `prisma.user.findUnique()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\modules\Auth\auth.service.ts:120:30
+
+  117     where: { email: identifier },
+  118   });
+  119 } else {
+→ 120   user = await prisma.user.findUnique({
+        + where: {
+        +   id: String,
+        +   username: String,
+        +   email: String,
+        +   AND: UserWhereInput | UserWhereInput[],
+        +   OR: UserWhereInput[],
+        +   NOT: UserWhereInput | UserWhereInput[],
+        +   password: StringFilter | String,
+        +   role: EnumUserRoleFilter | UserRole,
+        +   status: EnumUserStatusFilter | UserStatus,
+        +   createdAt: DateTimeFilter | DateTime,
+        +   updatedAt: DateTimeFilter | DateTime,
+        +   profile: UserProfileNullableScalarRelationFilter | UserProfileWhereInput | Null,
+        +   permissions: UserPermissionListRelationFilter,
+        +   Bookmark: BookmarkListRelationFilter
+        + }
+        })
+
+Argument `where` is missing. (IP: -)
+2026-05-27 21:11:46 [ERROR]: [-] - - [DB ERROR] FINDUNIQUE on User failed (389ms) | Missing required "where" argument (IP: -)
+2026-05-27 21:11:46 [ERROR]: [-] - - [HTTP] POST /api/v1/login 500 — 432ms (IP: ::1)
+2026-05-27 21:16:13 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:16:21 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:17:21 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:17:30 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:21:48 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:29:29 [INFO]: [-] - - [DB] FINDFIRST on User (349ms) (IP: -)
+2026-05-27 21:29:29 [ERROR]: [-] - - [DB ERROR] 
+Invalid `tx.user.create()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\seed\seedSuperAdmin.ts:26:34
+
+  23 );
+  24 
+  25 await prisma.$transaction(async (tx) => {
+→ 26   const user = await tx.user.create({})
+
+Argument `username` is missing. (IP: -)
+2026-05-27 21:29:29 [ERROR]: [-] - - [DB ERROR] CREATE on User failed (45ms) | Database operation failed (IP: -)
+2026-05-27 21:29:29 [ERROR]: [-] - - Superadmin seeding failed: 
+Invalid `tx.user.create()` invocation in
+E:\TouhidCodes\Projects\Personal Projects\Almunji\Almunji-Web-Server\src\app\seed\seedSuperAdmin.ts:26:34
+
+  23 );
+  24 
+  25 await prisma.$transaction(async (tx) => {
+→ 26   const user = await tx.user.create({})
+
+Argument `username` is missing. (IP: -)
+2026-05-27 21:29:29 [INFO]: [-] - - [DB] FINDFIRST on User (14ms) (IP: -)
+2026-05-27 21:29:29 [INFO]: [-] - - [DB] FINDFIRST on User (4ms) (IP: -)
+2026-05-27 21:37:04 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 21:38:29 [INFO]: [-] - - [DB] CREATED 1 row(s) in [User] — 46ms (IP: -)
+2026-05-27 21:38:29 [INFO]: [-] - - [DB] CREATED 1 row(s) in [UserProfile] — 15ms (IP: -)
+2026-05-27 21:38:30 [INFO]: [-] - - [DB] CREATED 1 row(s) in [User] — 10ms (IP: -)
+2026-05-27 21:38:30 [INFO]: [-] - - [DB] CREATED 1 row(s) in [UserProfile] — 5ms (IP: -)
+2026-05-27 21:38:30 [INFO]: [-] - - [DB] CREATED 52 row(s) in [UserPermission] — 41ms (IP: -)
+2026-05-27 21:38:43 [INFO]: [-] - - [HTTP] POST /api/v1/login 200 — 2436ms (IP: ::1)
+2026-05-27 22:35:19 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:37:20 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:37:37 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:40:34 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:41:40 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:43:01 [WARN]: [-] - - [HTTP] POST /api/v1/logs/files 404 — 13ms (IP: ::1)
+2026-05-27 22:44:50 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-05-27 22:44:54 [WARN]: [-] - - [HTTP] POST /api/v1/logs/files 404 — 10ms (IP: ::1)
+2026-05-27 22:45:08 [WARN]: [-] - - [HTTP] GET /api/v1/logs/files 401 — 3ms (IP: ::1)
+2026-05-27 22:45:59 [WARN]: [-] - - [HTTP] GET /api/v1/logs/files 401 — 2ms (IP: ::1)
+2026-05-27 22:46:03 [WARN]: [-] - - [HTTP] GET /api/v1/logs/files 401 — 1ms (IP: ::1)
+2026-05-27 22:46:21 [INFO]: [-] - - [HTTP] POST /api/v1/login 200 — 1313ms (IP: ::1)
+2026-05-27 22:46:49 [INFO]: [-] - - [HTTP] GET /api/v1/logs/files 200 — 17ms (IP: ::1)
+2026-05-27 22:47:10 [INFO]: [-] - - [HTTP] GET /api/v1/logs/summary 200 — 19ms (IP: ::1)

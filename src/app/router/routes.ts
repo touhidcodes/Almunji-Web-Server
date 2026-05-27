@@ -8,6 +8,7 @@ import { bookmarkRoutes } from "@/modules/Bookmark/bookmark.routes";
 import { categoryRoutes } from "@/modules/Category/category.routes";
 import { dictionaryRoutes } from "@/modules/Dictionary/dictionary.routes";
 import { duaRoutes } from "@/modules/Dua/dua.routes";
+import { logsRoutes } from "@/modules/Logs/logs.routes";
 import { paraRoutes } from "@/modules/Para/para.routes";
 import { permissionRoutes } from "@/modules/Permission/permission.routes";
 import { surahRoutes } from "@/modules/Surah/surah.routes";
@@ -73,6 +74,10 @@ const moduleRoutes = [
   {
     path: "/bookmark",
     route: bookmarkRoutes,
+  },
+  {
+    path: "/logs",
+    route: logsRoutes,
   },
   {
     path: "/upload",
