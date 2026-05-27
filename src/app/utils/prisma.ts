@@ -7,7 +7,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// DB Adapter
+// MariaDB Adapter
 const adapter = new PrismaMariaDb({
   host: process.env.DB_HOST!,
   port: Number(process.env.DB_PORT!),
@@ -17,83 +17,96 @@ const adapter = new PrismaMariaDb({
   connectionLimit: 10,
 });
 
-// Single Prisma Client instance (singleton in dev)
+// Prisma Base Client
 const prismaBase =
   globalForPrisma.prisma ??
   new PrismaClient({
     adapter,
+
     log: [
       { level: "error", emit: "event" },
       { level: "warn", emit: "event" },
-      { level: "info", emit: "event" },
     ],
   });
 
-// Attach Winston logging for Prisma built-in events
+const getPrismaErrorMessage = (error: any) => {
+  if (error?.message?.includes("Argument `where` is missing")) {
+    return 'Missing required "where" argument';
+  }
+
+  if (error?.code === "P2025") {
+    return "Record not found";
+  }
+
+  if (error?.code === "P2002") {
+    return "Duplicate record";
+  }
+
+  return "Database operation failed";
+};
+
 (prismaBase as any).$on?.("error", (e: any) => {
-  logger.error(`[Prisma] ${e.message}`, { target: e.target });
+  logger.error(`[DB ERROR] ${e.message}`);
 });
 
 (prismaBase as any).$on?.("warn", (e: any) => {
-  logger.warn(`[Prisma] ${e.message}`, { target: e.target });
+  logger.warn(`[DB WARN] ${e.message}`);
 });
 
-(prismaBase as any).$on?.("info", (e: any) => {
-  logger.info(`[Prisma] ${e.message}`, { target: e.target });
-});
-
-// Extend with middleware to log CREATE / UPDATE / DELETE operations
 const prisma = prismaBase.$extends({
   query: {
     $allModels: {
-      async $allOperations({ model, operation, args, query }) {
+      async $allOperations({ model, operation, query }) {
         const start = Date.now();
-        const result = await query(args);
-        const duration = Date.now() - start;
 
-        // Log write operations with row counts
-        if (
-          operation === "create" ||
-          operation === "createMany" ||
-          operation === "update" ||
-          operation === "updateMany" ||
-          operation === "delete" ||
-          operation === "deleteMany" ||
-          operation === "upsert"
-        ) {
-          let count = 1;
+        try {
+          const result = await query({});
+          const duration = Date.now() - start;
+
           if (
-            result &&
-            typeof result === "object" &&
-            "count" in (result as object)
+            operation === "create" ||
+            operation === "createMany" ||
+            operation === "update" ||
+            operation === "updateMany" ||
+            operation === "delete" ||
+            operation === "deleteMany" ||
+            operation === "upsert" ||
+            operation === "findUnique" ||
+            operation === "findFirst"
           ) {
-            count = (result as { count: number }).count;
+            logger.info(
+              `[DB] ${operation.toUpperCase()} on ${model} (${duration}ms)`
+            );
           }
 
-          const actionMap: Record<string, string> = {
-            create: "CREATED",
-            createMany: "CREATED",
-            update: "UPDATED",
-            updateMany: "UPDATED",
-            delete: "DELETED",
-            deleteMany: "DELETED",
-            upsert: "UPSERTED",
-          };
+          return result;
+        } catch (error: any) {
+          const duration = Date.now() - start;
+          const cleanMessage = getPrismaErrorMessage(error);
 
-          logger.info(
-            `[DB] ${actionMap[operation]} ${count} row(s) in [${model}] — ${duration}ms`
+          logger.error(
+            `[DB ERROR] ${operation.toUpperCase()} on ${model} failed (${duration}ms) | ${cleanMessage}`
           );
-        }
 
-        return result;
+          throw error;
+        }
       },
     },
   },
 }) as unknown as PrismaClient;
 
-// Prevent multiple instances in dev
+// GLOBAL SINGLETON
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prismaBase;
 }
+
+// PROCESS ERROR HANDLING
+process.on("unhandledRejection", (reason: any) => {
+  logger.error(`[UNHANDLED REJECTION] ${reason}`);
+});
+
+process.on("uncaughtException", (error: Error) => {
+  logger.error(`[UNCAUGHT EXCEPTION] ${error.message}`);
+});
 
 export default prisma;

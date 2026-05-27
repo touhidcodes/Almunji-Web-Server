@@ -3,6 +3,7 @@ import { seedPara } from "@/seed/seedPara";
 import { seedPermissions } from "@/seed/seedPermissions";
 import { seedSuperAdmin } from "@/seed/seedSuperAdmin";
 import { seedSurah } from "@/seed/seedSurah";
+import logger from "@/utils/logger";
 import prisma from "@/utils/prisma";
 
 export const seed = async () => {
@@ -13,7 +14,7 @@ export const seed = async () => {
     await seedSurah ();
     await seedPara();
   } catch (err) {
-    console.error(err);
+    logger.error("Database seeding failed:", {err});
     process.exit(1);
   } finally {
     await prisma.$disconnect();

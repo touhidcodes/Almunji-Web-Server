@@ -2,6 +2,7 @@ import * as bcrypt from "bcrypt";
 import prisma from "@/utils/prisma";
 import { UserRole } from "@/generated/prisma/enums";
 import config from "@/config/config";
+import logger from "@/utils/logger";
 
 export const seedAdmin = async () => {
   try {
@@ -30,30 +31,36 @@ export const seedAdmin = async () => {
       12
     );
 
-    const admin = await prisma.user.create({
-      data: {
-        email: config.admin.admin_email as string,
-        password: hashedPassword,
-        role: UserRole.ADMIN,
-        username: config.admin.admin_username as string,
-      },
-    });
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: config.admin.admin_email as string,
+          password: hashedPassword,
+          role: UserRole.ADMIN,
+          username: config.admin.admin_username as string,
+        },
+      });
 
-    // Get all permissions
-    const permissions = await prisma.permission.findMany();
+      await tx.userProfile.create({
+        data: { userId: user.id },
+      });
 
-    // Assign all permissions to admin
-    await prisma.userPermission.createMany({
-      data: permissions.map((p) => ({
-        userId: admin.id,
-        permissionId: p.id,
-        assignedBy: superAdmin.id,
-      })),
-      skipDuplicates: true,
+      // Get all permissions
+      const permissions = await tx.permission.findMany();
+
+      // Assign all permissions to admin
+      await tx.userPermission.createMany({
+        data: permissions.map((p) => ({
+          userId: user.id,
+          permissionId: p.id,
+          assignedBy: superAdmin.id,
+        })),
+        skipDuplicates: true,
+      });
     });
 
     console.log("Admin created with all permissions.");
   } catch (err) {
-    throw err;
+    logger.error("Admin seeding failed:", err);
   }
 };

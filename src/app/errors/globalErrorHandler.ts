@@ -4,6 +4,7 @@ import httpStatus from "http-status";
 import { ZodError } from "zod";
 import AuthorizationError from "./AuthorizationError";
 import config from "@/config/config";
+import logger from "@/utils/logger";
 
 const globalErrorHandler = (
   err: any,
@@ -56,6 +57,8 @@ const globalErrorHandler = (
     statusCode = httpStatus.UNAUTHORIZED;
     message = "Invalid Token!";
   }
+
+  // Response
   res.status(statusCode).json({
     success: false,
     message,

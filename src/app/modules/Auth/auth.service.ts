@@ -26,8 +26,10 @@ const getUserPermissions = async (userId: string): Promise<string[]> => {
 
 // Create User
 const createUser = async (data: TUserData) => {
+  const username = data.username.trim().toLowerCase();
+
   const existingUser = await prisma.user.findUnique({
-    where: { username: data.username },
+    where: { username: username },
   });
 
   if (existingUser) {
@@ -102,27 +104,34 @@ const createUser = async (data: TUserData) => {
 
 // Login User
 const loginUser = async (payload: { identifier: string; password: string }) => {
-  const { identifier, password } = payload;
+  const identifier = payload.identifier.trim().toLowerCase();
+  const isEmail = identifier.includes("@");
 
   if (!identifier) {
     throw new APIError(httpStatus.BAD_REQUEST, "Email or Username is required");
   }
 
-  let user = await prisma.user.findFirst({
-    where: { email: identifier, status: UserStatus.ACTIVE },
-  });
+  let user;
 
-  if (!user) {
-    user = await prisma.user.findFirst({
-      where: { username: identifier, status: UserStatus.ACTIVE },
+  if (isEmail) {
+    user = await prisma.user.findUnique({
+      where: { email: identifier },
+    });
+  } else {
+    user = await prisma.user.findUnique({
+      where: { username: identifier },
     });
   }
 
-  if (!user) {
+  console.log(user);
+  if (!user || user.status !== UserStatus.ACTIVE) {
     throw new APIError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  const isPasswordCorrect = await comparePasswords(password, user.password);
+  const isPasswordCorrect = await comparePasswords(
+    payload.password,
+    user.password
+  );
 
   if (!isPasswordCorrect) {
     throw new APIError(httpStatus.UNAUTHORIZED, "Password incorrect");

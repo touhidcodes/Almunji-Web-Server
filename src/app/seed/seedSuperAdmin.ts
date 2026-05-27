@@ -2,6 +2,7 @@ import * as bcrypt from "bcrypt";
 import { UserRole } from "@/generated/prisma/enums";
 import config from "@/config/config";
 import prisma from "@/utils/prisma";
+import logger from "@/utils/logger";
 
 export const seedSuperAdmin = async () => {
   try {
@@ -21,17 +22,23 @@ export const seedSuperAdmin = async () => {
       12
     );
 
-    await prisma.user.create({
-      data: {
-        email: config.superAdmin.super_admin_email,
-        password: hashedPassword,
-        role: UserRole.SUPERADMIN,
-        username: config.superAdmin.super_admin_username as string,
-      },
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: config.superAdmin.super_admin_email,
+          password: hashedPassword,
+          role: UserRole.SUPERADMIN,
+          username: config.superAdmin.super_admin_username as string,
+        },
+      });
+
+      await tx.userProfile.create({
+        data: { userId: user.id },
+      });
     });
 
     console.log("Super admin seeded successfully!");
   } catch (err) {
-    throw err;
+    logger.error("Superadmin seeding failed:", err);
   }
 };
