@@ -1,4 +1,4 @@
-import { Action, Resource } from "@prisma/client";
+import { Action, Resource } from "@/generated/prisma/enums";
 import { z } from "zod";
 
 // Create Permission
@@ -29,8 +29,17 @@ const removePermissionSchema = z.object({
   }),
 });
 
+// Bulk Assign Permissions to User
+const bulkAssignPermissionsSchema = z.object({
+  body: z.object({
+    userId: z.string({ required_error: "User ID is required" }),
+    permissionIds: z.array(z.string()).min(1, "At least one permission ID is required"),
+  }),
+});
+
 export const permissionValidationSchema = {
   createPermissionSchema,
   assignPermissionSchema,
   removePermissionSchema,
+  bulkAssignPermissionsSchema,
 };

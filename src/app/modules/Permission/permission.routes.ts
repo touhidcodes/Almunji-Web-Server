@@ -36,6 +36,17 @@ router.post(
   permissionControllers.assignPermissionToUser
 );
 
+// Bulk assign permissions to a user
+router.post(
+  "/bulk-assign",
+  authAccess({
+    roles: [UserRole.ADMIN],
+    resource: Resource.PERMISSION,
+    action: Action.CREATE,
+  }),
+  permissionControllers.bulkAssignPermissionsToUser
+);
+
 // Get permissions of a specific user
 router.get(
   "/user/:userId",

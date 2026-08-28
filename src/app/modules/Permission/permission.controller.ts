@@ -15,9 +15,12 @@ const createPermission = catchAsync(async (req, res) => {
   });
 });
 
-// Get All Permissions
+// Get All Permissions with pagination
 const getAllPermissions = catchAsync(async (req, res) => {
-  const result = await permissionServices.getAllPermissions();
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  
+  const result = await permissionServices.getAllPermissions(page, limit);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -39,6 +42,22 @@ const assignPermissionToUser = catchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "Permission assigned to user successfully!",
+    data: result,
+  });
+});
+
+// Bulk Assign Permissions to User
+const bulkAssignPermissionsToUser = catchAsync(async (req, res) => {
+  const assignedBy = req.user.id;
+  const result = await permissionServices.bulkAssignPermissionsToUser(
+    req.body,
+    assignedBy
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Permissions bulk assigned to user successfully!",
     data: result,
   });
 });
@@ -87,6 +106,7 @@ export const permissionControllers = {
   createPermission,
   getAllPermissions,
   assignPermissionToUser,
+  bulkAssignPermissionsToUser,
   getUserPermissions,
   removeUserPermission,
   deletePermission,

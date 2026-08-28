@@ -29,12 +29,11 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       where: {
         id: decoded.userId,
       },
-      include: {
-        permissions: {
-          include: {
-            permission: true,
-          },
-        },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
       },
     });
 
@@ -66,12 +65,17 @@ const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
       throw new AuthorizationError(httpStatus.FORBIDDEN, "Role forbidden");
     }
 
-    // Permission-based access (fine-grained)
+    // Permission-based access (fine-grained) - Only check if needed
     if (resource && action) {
-      const hasPermission = user.permissions.some(
-        (up) =>
-          up.permission.resource === resource && up.permission.action === action
-      );
+      const hasPermission = await prisma.userPermission.findFirst({
+        where: {
+          userId: user.id,
+          permission: {
+            resource,
+            action,
+          },
+        },
+      });
 
       if (!hasPermission) {
         throw new AuthorizationError(
