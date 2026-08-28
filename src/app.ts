@@ -5,9 +5,11 @@ import express, { Application, NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import httpStatus from "http-status";
+import swaggerUi from "swagger-ui-express";
 import globalErrorHandler from "@/errors/globalErrorHandler";
 import router from "@/router/routes";
 import logger from "@/utils/logger";
+import swaggerSpec from "@/config/swagger";
 
 dotenv.config();
 
@@ -63,6 +65,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Application Routes
 app.use("/api/v1", router);
+
+// Swagger Documentation
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Almunji Server is running... !");
