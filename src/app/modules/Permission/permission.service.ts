@@ -136,10 +136,36 @@ const getUserPermissions = async (userId: string) => {
 };
 
 // Remove User Permission
-const removeUserPermission = async (payload: {
-  userId: string;
-  permissionId: string;
-}) => {
+const removeUserPermission = async (
+  payload: {
+    userId: string;
+    permissionId: string;
+  },
+  removedBy: string
+) => {
+  // Check if target user is SUPERADMIN (ADMINS can't modify SUPERADMIN permissions)
+  const targetUser = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { role: true },
+  });
+
+  if (!targetUser) {
+    throw new APIError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  // Check if remover is trying to modify SUPERADMIN (only SUPERADMIN can do this)
+  const removerUser = await prisma.user.findUnique({
+    where: { id: removedBy },
+    select: { role: true },
+  });
+
+  if (targetUser.role === "SUPERADMIN" && removerUser?.role !== "SUPERADMIN") {
+    throw new APIError(
+      httpStatus.FORBIDDEN,
+      "Only SUPERADMIN can modify SUPERADMIN permissions"
+    );
+  }
+
   return prisma.userPermission.delete({
     where: {
       userId_permissionId: {
@@ -166,6 +192,19 @@ const bulkAssignPermissionsToUser = async (
 
     if (!user) {
       throw new APIError(httpStatus.NOT_FOUND, "User not found");
+    }
+
+    // Check if assigner is trying to modify SUPERADMIN (only SUPERADMIN can do this)
+    const assignerUser = await tx.user.findUnique({
+      where: { id: assignedBy },
+      select: { role: true },
+    });
+
+    if (user.role === "SUPERADMIN" && assignerUser?.role !== "SUPERADMIN") {
+      throw new APIError(
+        httpStatus.FORBIDDEN,
+        "Only SUPERADMIN can modify SUPERADMIN permissions"
+      );
     }
 
     // Check if permissions exist
