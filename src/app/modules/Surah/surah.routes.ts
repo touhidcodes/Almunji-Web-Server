@@ -7,7 +7,53 @@ import { surahValidationSchema } from "./surah.validation";
 
 const router = express.Router();
 
-// Route to create a new Surah
+/**
+ * @swagger
+ * /surah:
+ *   post:
+ *     summary: Create a new Surah
+ *     description: Create a new Surah (SUPERADMIN, ADMIN, MODERATOR with SURAH.CREATE permission)
+ *     tags: [Surah]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - chapter
+ *               - totalAyah
+ *               - arabic
+ *               - english
+ *               - revelation
+ *             properties:
+ *               chapter:
+ *                 type: integer
+ *               totalAyah:
+ *                 type: integer
+ *               arabic:
+ *                 type: string
+ *               english:
+ *                 type: string
+ *               bangla:
+ *                 type: string
+ *               history:
+ *                 type: string
+ *               revelation:
+ *                 type: string
+ *                 enum: [MECCAN, MEDINAN]
+ *     responses:
+ *       201:
+ *         description: Surah created successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.post(
   "/",
   authAccess({
@@ -19,10 +65,36 @@ router.post(
   surahControllers.createSurah
 );
 
-// Route to get all Surahs
+/**
+ * @swagger
+ * /surah/all:
+ *   get:
+ *     summary: Get all Surahs (public)
+ *     description: Get all Surahs without authentication
+ *     tags: [Surah]
+ *     responses:
+ *       200:
+ *         description: List of all Surahs
+ */
 router.get("/all", surahControllers.getAllSurahs);
 
-// Route to get all Surahs by Admin
+/**
+ * @swagger
+ * /surah/admin/all:
+ *   get:
+ *     summary: Get all Surahs (Admin/Moderator)
+ *     description: Get all Surahs with pagination (SUPERADMIN, ADMIN, MODERATOR with SURAH.READ permission)
+ *     tags: [Surah]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all Surahs
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.get(
   "/admin/all",
   authAccess({
@@ -33,10 +105,76 @@ router.get(
   surahControllers.getAllSurahsByAdmin
 );
 
-// Route to get a specific Surah by ID
+/**
+ * @swagger
+ * /surah/{surahId}:
+ *   get:
+ *     summary: Get a specific Surah by ID
+ *     description: Get a specific Surah by ID without authentication
+ *     tags: [Surah]
+ *     parameters:
+ *       - in: path
+ *         name: surahId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Surah details
+ *       404:
+ *         description: Surah not found
+ */
 router.get("/:surahId", surahControllers.getSurahById);
 
-// Route to update an existing Surah by ID
+/**
+ * @swagger
+ * /surah/{surahId}:
+ *   put:
+ *     summary: Update a Surah by ID
+ *     description: Update an existing Surah (SUPERADMIN, ADMIN, MODERATOR with SURAH.UPDATE permission)
+ *     tags: [Surah]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: surahId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               chapter:
+ *                 type: integer
+ *               totalAyah:
+ *                 type: integer
+ *               arabic:
+ *                 type: string
+ *               english:
+ *                 type: string
+ *               bangla:
+ *                 type: string
+ *               history:
+ *                 type: string
+ *               revelation:
+ *                 type: string
+ *                 enum: [MECCAN, MEDINAN]
+ *     responses:
+ *       200:
+ *         description: Surah updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.put(
   "/:surahId",
   authAccess({
@@ -48,7 +186,30 @@ router.put(
   surahControllers.updateSurah
 );
 
-// Route to delete a Surah by ID
+/**
+ * @swagger
+ * /surah/admin/{surahId}:
+ *   delete:
+ *     summary: Delete a Surah by ID
+ *     description: Delete a Surah (SUPERADMIN, ADMIN with SURAH.DELETE permission)
+ *     tags: [Surah]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: surahId
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Surah deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ */
 router.delete(
   "/admin/:surahId",
   authAccess({
