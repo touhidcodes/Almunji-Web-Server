@@ -43,11 +43,7 @@ const options = {
         },
       },
     },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    security: [],
   },
   apis: ["./src/app/router/routes.ts", "./src/app/modules/**/*.routes.ts"],
 };

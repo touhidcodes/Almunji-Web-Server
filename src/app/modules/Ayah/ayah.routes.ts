@@ -12,7 +12,7 @@ const router = express.Router();
  * /ayah/:
  *   post:
  *     summary: Create a new Ayah
- *     description: Create a new Ayah with Surah reference, Arabic text, and translations. Requires SUPERADMIN, ADMIN, or MODERATOR role with CREATE permission for AYAH resource.
+ *     description: Create a new Ayah with Surah reference, Arabic text, and translations. Requires SUPERADMIN, ADMIN, or MODERATOR role with CREATE permission for AYAH resource
  *     tags: [Ayah]
  *     security:
  *       - bearerAuth: []
