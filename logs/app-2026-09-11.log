@@ -1,0 +1,6 @@
+2026-09-11 23:42:32 [INFO]: [-] - - Server is running on port 5000 (IP: -)
+2026-09-11 23:44:34 [INFO]: [-] - - [HTTP] GET /api/v1/dictionary/suggestion?search=a 200 — 1573ms (IP: ::1)
+2026-09-11 23:48:25 [INFO]: [-] - - [HTTP] GET /api/v1/dictionary/suggestion?search=a 304 — 291ms (IP: ::1)
+2026-09-11 23:48:36 [INFO]: [-] - - [HTTP] GET /api/v1/dictionary/c07821b3-6042-40fa-a69d-ef786e1fad23 200 — 90ms (IP: ::1)
+2026-09-11 23:48:36 [INFO]: [-] - - [HTTP] GET /api/v1/dictionary/1d4740a2-0908-414e-94de-602e57416751 200 — 16ms (IP: ::1)
+2026-09-11 23:48:44 [INFO]: [-] - - [HTTP] GET /api/v1/dictionary/94749ccf-5e6e-45a3-bb81-8cd45df08036 200 — 10ms (IP: ::1)

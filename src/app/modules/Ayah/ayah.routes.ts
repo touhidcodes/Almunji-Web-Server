@@ -287,56 +287,8 @@ router.get("/tafsir/:surahId", ayahControllers.getAyahsAndTafsirBySurahId);
  * /ayah/{ayahId}:
  *   put:
  *     summary: Update an existing Ayah
- *     description: Update an existing Ayah. Note: number, surahId, and paraId cannot be updated. Requires SUPERADMIN, ADMIN, or MODERATOR role with UPDATE permission for AYAH resource.
+ *     description: "Update an existing Ayah. Note: number, surahId, and paraId cannot be updated. Requires SUPERADMIN, ADMIN, or MODERATOR role with UPDATE permission for AYAH resource."
  *     tags: [Ayah]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: ayahId
- *         required: true
- *         schema:
- *           type: string
- *         description: The ID of the Ayah to update
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               arabic:
- *                 type: string
- *               transliteration:
- *                 type: string
- *               bangla:
- *                 type: string
- *               english:
- *                 type: string
- *     responses:
- *       200:
- *         description: Ayah updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Ayah updated successfully!"
- *                 data:
- *                   type: object
- *       400:
- *         description: Bad request - restricted fields cannot be updated
- *       401:
- *         description: Unauthorized - not authenticated
- *       403:
- *         description: Forbidden - insufficient permissions
- *       404:
- *         description: Not found - Ayah with the given ID does not exist
  */
 router.put(
   "/:ayahId",
