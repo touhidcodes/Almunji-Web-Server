@@ -146,12 +146,12 @@ model Blog {
 model Dua {
   id              String   @id @default(uuid())
   name            String
-  arabic          String
-  transliteration String?
-  bangla          String
-  english         String?
-  reference       String?
-  tags            String?
+  arabic          String   @db.Text
+  transliteration String?  @db.Text
+  bangla          String   @db.Text
+  english         String?  @db.Text
+  reference       String?  @db.Text
+  tags            Json?
   isDeleted       Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

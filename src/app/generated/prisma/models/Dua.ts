@@ -32,7 +32,6 @@ export type DuaMinAggregateOutputType = {
   bangla: string | null
   english: string | null
   reference: string | null
-  tags: string | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -46,7 +45,6 @@ export type DuaMaxAggregateOutputType = {
   bangla: string | null
   english: string | null
   reference: string | null
-  tags: string | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,7 +74,6 @@ export type DuaMinAggregateInputType = {
   bangla?: true
   english?: true
   reference?: true
-  tags?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -90,7 +87,6 @@ export type DuaMaxAggregateInputType = {
   bangla?: true
   english?: true
   reference?: true
-  tags?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -191,7 +187,7 @@ export type DuaGroupByOutputType = {
   bangla: string
   english: string | null
   reference: string | null
-  tags: string | null
+  tags: runtime.JsonValue | null
   isDeleted: boolean
   createdAt: Date
   updatedAt: Date
@@ -226,7 +222,7 @@ export type DuaWhereInput = {
   bangla?: Prisma.StringFilter<"Dua"> | string
   english?: Prisma.StringNullableFilter<"Dua"> | string | null
   reference?: Prisma.StringNullableFilter<"Dua"> | string | null
-  tags?: Prisma.StringNullableFilter<"Dua"> | string | null
+  tags?: Prisma.JsonNullableFilter<"Dua">
   isDeleted?: Prisma.BoolFilter<"Dua"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Dua"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Dua"> | Date | string
@@ -258,7 +254,7 @@ export type DuaWhereUniqueInput = Prisma.AtLeast<{
   bangla?: Prisma.StringFilter<"Dua"> | string
   english?: Prisma.StringNullableFilter<"Dua"> | string | null
   reference?: Prisma.StringNullableFilter<"Dua"> | string | null
-  tags?: Prisma.StringNullableFilter<"Dua"> | string | null
+  tags?: Prisma.JsonNullableFilter<"Dua">
   isDeleted?: Prisma.BoolFilter<"Dua"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Dua"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Dua"> | Date | string
@@ -292,7 +288,7 @@ export type DuaScalarWhereWithAggregatesInput = {
   bangla?: Prisma.StringWithAggregatesFilter<"Dua"> | string
   english?: Prisma.StringNullableWithAggregatesFilter<"Dua"> | string | null
   reference?: Prisma.StringNullableWithAggregatesFilter<"Dua"> | string | null
-  tags?: Prisma.StringNullableWithAggregatesFilter<"Dua"> | string | null
+  tags?: Prisma.JsonNullableWithAggregatesFilter<"Dua">
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Dua"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Dua"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Dua"> | Date | string
@@ -306,7 +302,7 @@ export type DuaCreateInput = {
   bangla: string
   english?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -320,7 +316,7 @@ export type DuaUncheckedCreateInput = {
   bangla: string
   english?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,7 +330,7 @@ export type DuaUpdateInput = {
   bangla?: Prisma.StringFieldUpdateOperationsInput | string
   english?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -348,7 +344,7 @@ export type DuaUncheckedUpdateInput = {
   bangla?: Prisma.StringFieldUpdateOperationsInput | string
   english?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -362,7 +358,7 @@ export type DuaCreateManyInput = {
   bangla: string
   english?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,7 +372,7 @@ export type DuaUpdateManyMutationInput = {
   bangla?: Prisma.StringFieldUpdateOperationsInput | string
   english?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -390,7 +386,7 @@ export type DuaUncheckedUpdateManyInput = {
   bangla?: Prisma.StringFieldUpdateOperationsInput | string
   english?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -424,7 +420,6 @@ export type DuaMaxOrderByAggregateInput = {
   bangla?: Prisma.SortOrder
   english?: Prisma.SortOrder
   reference?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -438,7 +433,6 @@ export type DuaMinOrderByAggregateInput = {
   bangla?: Prisma.SortOrder
   english?: Prisma.SortOrder
   reference?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -489,7 +483,7 @@ export type $DuaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     bangla: string
     english: string | null
     reference: string | null
-    tags: string | null
+    tags: runtime.JsonValue | null
     isDeleted: boolean
     createdAt: Date
     updatedAt: Date
@@ -869,7 +863,7 @@ export interface DuaFieldRefs {
   readonly bangla: Prisma.FieldRef<"Dua", 'String'>
   readonly english: Prisma.FieldRef<"Dua", 'String'>
   readonly reference: Prisma.FieldRef<"Dua", 'String'>
-  readonly tags: Prisma.FieldRef<"Dua", 'String'>
+  readonly tags: Prisma.FieldRef<"Dua", 'Json'>
   readonly isDeleted: Prisma.FieldRef<"Dua", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Dua", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Dua", 'DateTime'>

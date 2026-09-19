@@ -1,13 +1,16 @@
 import httpStatus from "http-status";
-import { Dua, Prisma } from "@/generated/prisma/client";
+
+import { Prisma } from "@/generated/prisma/client";
+
 import prisma from "@/utils/prisma";
 import { paginationHelper } from "@/utils/paginationHelpers";
 import APIError from "@/errors/APIError";
+
 import { duaQueryFields } from "./dua.constants";
 import { TDuaQueryFilter } from "./dua.interface";
 
-// Service to create a new Dua
-const createDua = async (duaData: Dua) => {
+// Create Dua
+const createDua = async (duaData: Prisma.DuaCreateInput) => {
   return await prisma.dua.create({
     data: duaData,
     select: {
@@ -23,10 +26,12 @@ const createDua = async (duaData: Dua) => {
   });
 };
 
-// Service to get all Dua
+// Get All Dua
 const getAllDua = async () => {
-  const result = await prisma.dua.findMany({
-    where: { isDeleted: false },
+  return await prisma.dua.findMany({
+    where: {
+      isDeleted: false,
+    },
     select: {
       id: true,
       name: true,
@@ -37,45 +42,49 @@ const getAllDua = async () => {
       reference: true,
       tags: true,
     },
-    orderBy: { createdAt: "desc" },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
-
-  return result;
 };
 
-// Service to get all Dua by admins
+// Get All Dua By Admin
 const getAllDuaByAdmin = async (options: TDuaQueryFilter) => {
   const { filters, pagination, additional } = options;
+
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelper.calculatePagination(pagination);
 
   const andConditions: Prisma.DuaWhereInput[] = [];
 
-  // Default to false unless explicitly set to "true" isDeleted filter
+  // Soft delete filter
   const isDeletedQuery = filters?.isDeleted === "true";
-  andConditions.push({ isDeleted: isDeletedQuery });
 
-  // Search by dua heading and text
+  andConditions.push({
+    isDeleted: isDeletedQuery,
+  });
+
+  // Search by name, Arabic, Bangla, English, etc.
   if (filters?.searchTerm) {
     andConditions.push({
       OR: duaQueryFields.map((field) => ({
         [field]: {
-          contains: filters?.searchTerm,
+          contains: filters.searchTerm,
         },
       })),
     });
   }
 
-  // Search by dua tags
+  // Search by tags
   if (filters?.tags) {
     andConditions.push({
       tags: {
-        contains: filters?.tags,
+        array_contains: [filters.tags],
       },
     });
   }
 
-  // Add additional filters
+  // Additional filters
   if (Object.keys(additional).length > 0) {
     andConditions.push({
       AND: Object.keys(additional).map((key) => ({
@@ -87,8 +96,13 @@ const getAllDuaByAdmin = async (options: TDuaQueryFilter) => {
   }
 
   const whereConditions: Prisma.DuaWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+    andConditions.length > 0
+      ? {
+          AND: andConditions,
+        }
+      : {};
 
+  // Get data
   const result = await prisma.dua.findMany({
     where: whereConditions,
     select: {
@@ -108,9 +122,12 @@ const getAllDuaByAdmin = async (options: TDuaQueryFilter) => {
         ? {
             [sortBy]: sortOrder,
           }
-        : { createdAt: "desc" },
+        : {
+            createdAt: "desc",
+          },
   });
 
+  // Count
   const total = await prisma.dua.count({
     where: whereConditions,
   });
@@ -125,7 +142,7 @@ const getAllDuaByAdmin = async (options: TDuaQueryFilter) => {
   };
 };
 
-// Service to get specific Dua by ID
+// Get Dua By ID
 const getDuaById = async (duaId: string) => {
   return await prisma.dua.findUniqueOrThrow({
     where: {
@@ -144,15 +161,18 @@ const getDuaById = async (duaId: string) => {
   });
 };
 
-// Service to update Dua by ID
-const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
+// Update Dua
+const updateDua = async (duaId: string, duaData: Prisma.DuaUpdateInput) => {
   const existingDua = await prisma.dua.findUnique({
-    where: { id: duaId },
+    where: {
+      id: duaId,
+    },
   });
 
   if (!existingDua) {
     throw new APIError(httpStatus.NOT_FOUND, "Dua not found");
   }
+
   return await prisma.dua.update({
     where: {
       id: duaId,
@@ -171,7 +191,7 @@ const updateDua = async (duaId: string, duaData: Partial<Dua>) => {
   });
 };
 
-// Service to delete a Dua (soft delete)
+// Soft Delete Dua
 const deleteDua = async (duaId: string) => {
   return await prisma.dua.update({
     where: {
@@ -187,25 +207,27 @@ const deleteDua = async (duaId: string) => {
   });
 };
 
-// Service to delete a Dua (hard delete) only by admin
+// Hard Delete Dua
 const deleteDuaByAdmin = async (id: string) => {
   const existingDua = await prisma.dua.findUnique({
-    where: { id },
+    where: {
+      id,
+    },
   });
 
   if (!existingDua) {
     throw new APIError(httpStatus.NOT_FOUND, "Dua not found!");
   }
 
-  const result = await prisma.dua.delete({
-    where: { id },
+  return await prisma.dua.delete({
+    where: {
+      id,
+    },
     select: {
       id: true,
       name: true,
     },
   });
-
-  return result;
 };
 
 export const duaServices = {

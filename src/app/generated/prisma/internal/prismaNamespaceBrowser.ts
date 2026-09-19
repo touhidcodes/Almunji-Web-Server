@@ -312,6 +312,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const UserOrderByRelevanceFieldEnum = {
   id: 'id',
   username: 'username',
@@ -416,6 +424,23 @@ export const BlogOrderByRelevanceFieldEnum = {
 export type BlogOrderByRelevanceFieldEnum = (typeof BlogOrderByRelevanceFieldEnum)[keyof typeof BlogOrderByRelevanceFieldEnum]
 
 
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
 export const DuaOrderByRelevanceFieldEnum = {
   id: 'id',
   name: 'name',
@@ -423,8 +448,7 @@ export const DuaOrderByRelevanceFieldEnum = {
   transliteration: 'transliteration',
   bangla: 'bangla',
   english: 'english',
-  reference: 'reference',
-  tags: 'tags'
+  reference: 'reference'
 } as const
 
 export type DuaOrderByRelevanceFieldEnum = (typeof DuaOrderByRelevanceFieldEnum)[keyof typeof DuaOrderByRelevanceFieldEnum]
