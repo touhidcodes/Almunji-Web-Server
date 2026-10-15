@@ -6,6 +6,7 @@ import { bookRoutes } from "@/modules/Book/book.routes";
 import { bookContentRoutes } from "@/modules/BookContent/bookContent.routes";
 import { bookmarkRoutes } from "@/modules/Bookmark/bookmark.routes";
 import { categoryRoutes } from "@/modules/Category/category.routes";
+import { dashboardRoutes } from "@/modules/Dashboard/dashboard.routes";
 import { dictionaryRoutes } from "@/modules/Dictionary/dictionary.routes";
 import { duaRoutes } from "@/modules/Dua/dua.routes";
 import { logsRoutes } from "@/modules/Logs/logs.routes";
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: "/",
     route: authRoutes,
+  },
+  {
+    path: "/dashboard",
+    route: dashboardRoutes,
   },
   {
     path: "/user",
