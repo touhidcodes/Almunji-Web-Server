@@ -113,7 +113,6 @@ const getAllWordsByAdmin = async (options: TWordQueryFilter) => {
       OR: wordQueryFields.map((field) => ({
         [field]: {
           contains: filters.searchTerm,
-          mode: "insensitive",
         },
       })),
     });
