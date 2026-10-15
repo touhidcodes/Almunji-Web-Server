@@ -13,8 +13,12 @@ export interface TDashboardStats {
   totalBookContents: number;
   totalBlogs: number;
   publishedBlogs: number;
+  featuredBlogs: number;
   totalDuas: number;
   totalBookmarks: number;
+  bookmarkedAyahs: number;
+  bookmarkedDuas: number;
+  featuredBooks: number;
 }
 
 export interface TDashboardStatsWithFilters {

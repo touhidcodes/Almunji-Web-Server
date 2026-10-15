@@ -23,8 +23,12 @@ const getDashboardStats = async (
     totalBookContents,
     totalBlogs,
     publishedBlogs,
+    featuredBlogs,
     totalDuas,
     totalBookmarks,
+    bookmarkedAyahs,
+    bookmarkedDuas,
+    featuredBooks,
   ] = await Promise.all([
     // User stats
     prisma.user.aggregate({
@@ -51,17 +55,29 @@ const getDashboardStats = async (
     }),
     // Book stats
     prisma.book.count(),
-    prisma.bookCategory.count(),
+    prisma.bookCategories.count(),
     prisma.bookContent.count(),
+    prisma.book.count({
+      where: { isFeatured: true },
+    }),
     // Blog stats
     prisma.blog.count(),
     prisma.blog.count({
       where: { isPublished: true },
     }),
+    prisma.blog.count({
+      where: { isFeatured: true },
+    }),
     // Dua stats
     prisma.dua.count(),
     // Bookmark stats
     prisma.bookmark.count(),
+    prisma.bookmark.count({
+      where: { itemType: "AYAH" },
+    }),
+    prisma.bookmark.count({
+      where: { itemType: "DUA" },
+    }),
   ]);
 
   return {
@@ -79,8 +95,12 @@ const getDashboardStats = async (
     totalBookContents,
     totalBlogs,
     publishedBlogs,
+    featuredBlogs,
     totalDuas,
     totalBookmarks,
+    bookmarkedAyahs,
+    bookmarkedDuas,
+    featuredBooks,
   };
 };
 
