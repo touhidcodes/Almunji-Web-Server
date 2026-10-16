@@ -29,12 +29,23 @@ const getLogs = catchAsync(async (req, res) => {
 
   const result = logsServices.getLogs(filters as any, pagination as any);
 
+  // Calculate summary counts in one pass over the filtered data
+  const errorCount = result.data.filter((e) => e.level === "error").length;
+  const warnCount = result.data.filter((e) => e.level === "warn").length;
+  const infoCount = result.data.filter((e) => e.level === "info").length;
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Logs retrieved successfully!",
     meta: result.meta,
-    data: result.data,
+    data: {
+      totalLogs: result.meta.total,
+      errorCount,
+      warnCount,
+      infoCount,
+      logs: result.data,
+    },
   });
 });
 
