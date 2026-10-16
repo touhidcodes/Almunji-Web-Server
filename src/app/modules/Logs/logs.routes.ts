@@ -5,11 +5,6 @@ import { logsControllers } from "./logs.controller";
 
 const router = express.Router();
 
-// All log routes are restricted to SUPERADMIN and ADMIN only
-const adminOnly = authAccess({
-  roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
-});
-
 /**
  * @swagger
  * /logs/files:
@@ -27,7 +22,13 @@ const adminOnly = authAccess({
  *       403:
  *         description: Forbidden
  */
-router.get("/files", adminOnly, logsControllers.getLogFiles);
+router.get(
+  "/files",
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+  }),
+  logsControllers.getLogFiles
+);
 
 /**
  * @swagger
@@ -65,7 +66,13 @@ router.get("/files", adminOnly, logsControllers.getLogFiles);
  *       403:
  *         description: Forbidden
  */
-router.get("/summary", adminOnly, logsControllers.getLogSummary);
+router.get(
+  "/summary",
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+  }),
+  logsControllers.getLogSummary
+);
 
 /**
  * @swagger
@@ -116,7 +123,13 @@ router.get("/summary", adminOnly, logsControllers.getLogSummary);
  *       403:
  *         description: Forbidden
  */
-router.get("/file/:filename", adminOnly, logsControllers.getLogsByFile);
+router.get(
+  "/file/:filename",
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+  }),
+  logsControllers.getLogsByFile
+);
 
 /**
  * @swagger
@@ -199,6 +212,12 @@ router.get("/file/:filename", adminOnly, logsControllers.getLogsByFile);
  *       403:
  *         description: Forbidden
  */
-router.get("/", adminOnly, logsControllers.getLogs);
+router.get(
+  "/",
+  authAccess({
+    roles: [UserRole.SUPERADMIN, UserRole.ADMIN],
+  }),
+  logsControllers.getLogs
+);
 
 export const logsRoutes = router;

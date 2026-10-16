@@ -121,11 +121,19 @@ const getLogs = (filters: TLogFilters, pagination: TLogPagination) => {
   entries = applyFilters(entries, filters);
 
   const total = entries.length;
+  const totalPages = Math.ceil(total / limit);
   const skip = (page - 1) * limit;
   const data = entries.slice(skip, skip + limit);
 
   return {
-    meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    },
     data,
   };
 };
@@ -158,11 +166,19 @@ const getLogsByFile = (
   entries = applyFilters(entries, filters);
 
   const total = entries.length;
+  const totalPages = Math.ceil(total / limit);
   const skip = (page - 1) * limit;
   const data = entries.slice(skip, skip + limit);
 
   return {
-    meta: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1,
+    },
     data,
   };
 };

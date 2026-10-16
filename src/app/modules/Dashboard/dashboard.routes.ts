@@ -10,7 +10,7 @@ const router = express.Router();
  * /dashboard/stats:
  *   get:
  *     summary: Get dashboard statistics
- *     description: Get comprehensive dashboard statistics with real-time counts for all resources. Returns user counts (total, active, blocked), content counts (Surahs, Paras, Ayahs, Tafsirs, Dictionaries, Books, Blogs, Duas), and bookmark statistics.
+ *     description: Get comprehensive dashboard statistics. SUPERADMIN/ADMIN get all stats including users. MODERATOR gets stats only for resources they have READ permission for. Minimal 2 queries for MODERATOR (1 for permissions, 1-18 for stats based on permissions)
  *     tags: [Dashboard]
  *     security:
  *       - bearerAuth: []
@@ -31,10 +31,13 @@ const router = express.Router();
  *                   properties:
  *                     totalUsers:
  *                       type: integer
+ *                       description: Only for SUPERADMIN/ADMIN, 0 for MODERATOR
  *                     activeUsers:
  *                       type: integer
+ *                       description: Only for SUPERADMIN/ADMIN, 0 for MODERATOR
  *                     blockedUsers:
  *                       type: integer
+ *                       description: Only for SUPERADMIN/ADMIN, 0 for MODERATOR
  *                     totalSurahs:
  *                       type: integer
  *                     totalParas:
