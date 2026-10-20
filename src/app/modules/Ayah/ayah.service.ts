@@ -68,6 +68,143 @@ const createAyah = async (data: Ayah) => {
   return result;
 };
 
+// Service to retrieve Ayahs with Tafsir and filtering & pagination
+const getAyahsWithTafsir = async (options: TAyahQueryFilter) => {
+  const { filters, pagination, additional } = options;
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelper.calculatePagination(pagination);
+
+  const andConditions: Prisma.AyahWhereInput[] = [];
+
+  // Default to false unless explicitly set to "true" isDeleted filter
+  const isDeletedQuery = filters?.isDeleted === "true";
+  andConditions.push({ isDeleted: isDeletedQuery });
+
+  // Search by number
+  if (filters?.number) {
+    andConditions.push({
+      number: { equals: Number(filters?.number) },
+    });
+  }
+
+  // Search by ayah text
+  if (filters?.searchTerm) {
+    andConditions.push({
+      OR: ayahQueryFields.map((field) => ({
+        [field]: {
+          contains: filters?.searchTerm,
+        },
+      })),
+    });
+  }
+
+  // Filter by Surah ID
+  if (filters?.surahId) {
+    andConditions.push({
+      surahId: filters.surahId,
+    });
+  }
+
+  // Filter by Para ID
+  if (filters?.paraId) {
+    andConditions.push({
+      paraId: filters.paraId,
+    });
+  }
+
+  // Filter by Surah chapter (number)
+  if (filters?.surahChapter) {
+    const surah = await prisma.surah.findUnique({
+      where: { chapter: Number(filters.surahChapter) },
+      select: { id: true },
+    });
+    if (surah) {
+      andConditions.push({ surahId: surah.id });
+    }
+  }
+
+  // Filter by Para number
+  if (filters?.paraNumber) {
+    const para = await prisma.para.findUnique({
+      where: { number: Number(filters.paraNumber) },
+      select: { id: true },
+    });
+    if (para) {
+      andConditions.push({ paraId: para.id });
+    }
+  }
+
+  const whereConditions: Prisma.AyahWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {};
+
+  // Get total count first
+  const total = await prisma.ayah.count({ where: whereConditions });
+
+  // Fetch Ayahs with Tafsir in a single optimized query
+  const result = await prisma.ayah.findMany({
+    where: whereConditions,
+    select: {
+      id: true,
+      number: true,
+      arabic: true,
+      transliteration: true,
+      bangla: true,
+      english: true,
+      surah: {
+        select: {
+          id: true,
+          chapter: true,
+          arabic: true,
+          english: true,
+          bangla: true,
+        },
+      },
+      para: {
+        select: {
+          id: true,
+          number: true,
+          arabic: true,
+          english: true,
+          bangla: true,
+        },
+      },
+      tafsir: {
+        select: {
+          id: true,
+          heading: true,
+          summaryBn: true,
+          summaryEn: true,
+          detailBn: true,
+          detailEn: true,
+          scholar: true,
+          reference: true,
+          tags: true,
+        },
+      },
+    },
+    skip,
+    take: limit,
+    orderBy:
+      sortBy && sortOrder
+        ? {
+            [sortBy]: sortOrder,
+          }
+        : { number: "asc" },
+  });
+
+  return { 
+    meta: { 
+      page, 
+      limit, 
+      total, 
+      totalPages: Math.ceil(total / limit),
+      hasNextPage: page < Math.ceil(total / limit),
+      hasPrevPage: page > 1,
+    }, 
+    data: result 
+  };
+};
+
 // Service to retrieve Ayahs with filtering & pagination
 const getAllAyahs = async (options: TAyahQueryFilter) => {
   const { filters, pagination, additional } = options;
@@ -180,6 +317,19 @@ const getAyahById = async (id: string) => {
           bangla: true,
         },
       },
+      tafsir: {
+        select: {
+          id: true,
+          heading: true,
+          summaryBn: true,
+          summaryEn: true,
+          detailBn: true,
+          detailEn: true,
+          scholar: true,
+          reference: true,
+          tags: true,
+        },
+      },
     },
   });
 
@@ -221,6 +371,19 @@ const getAyahsByParaId = async (paraId: string) => {
           english: true,
         },
       },
+      tafsir: {
+        select: {
+          id: true,
+          heading: true,
+          summaryBn: true,
+          summaryEn: true,
+          detailBn: true,
+          detailEn: true,
+          scholar: true,
+          reference: true,
+          tags: true,
+        },
+      },
     },
   });
 
@@ -258,6 +421,19 @@ const getAyahsBySurahId = async (surahId: string) => {
       transliteration: true,
       english: true,
       bangla: true,
+      tafsir: {
+        select: {
+          id: true,
+          heading: true,
+          summaryBn: true,
+          summaryEn: true,
+          detailBn: true,
+          detailEn: true,
+          scholar: true,
+          reference: true,
+          tags: true,
+        },
+      },
     },
   });
 
@@ -268,7 +444,7 @@ const getAyahsBySurahId = async (surahId: string) => {
   };
 };
 
-// Service to retrieve Ayahs and their Tafsir by Surah ID
+// Service to retrieve Ayahs and their Tafsir by Surah ID (legacy - kept for compatibility)
 const getAyahsAndTafsirBySurahId = async (surahId: string) => {
   const surah = await prisma.surah.findUnique({
     where: { id: surahId },
@@ -415,6 +591,7 @@ const deleteAyahByAdmin = async (id: string) => {
 
 export const ayahServices = {
   createAyah,
+  getAyahsWithTafsir,
   getAllAyahs,
   getAyahById,
   getAyahsByParaId,

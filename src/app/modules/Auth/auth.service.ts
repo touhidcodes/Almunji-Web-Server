@@ -211,7 +211,7 @@ const refreshToken = async (token: string) => {
 // Change Password
 
 const changePassword = async (userId: string, payload: IChangePassword) => {
-  const { oldPassword, newPassword } = payload;
+  const { currentPassword, newPassword } = payload;
 
   const user = await prisma.user.findFirst({
     where: { id: userId, status: UserStatus.ACTIVE },
@@ -221,13 +221,16 @@ const changePassword = async (userId: string, payload: IChangePassword) => {
     throw new APIError(httpStatus.NOT_FOUND, "User does not exist");
   }
 
-  const isOldPasswordCorrect = await comparePasswords(
-    oldPassword,
+  const isCurrentPasswordCorrect = await comparePasswords(
+    currentPassword,
     user.password
   );
 
-  if (!isOldPasswordCorrect) {
-    throw new APIError(httpStatus.UNAUTHORIZED, "Old password is incorrect");
+  if (!isCurrentPasswordCorrect) {
+    throw new APIError(
+      httpStatus.UNAUTHORIZED,
+      "Current password is incorrect"
+    );
   }
 
   const newHashedPassword = await hashedPassword(newPassword);

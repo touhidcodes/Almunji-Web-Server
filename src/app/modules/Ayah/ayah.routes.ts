@@ -249,6 +249,104 @@ router.get("/surah/:surahId", ayahControllers.getAyahsBySurahId);
 
 /**
  * @swagger
+ * /ayah:
+ *   get:
+ *     summary: Get Ayahs with Tafsir with filtering and pagination
+ *     description: Retrieve Ayahs along with their Tafsir with filtering by Surah ID, Para ID, Surah Chapter, Para Number, and search. Supports pagination and sorting.
+ *     tags: [Ayah]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *         description: Items per page
+ *       - in: query
+ *         name: surahId
+ *         schema:
+ *           type: string
+ *         description: Filter by Surah ID
+ *       - in: query
+ *         name: paraId
+ *         schema:
+ *           type: string
+ *         description: Filter by Para ID
+ *       - in: query
+ *         name: surahChapter
+ *         schema:
+ *           type: integer
+ *         description: Filter by Surah chapter number
+ *       - in: query
+ *         name: paraNumber
+ *         schema:
+ *           type: integer
+ *         description: Filter by Para number
+ *       - in: query
+ *         name: searchTerm
+ *         schema:
+ *           type: string
+ *         description: Search in Arabic, transliteration, Bangla, and English text
+ *       - in: query
+ *         name: number
+ *         schema:
+ *           type: integer
+ *         description: Filter by Ayah number
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         description: Sort by field (e.g., number, arabic)
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: asc
+ *         description: Sort order
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved Ayahs with Tafsir
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Ayahs with Tafsir retrieved successfully!"
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     total:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     hasNextPage:
+ *                       type: boolean
+ *                     hasPrevPage:
+ *                       type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ */
+router.get("/", ayahControllers.getAyahsWithTafsir);
+
+/**
+ * @swagger
  * /ayah/tafsir/{surahId}:
  *   get:
  *     summary: Get Ayahs and their Tafsir by Surah ID

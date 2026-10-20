@@ -83,6 +83,25 @@ const getAyahsAndTafsirBySurahId = catchAsync(async (req, res) => {
   });
 });
 
+// Controller to get Ayahs with Tafsir with filtering and pagination
+const getAyahsWithTafsir = catchAsync(async (req, res) => {
+  const options = queryFilters(
+    req.query,
+    ayahFilterableFields,
+    ayahPaginationFields
+  );
+
+  const result = await ayahServices.getAyahsWithTafsir(options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Ayahs with Tafsir retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 // Controller to update an Ayah by ID
 const updateAyah = catchAsync(async (req, res) => {
   const { ayahId } = req.params;
@@ -126,6 +145,7 @@ export const ayahControllers = {
   getAyahsByParaId,
   getAyahsBySurahId,
   getAyahsAndTafsirBySurahId,
+  getAyahsWithTafsir,
   updateAyah,
   deleteAyah,
   deleteAyahByAdmin,

@@ -27,6 +27,7 @@ const getAllUser = async (currentUserEmail: string) => {
       id: true,
       email: true,
       role: true,
+      status: true,
       username: true,
       createdAt: true,
       updatedAt: true,
@@ -133,11 +134,19 @@ const updateUserProfile = async (
   });
 
   // Service to update user profile
-  const updatedProfile = await prisma.userProfile.update({
+  const updatedProfile = await prisma.userProfile.upsert({
     where: {
       userId: id,
     },
-    data: profileData,
+    create: {
+      userId: id,
+      name: profileData.name ?? null,
+      image: profileData.image ?? null,
+      bio: profileData.bio ?? null,
+      profession: profileData.profession ?? null,
+      address: profileData.address ?? null,
+    },
+    update: profileData,
   });
 
   return {

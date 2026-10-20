@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import sendResponse from "@/utils/sendResponse";
 import catchAsync from "@/utils/catchAsync";
 import { userServices } from "./user.service";
+import APIError from "@/errors/APIError";
 
 // Controller to get user
 const getUser = catchAsync(async (req, res) => {
@@ -31,7 +32,14 @@ const getAllUser = catchAsync(async (req, res) => {
 
 // Controller to get user profile
 const getUserProfile = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user.id;
+
+  if (!userId) {
+    throw new APIError(
+      httpStatus.UNAUTHORIZED,
+      "Authenticated user ID not found."
+    );
+  }
 
   const result = await userServices.getUserProfile(userId);
   sendResponse(res, {
@@ -44,7 +52,7 @@ const getUserProfile = catchAsync(async (req, res) => {
 
 // Controller to update  profile
 const updateUserProfile = catchAsync(async (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user.id;
 
   const result = await userServices.updateUserProfile(userId, req.body);
   sendResponse(res, {

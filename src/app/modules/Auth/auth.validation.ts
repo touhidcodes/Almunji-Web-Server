@@ -35,7 +35,7 @@ const refreshTokenZodSchema = z.object({
 //  Schema to change password
 const changePasswordZodSchema = z.object({
   body: z.object({
-    oldPassword: z.string({
+    currentPassword: z.string({
       required_error: "Old password  is required!",
     }),
     newPassword: z.string({

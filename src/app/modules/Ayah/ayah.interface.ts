@@ -3,6 +3,10 @@ type TAyahFilters = {
   searchTerm?: string;
   number?: string;
   isDeleted?: string;
+  surahId?: string;
+  paraId?: string;
+  surahChapter?: string;
+  paraNumber?: string;
 };
 
 //  pagination fields
