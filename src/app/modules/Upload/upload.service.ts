@@ -1,4 +1,4 @@
-import { Ayah, Tafsir } from "@/generated/prisma/client";
+import { Ayah, Dictionary, Tafsir } from "@/generated/prisma/client";
 import httpStatus from "http-status";
 import APIError from "@/errors/APIError";
 import prisma from "@/utils/prisma";
@@ -128,7 +128,9 @@ const uploadAyahsFromFiles = async (data: Partial<Ayah>[]) => {
 };
 
 // Service for upload ayahs with tafsir from json file
-const uploadAyahsAndTafsirFromFiles = async (data: Array<Partial<Ayah> & { tafsir?: Partial<Tafsir> }>) => {
+const uploadAyahsAndTafsirFromFiles = async (
+  data: Array<Partial<Ayah> & { tafsir?: Partial<Tafsir> }>
+) => {
   if (!Array.isArray(data)) {
     throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
   }
@@ -197,7 +199,16 @@ const uploadAyahsAndTafsirFromFiles = async (data: Array<Partial<Ayah> & { tafsi
 
     // Create Tafsir if provided
     if (tafsirData) {
-      const { heading, summaryBn, summaryEn, detailBn, detailEn, scholar, reference, tags } = tafsirData;
+      const {
+        heading,
+        summaryBn,
+        summaryEn,
+        detailBn,
+        detailEn,
+        scholar,
+        reference,
+        tags,
+      } = tafsirData;
 
       const tafsirExists = await prisma.tafsir.findUnique({
         where: { ayahId: newAyah.id },
@@ -207,13 +218,13 @@ const uploadAyahsAndTafsirFromFiles = async (data: Array<Partial<Ayah> & { tafsi
         await prisma.tafsir.create({
           data: {
             ayahId: newAyah.id,
-            heading,
-            summaryBn,
-            summaryEn,
-            detailBn,
-            detailEn,
-            scholar,
-            reference,
+            heading: heading ?? null,
+            summaryBn: summaryBn ?? null,
+            summaryEn: summaryEn ?? null,
+            detailBn: detailBn ?? null,
+            detailEn: detailEn ?? null,
+            scholar: scholar ?? null,
+            reference: reference ?? null,
             tags: tags as any,
           },
         });

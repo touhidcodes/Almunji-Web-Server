@@ -214,11 +214,11 @@ model Tafsir {
   id        String   @id @default(uuid())
   ayahId    String   @unique
   ayah      Ayah     @relation(fields: [ayahId], references: [id])
-  heading   String?
-  summaryBn String?
-  summaryEn String?
-  detailBn  String?
-  detailEn  String?
+  heading   String?  @db.Text
+  summaryBn String?  @db.Text
+  summaryEn String?  @db.Text
+  detailBn  String?  @db.LongText
+  detailEn  String?  @db.LongText
   scholar   String?
   reference String?
   tags      Json?
