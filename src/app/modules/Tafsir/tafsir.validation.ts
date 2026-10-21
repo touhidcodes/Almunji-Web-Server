@@ -11,7 +11,7 @@ const createTafsirSchema = z.object({
     detailEn: z.string().optional(),
     scholar: z.string().optional(),
     reference: z.string().optional(),
-    tags: z.string().optional(),
+    tags: z.array(z.string().trim().min(1, "Tags cannot be empty")).optional(),
   }),
 });
 
@@ -25,7 +25,7 @@ const updateTafsirSchema = z.object({
     detailEn: z.string().optional(),
     scholar: z.string().optional(),
     reference: z.string().optional(),
-    tags: z.string().optional(),
+    tags: z.array(z.string().trim()).optional(),
   }),
 });
 

@@ -31,7 +31,10 @@ const createTafsir = async (data: Tafsir) => {
   }
 
   const result = await prisma.tafsir.create({
-    data,
+    data: {
+      ...data,
+      tags: data.tags as any,
+    },
     select: {
       id: true,
       ayah: {
@@ -78,11 +81,11 @@ const getAllTafsirByAdmin = async (options: TTafsirQueryFilter) => {
     });
   }
 
-  // Search by tafsir tags
+  // Search by tafsir tags (array contains)
   if (filters?.tags) {
     andConditions.push({
       tags: {
-        contains: filters?.tags,
+        array_contains: [filters.tags],
       },
     });
   }
@@ -202,7 +205,10 @@ const updateTafsir = async (id: string, data: Partial<Tafsir>) => {
 
   const result = await prisma.tafsir.update({
     where: { id },
-    data,
+    data: {
+      ...data,
+      tags: data.tags as any,
+    },
     select: {
       id: true,
       ayah: {

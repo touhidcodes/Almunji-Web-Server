@@ -500,8 +500,7 @@ export const TafsirOrderByRelevanceFieldEnum = {
   detailBn: 'detailBn',
   detailEn: 'detailEn',
   scholar: 'scholar',
-  reference: 'reference',
-  tags: 'tags'
+  reference: 'reference'
 } as const
 
 export type TafsirOrderByRelevanceFieldEnum = (typeof TafsirOrderByRelevanceFieldEnum)[keyof typeof TafsirOrderByRelevanceFieldEnum]

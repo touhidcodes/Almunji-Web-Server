@@ -1,15 +1,14 @@
 import { z } from "zod";
 
-// Validation for creating a new Dua
-const createDuaSchema = z.object({
+export const createDuaSchema = z.object({
   body: z.object({
-    name: z.string().min(1, "Name is required"),
-    arabic: z.string().min(1, "Arabic text is required"),
+    name: z.string().trim().min(1, "Name is required"),
+    arabic: z.string().trim().min(1, "Arabic text is required"),
     transliteration: z.string().optional(),
-    bangla: z.string().min(1, "Bangla text is required"),
+    bangla: z.string().trim().min(1, "Bangla text is required"),
     english: z.string().optional(),
     reference: z.string().optional(),
-    tags: z.array(z.string()).optional(),
+    tags: z.array(z.string().trim().min(1)).optional(),
   }),
 });
 
@@ -22,7 +21,7 @@ const updateDuaSchema = z.object({
     bangla: z.string().optional(),
     english: z.string().optional(),
     reference: z.string().optional(),
-    tags: z.string().optional(),
+    tags: z.array(z.string().trim().min(1)).optional(),
   }),
 });
 

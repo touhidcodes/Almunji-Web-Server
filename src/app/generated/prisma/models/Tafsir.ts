@@ -34,7 +34,6 @@ export type TafsirMinAggregateOutputType = {
   detailEn: string | null
   scholar: string | null
   reference: string | null
-  tags: string | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -50,7 +49,6 @@ export type TafsirMaxAggregateOutputType = {
   detailEn: string | null
   scholar: string | null
   reference: string | null
-  tags: string | null
   isDeleted: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -84,7 +82,6 @@ export type TafsirMinAggregateInputType = {
   detailEn?: true
   scholar?: true
   reference?: true
-  tags?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -100,7 +97,6 @@ export type TafsirMaxAggregateInputType = {
   detailEn?: true
   scholar?: true
   reference?: true
-  tags?: true
   isDeleted?: true
   createdAt?: true
   updatedAt?: true
@@ -205,7 +201,7 @@ export type TafsirGroupByOutputType = {
   detailEn: string | null
   scholar: string | null
   reference: string | null
-  tags: string | null
+  tags: runtime.JsonValue | null
   isDeleted: boolean
   createdAt: Date
   updatedAt: Date
@@ -242,7 +238,7 @@ export type TafsirWhereInput = {
   detailEn?: Prisma.StringNullableFilter<"Tafsir"> | string | null
   scholar?: Prisma.StringNullableFilter<"Tafsir"> | string | null
   reference?: Prisma.StringNullableFilter<"Tafsir"> | string | null
-  tags?: Prisma.StringNullableFilter<"Tafsir"> | string | null
+  tags?: Prisma.JsonNullableFilter<"Tafsir">
   isDeleted?: Prisma.BoolFilter<"Tafsir"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Tafsir"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tafsir"> | Date | string
@@ -280,7 +276,7 @@ export type TafsirWhereUniqueInput = Prisma.AtLeast<{
   detailEn?: Prisma.StringNullableFilter<"Tafsir"> | string | null
   scholar?: Prisma.StringNullableFilter<"Tafsir"> | string | null
   reference?: Prisma.StringNullableFilter<"Tafsir"> | string | null
-  tags?: Prisma.StringNullableFilter<"Tafsir"> | string | null
+  tags?: Prisma.JsonNullableFilter<"Tafsir">
   isDeleted?: Prisma.BoolFilter<"Tafsir"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Tafsir"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tafsir"> | Date | string
@@ -319,7 +315,7 @@ export type TafsirScalarWhereWithAggregatesInput = {
   detailEn?: Prisma.StringNullableWithAggregatesFilter<"Tafsir"> | string | null
   scholar?: Prisma.StringNullableWithAggregatesFilter<"Tafsir"> | string | null
   reference?: Prisma.StringNullableWithAggregatesFilter<"Tafsir"> | string | null
-  tags?: Prisma.StringNullableWithAggregatesFilter<"Tafsir"> | string | null
+  tags?: Prisma.JsonNullableWithAggregatesFilter<"Tafsir">
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Tafsir"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tafsir"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tafsir"> | Date | string
@@ -334,7 +330,7 @@ export type TafsirCreateInput = {
   detailEn?: string | null
   scholar?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -351,7 +347,7 @@ export type TafsirUncheckedCreateInput = {
   detailEn?: string | null
   scholar?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -366,7 +362,7 @@ export type TafsirUpdateInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,7 +379,7 @@ export type TafsirUncheckedUpdateInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -399,7 +395,7 @@ export type TafsirCreateManyInput = {
   detailEn?: string | null
   scholar?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -414,7 +410,7 @@ export type TafsirUpdateManyMutationInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -430,7 +426,7 @@ export type TafsirUncheckedUpdateManyInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -473,7 +469,6 @@ export type TafsirMaxOrderByAggregateInput = {
   detailEn?: Prisma.SortOrder
   scholar?: Prisma.SortOrder
   reference?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -489,7 +484,6 @@ export type TafsirMinOrderByAggregateInput = {
   detailEn?: Prisma.SortOrder
   scholar?: Prisma.SortOrder
   reference?: Prisma.SortOrder
-  tags?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -536,7 +530,7 @@ export type TafsirCreateWithoutAyahInput = {
   detailEn?: string | null
   scholar?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -551,7 +545,7 @@ export type TafsirUncheckedCreateWithoutAyahInput = {
   detailEn?: string | null
   scholar?: string | null
   reference?: string | null
-  tags?: string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -582,7 +576,7 @@ export type TafsirUpdateWithoutAyahInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -597,7 +591,7 @@ export type TafsirUncheckedUpdateWithoutAyahInput = {
   detailEn?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scholar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tags?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tags?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -660,7 +654,7 @@ export type $TafsirPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     detailEn: string | null
     scholar: string | null
     reference: string | null
-    tags: string | null
+    tags: runtime.JsonValue | null
     isDeleted: boolean
     createdAt: Date
     updatedAt: Date
@@ -1043,7 +1037,7 @@ export interface TafsirFieldRefs {
   readonly detailEn: Prisma.FieldRef<"Tafsir", 'String'>
   readonly scholar: Prisma.FieldRef<"Tafsir", 'String'>
   readonly reference: Prisma.FieldRef<"Tafsir", 'String'>
-  readonly tags: Prisma.FieldRef<"Tafsir", 'String'>
+  readonly tags: Prisma.FieldRef<"Tafsir", 'Json'>
   readonly isDeleted: Prisma.FieldRef<"Tafsir", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Tafsir", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tafsir", 'DateTime'>
