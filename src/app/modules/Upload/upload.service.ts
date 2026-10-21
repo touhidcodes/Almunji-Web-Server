@@ -170,6 +170,43 @@ const uploadAyahsAndTafsirFromFiles = async (
 
     if (exists) {
       existingAyahs.push(`${surahId}:${paraId}:${number}`);
+
+      // Check if tafsir exists for existing ayah
+      if (tafsirData) {
+        const tafsirExists = await prisma.tafsir.findUnique({
+          where: { ayahId: exists.id },
+        });
+
+        if (tafsirExists) {
+          existingTafsirs.push(exists.id);
+        } else {
+          const {
+            heading,
+            summaryBn,
+            summaryEn,
+            detailBn,
+            detailEn,
+            scholar,
+            reference,
+            tags,
+          } = tafsirData;
+
+          await prisma.tafsir.create({
+            data: {
+              ayahId: exists.id,
+              heading: heading ?? null,
+              summaryBn: summaryBn ?? null,
+              summaryEn: summaryEn ?? null,
+              detailBn: detailBn ?? null,
+              detailEn: detailEn ?? null,
+              scholar: scholar ?? null,
+              reference: reference ?? null,
+              tags: tags ? JSON.parse(JSON.stringify(tags)) : null,
+            },
+          });
+          createdTafsirs.push({ ayahId: exists.id });
+        }
+      }
       continue;
     }
 
@@ -225,7 +262,7 @@ const uploadAyahsAndTafsirFromFiles = async (
             detailEn: detailEn ?? null,
             scholar: scholar ?? null,
             reference: reference ?? null,
-            tags: tags as any,
+            tags: tags ? JSON.parse(JSON.stringify(tags)) : null,
           },
         });
         createdTafsirs.push({ ayahId: newAyah.id });
