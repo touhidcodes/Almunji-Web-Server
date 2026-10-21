@@ -1,4 +1,4 @@
-import { Ayah, Dictionary } from "@/generated/prisma/client";
+import { Ayah, Tafsir } from "@/generated/prisma/client";
 import httpStatus from "http-status";
 import APIError from "@/errors/APIError";
 import prisma from "@/utils/prisma";
@@ -127,7 +127,113 @@ const uploadAyahsFromFiles = async (data: Partial<Ayah>[]) => {
   };
 };
 
+// Service for upload ayahs with tafsir from json file
+const uploadAyahsAndTafsirFromFiles = async (data: Array<Partial<Ayah> & { tafsir?: Partial<Tafsir> }>) => {
+  if (!Array.isArray(data)) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Invalid file format!");
+  }
+
+  const createdAyahs: TCreatedAyah[] = [];
+  const existingAyahs: string[] = [];
+  const createdTafsirs: Array<{ ayahId: string }> = [];
+  const existingTafsirs: string[] = [];
+
+  for (const ayahData of data) {
+    const {
+      surahId,
+      paraId,
+      number,
+      arabic,
+      transliteration = null,
+      bangla = null,
+      english = null,
+      tafsir: tafsirData,
+    } = ayahData;
+
+    // validation
+    if (!surahId || !paraId || typeof number !== "number" || !arabic) {
+      continue;
+    }
+
+    // UNIQUE CHECK (matches schema)
+    const exists = await prisma.ayah.findUnique({
+      where: {
+        surahId_paraId_number: {
+          surahId,
+          paraId,
+          number,
+        },
+      },
+    });
+
+    if (exists) {
+      existingAyahs.push(`${surahId}:${paraId}:${number}`);
+      continue;
+    }
+
+    const newAyah = await prisma.ayah.create({
+      data: {
+        surahId,
+        paraId,
+        number,
+        arabic,
+        transliteration,
+        bangla,
+        english,
+      },
+      select: {
+        id: true,
+        surahId: true,
+        paraId: true,
+        number: true,
+        arabic: true,
+        transliteration: true,
+        bangla: true,
+        english: true,
+      },
+    });
+
+    createdAyahs.push(newAyah);
+
+    // Create Tafsir if provided
+    if (tafsirData) {
+      const { heading, summaryBn, summaryEn, detailBn, detailEn, scholar, reference, tags } = tafsirData;
+
+      const tafsirExists = await prisma.tafsir.findUnique({
+        where: { ayahId: newAyah.id },
+      });
+
+      if (!tafsirExists) {
+        await prisma.tafsir.create({
+          data: {
+            ayahId: newAyah.id,
+            heading,
+            summaryBn,
+            summaryEn,
+            detailBn,
+            detailEn,
+            scholar,
+            reference,
+            tags: tags as any,
+          },
+        });
+        createdTafsirs.push({ ayahId: newAyah.id });
+      } else {
+        existingTafsirs.push(newAyah.id);
+      }
+    }
+  }
+
+  return {
+    createdAyahs,
+    existingAyahs,
+    createdTafsirs,
+    existingTafsirs,
+  };
+};
+
 export const uploadServices = {
   uploadWordsFromFiles,
   uploadAyahsFromFiles,
+  uploadAyahsAndTafsirFromFiles,
 };
