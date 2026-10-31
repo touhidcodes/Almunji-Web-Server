@@ -79,7 +79,7 @@ router.post(
  *         description: Forbidden
  */
 router.get(
-  "/",
+  "/all",
   authAccess({
     roles: [UserRole.ADMIN],
     resource: Resource.PERMISSION,
@@ -206,7 +206,7 @@ router.post(
  *         description: Forbidden
  */
 router.get(
-  "/user/:userId",
+  "/",
   authAccess({
     roles: [UserRole.ADMIN],
     resource: Resource.PERMISSION,

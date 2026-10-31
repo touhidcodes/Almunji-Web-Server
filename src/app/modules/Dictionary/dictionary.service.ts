@@ -58,7 +58,6 @@ const getSuggestion = async (options: TWordQueryFilter) => {
       OR: wordQueryFields.map((field) => ({
         [field]: {
           contains: filters.searchTerm,
-          mode: "insensitive",
         },
       })),
     });
@@ -68,7 +67,6 @@ const getSuggestion = async (options: TWordQueryFilter) => {
     andConditions.push({
       persianWord: {
         contains: filters.persianWord,
-        // mode: "insensitive",
       },
     });
   }

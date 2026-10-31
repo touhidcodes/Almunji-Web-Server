@@ -125,14 +125,22 @@ const assignPermissionToUser = async (
   });
 };
 
-// Get User Permissions
+// Get User Permissions (structured format without pagination)
 const getUserPermissions = async (userId: string) => {
-  return prisma.userPermission.findMany({
+  const userPermissions = await prisma.userPermission.findMany({
     where: { userId },
     include: {
       permission: true,
     },
   });
+
+  // Return only the permissions in a structured format
+  return userPermissions.map((up) => ({
+    id: up.permission.id,
+    resource: up.permission.resource,
+    action: up.permission.action,
+    createdAt: up.permission.createdAt,
+  }));
 };
 
 // Remove User Permission
