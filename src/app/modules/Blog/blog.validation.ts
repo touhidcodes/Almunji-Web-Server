@@ -11,11 +11,12 @@ const createBlogSchema = z.object({
 
 const updateBlogSchema = z.object({
   body: z.object({
+    title: z.string().optional(),
     thumbnail: z.string().optional(),
     summary: z.string().optional(),
     content: z.string().optional(),
     isPublished: z.boolean().optional(),
-    IsFeatured: z.boolean().optional(),
+    isFeatured: z.boolean().optional(),
   }),
 });
 

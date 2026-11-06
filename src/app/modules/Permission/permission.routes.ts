@@ -50,7 +50,7 @@ router.post(
 
 /**
  * @swagger
- * /permission:
+ * /permission/all:
  *   get:
  *     summary: Get all permissions
  *     description: Get all permissions with pagination (ADMIN with PERMISSION.READ permission)
@@ -183,7 +183,7 @@ router.post(
 
 /**
  * @swagger
- * /permission/user/{userId}:
+ * /permission}:
  *   get:
  *     summary: Get permissions of a specific user
  *     description: Get all permissions assigned to a user (ADMIN with PERMISSION.READ permission)

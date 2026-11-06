@@ -10,14 +10,16 @@ import AuthorizationError from "@/errors/AuthorizationError";
 
 const authAccess = ({ roles, resource, action }: TAuthOptions = {}) =>
   catchAsync(async (req, res, next) => {
-    const token = req.headers.authorization as string;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       throw new AuthorizationError(
         httpStatus.UNAUTHORIZED,
         "Unauthorized access"
       );
     }
+
+    const token = authHeader.split(" ")[1];
 
     // Verify token (throws if expired or invalid)
     const decoded = jwtHelpers.verifyToken(

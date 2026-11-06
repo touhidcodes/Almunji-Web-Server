@@ -184,11 +184,8 @@ const getBlogBySlug = async (slug: string) => {
 // Service to update a Blog
 const updateBlog = async (id: string, blogData: Partial<Blog>) => {
   // Block updates to title and slug
-  if ("title" in blogData || "slug" in blogData) {
-    throw new APIError(
-      httpStatus.BAD_REQUEST,
-      "Updating title or slug is not allowed!"
-    );
+  if ("slug" in blogData) {
+    throw new APIError(httpStatus.BAD_REQUEST, "Updating slug is not allowed!");
   }
 
   const existingBlog = await prisma.blog.findUnique({
